@@ -48,6 +48,21 @@
       "type": "item",
       "title": "Catalog",
       "uri": "swagger/services/catalog/catalog-crud.json"
+    },
+    {
+      "type": "item",
+      "title": "Import",
+      "uri": "swagger/services/import/import-crud.json"
+    },
+    {
+      "type": "item",
+      "title": "Order",
+      "uri": "swagger/services/order/order-crud.json"
+    },
+    {
+      "type": "item",
+      "title": "Webhook",
+      "uri": "swagger/services/webhook/webhook-crud.json"
     }
   ]
 }

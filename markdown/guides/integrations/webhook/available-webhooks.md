@@ -26,7 +26,7 @@
 
 ## About this Document
 
-This document contains the payload of the events supported by the Webhook Service. To see the complete request body structure see [the HTTP Call](/guides/integrations/webhook-integration/overview#body-structure).
+This document contains the payload of the events supported by the Webhook Service. To see the complete request body structure see [the HTTP Call](./overview.md#body-structure).
 
 ## Events
 

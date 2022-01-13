@@ -163,4 +163,4 @@ It is possible to hook into various actions during the order process. This can b
 
 - by calling the [retail.red API](/api-reference) from an external system or
 
-- by hooking into events emitted by the retail.red order process like `salesOrderAdded`, `fulfillmentOrderUpdated`, and `schedulePickupReminderTimeReached`. For a complete list of supported events see [Webhook Events](/guides/integrations/webhook-integration/available-webhooks). To learn how to work with the retail.red webhooks see [Webhook Integration Guide](/guides/integrations/webhook-integration/overview)
+- by hooking into events emitted by the retail.red order process like `salesOrderAdded`, `fulfillmentOrderUpdated`, and `schedulePickupReminderTimeReached`. For a complete list of supported events see [Webhook Events](../webhooks/available-webhooks.md). To learn how to work with the retail.red webhooks see [Webhook Integration Guide](../webhooks/overview.md)

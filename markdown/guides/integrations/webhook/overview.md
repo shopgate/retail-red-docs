@@ -26,10 +26,10 @@ Which event should result in an HTTP call to which endpoint is configurable via 
 
 ## Setup a Webhook
 
-The setup of webhooks need to be done via the [retail.red webhook API](/api-reference/webhook-api).
+The setup of webhooks need to be done via the [retail.red webhook API](/docs/retail-red/YXBpOjM1NjU0NzY2-webhook).
 
-1. [Create Webhook](/api-reference/webhook-api/webhooks/createwebhooks) with the relevant events to be sent to a given external endpoint.
-2. [Test the Webhook](/api-reference/webhook-api/webhooks/triggerwebhook) by triggering it manually.
+1. [Create Webhook](/docs/retail-red/b3A6MzU2NTUxMjA-create-webhooks) with the relevant events to be sent to a given external endpoint.
+2. [Test the Webhook](/docs/retail-red/b3A6MzU2NTUxMjM-test-webhook) by triggering it manually.
 
    **Be aware** that this call will only contain a sample payload which does not reflect the actual payload or its structure.
 
@@ -37,7 +37,7 @@ The setup of webhooks need to be done via the [retail.red webhook API](/api-refe
 
 ### Identification Token
 
-Every incoming request will contain an identification token (key: `shopgate-token`) in the request headers. This token can be used to verify, that the request originated from the retail.red webhook API. The Webhook service has a route to [get the webhook token](/api-reference/webhook-api/webhooks/getwebhooktoken). The token is unique for a marchant.
+Every incoming request will contain an identification token (key: `shopgate-token`) in the request headers. This token can be used to verify, that the request originated from the retail.red webhook API. The Webhook service has a route to [get the webhook token](/docs/retail-red/b3A6MzU2NTUxMTg-get-webhook-token). The token is unique for a marchant.
 
 ### Allow List
 
@@ -65,7 +65,7 @@ All requests will have the content type `application/json`. The request body loo
 	}
 ```
 
-See [Available Events](/guides/integrations/webhook-integration/available-webhooks) for the specific payloads.
+See [Available Events](./available-webhooks.md) for the specific payloads.
 
 ## Retry Mechanism
 

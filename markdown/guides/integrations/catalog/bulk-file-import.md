@@ -1,11 +1,5 @@
 # Bulk imports in JSON format
 
-## Content
-
-1. [Introduction](#Introduction)
-2. [File Format](#file-format)
-3. [Process](#process)
-
 ## Introduction
 
 For bulk updates, all entities that should get updated are collected in one json file per entity type (e.g. one file for products, one for categories etc.). This file is then uploaded using the [retail.red Import Service](/api-reference/import-api) and the Import is triggered.

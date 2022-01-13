@@ -42,12 +42,12 @@
     {
       "type": "item",
       "title": "Authentication",
-      "uri": "swagger/api-reference/general/authentication.md"
+      "uri": "markdown/api-reference/general/authentication.md"
     },
     {
       "type": "item",
       "title": "Catalog",
-      "uri": "swagger/api-reference/services/catalog/catalog-crud.json"
+      "uri": "swagger/services/catalog/catalog-crud.json"
     }
   ]
 }

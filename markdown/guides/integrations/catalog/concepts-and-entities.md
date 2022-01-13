@@ -1,17 +1,5 @@
 # Concepts and Entities
 
-## Content
-
-1. [Main Entities](#main-entities)
-2. [Entity Relationships](#entity-relationships)
-3. [Inventory handling for direct ship and in store availability](#inventory-handling-for-direct-ship-and-in-store-availability)
-4. Product
-   1. [Variants and Attributes](#product-variants-and-attributes)
-   2. [Properties](#product-properties)
-   3. [Status](#product-status)
-   4. [Unit Price Information](#unit-price-information)
-5. [Entity Localization](#entity-localization)
-
 ## Main Entities
 
 This document covers the main entities as well as concepts of the Catalog API.

@@ -1,17 +1,5 @@
 # Bulk file imports in CSV format via FTP or retail.red Admin
 
-## Content
-
-1. [Introduction](#introduction)
-2. [CSV Import Via Admin](#csv-import-via-admin)
-3. [CSV Import Via FTP](#csv-import-via-ftp)
-4. [Formatting the CSV Files](#formatting-the-csv-files)
-   1. [Category CSV](#category-csv)
-   2. [Product CSV](#product-csv)
-   3. [Inventory CSV](#inventory-csv)
-5. [Download Catalog Data](#download-catalog-data)
-6. [Check Processed Import](#check-processed-import)
-
 ## Introduction
 
 This article covers how to upload catalog data as CSV into the retail.red system including the file formats and how to check for errors.

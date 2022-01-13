@@ -1,15 +1,5 @@
 # Integration Overview
 
-## Content
-
-1. [About this guide](#about-this-guide)
-2. [Overview](#overview)
-3. [Comparison](#comparison)
-4. [Arrangement of Entities](#arrangement-of-entities)
-5. [Import Strategies](#import-strategies)
-   1. [Full Import](#full-import)
-   2. [Partial Import](#partial-import)
-
 ## About this guide
 
 Goal of this guide is to give you an overview of the catalog structure for retail.red, the different options how catalog data can be imported from an external system into retail.red and how it is kept up-to-date.

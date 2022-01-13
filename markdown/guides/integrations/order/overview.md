@@ -1,17 +1,5 @@
 # Overview
 
-## Content
-
-1. [About this guide](#about-this-document)
-2. [Concepts and Entities](#concepts-and-entities)
-   1. [Fulfillment Methods](#fulfillment-methods)
-   2. [Order Entities](#order-entities)
-      1. [Sales Order](#sales-order)
-      2. [Fulfillment Order](#fulfillment-order)
-3. [Order Flow](#order-flow)
-4. [Order Processing](#order-processing)
-5. [Hooking into external Order Processing and Fulfillment](#hooking-into-external-order-processing-and-fulfillment)
-
 ## About this Document
 
 This document gives you a highlevel overview of the order flow. It describes how an order gets created up to the point, the ordered line items reach the customer.

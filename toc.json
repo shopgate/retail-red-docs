@@ -6,38 +6,32 @@
     },
     {
       "type": "group",
-      "title": "Integrations",
+      "title": "Catalog Integration",
       "items": [
         {
-          "type": "group",
-          "title": "Catalog",
-          "items": [
-            {
-              "type": "item",
-              "title": "Integration Overview",
-              "uri": "guides/integrations/catalog/general-integration-info.md"
-            },
-            {
-              "type": "item",
-              "title": "Integration Overview",
-              "uri": "guides/integrations/catalog/concepts-and-entities.md"
-            },
-            {
-              "type": "item",
-              "title": "Integration Overview",
-              "uri": "guides/integrations/catalog/csv-import.md"
-            },
-            {
-              "type": "item",
-              "title": "Integration Overview",
-              "uri": "guides/integrations/catalog/bulk-file-import.md"
-            },
-            {
-              "type": "item",
-              "title": "Integration Overview",
-              "uri": "guides/integrations/catalog/near-realtime-import.md"
-            }
-          ]
+          "type": "item",
+          "title": "Integration Overview",
+          "uri": "guides/integrations/catalog/general-integration-info.md"
+        },
+        {
+          "type": "item",
+          "title": "Concepts and Entities",
+          "uri": "guides/integrations/catalog/concepts-and-entities.md"
+        },
+        {
+          "type": "item",
+          "title": "CSV Import",
+          "uri": "guides/integrations/catalog/csv-import.md"
+        },
+        {
+          "type": "item",
+          "title": "JSON Import",
+          "uri": "guides/integrations/catalog/bulk-file-import.md"
+        },
+        {
+          "type": "item",
+          "title": "Catalog API Integration",
+          "uri": "guides/integrations/catalog/near-realtime-import.md"
         }
       ]
     },

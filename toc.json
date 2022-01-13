@@ -62,6 +62,17 @@
       "uri": "markdown/guides/integrations/segmentation.md"
     },
     {
+      "type": "group",
+      "title": "Order Integration",
+      "items": [
+        {
+          "type": "item",
+          "title": "Integration Overview",
+          "uri": "markdown/guides/integrations/order/overview.md"
+        }
+      ]
+    },
+    {
       "type": "divider",
       "title": "API Reference"
     },

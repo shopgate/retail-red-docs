@@ -46,10 +46,20 @@
         },
         {
           "type": "item",
-          "title": "Available",
+          "title": "Available Webhooks",
           "uri": "markdown/guides/integrations/webhook/available-webhooks.md"
         }
       ]
+    },
+    {
+      "type": "item",
+      "title": "Notifications",
+      "uri": "markdown/guides/integrations/notifications.md"
+    },
+    {
+      "type": "item",
+      "title": "Segmentation",
+      "uri": "markdown/guides/integrations/segmentation.md"
     },
     {
       "type": "divider",

@@ -42,9 +42,18 @@
       ]
     },
     {
+      "type": "divider",
+      "title": "API Reference"
+    },
+    {
       "type": "item",
-      "title": "External Link",
-      "uri": "https://stoplight.io"
+      "title": "Authentication",
+      "uri": "api-reference/general/authentication.md"
+    },
+    {
+      "type": "item",
+      "title": "Catalog",
+      "uri": "api-reference/services/catalog/catalog-crud.json"
     }
   ]
 }

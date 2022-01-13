@@ -36,6 +36,22 @@
       ]
     },
     {
+      "type": "group",
+      "title": "Webhook Integration",
+      "items": [
+        {
+          "type": "item",
+          "title": "Integration Overview",
+          "uri": "markdown/guides/integrations/webhook/overview.md"
+        },
+        {
+          "type": "item",
+          "title": "Available",
+          "uri": "markdown/guides/integrations/webhook/available-webhooks.md"
+        }
+      ]
+    },
+    {
       "type": "divider",
       "title": "API Reference"
     },

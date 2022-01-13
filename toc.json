@@ -11,27 +11,27 @@
         {
           "type": "item",
           "title": "Integration Overview",
-          "uri": "guides/integrations/catalog/general-integration-info.md"
+          "uri": "markdown/guides/integrations/catalog/general-integration-info.md"
         },
         {
           "type": "item",
           "title": "Concepts and Entities",
-          "uri": "guides/integrations/catalog/concepts-and-entities.md"
+          "uri": "markdown/guides/integrations/catalog/concepts-and-entities.md"
         },
         {
           "type": "item",
           "title": "CSV Import",
-          "uri": "guides/integrations/catalog/csv-import.md"
+          "uri": "markdown/guides/integrations/catalog/csv-import.md"
         },
         {
           "type": "item",
           "title": "JSON Import",
-          "uri": "guides/integrations/catalog/bulk-file-import.md"
+          "uri": "markdown/guides/integrations/catalog/bulk-file-import.md"
         },
         {
           "type": "item",
           "title": "Catalog API Integration",
-          "uri": "guides/integrations/catalog/near-realtime-import.md"
+          "uri": "markdown/guides/integrations/catalog/near-realtime-import.md"
         }
       ]
     },
@@ -42,12 +42,12 @@
     {
       "type": "item",
       "title": "Authentication",
-      "uri": "api-reference/general/authentication.md"
+      "uri": "swagger/api-reference/general/authentication.md"
     },
     {
       "type": "item",
       "title": "Catalog",
-      "uri": "api-reference/services/catalog/catalog-crud.json"
+      "uri": "swagger/api-reference/services/catalog/catalog-crud.json"
     }
   ]
 }

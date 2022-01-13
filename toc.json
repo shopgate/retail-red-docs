@@ -1,0 +1,50 @@
+{
+  "items": [
+    {
+      "type": "divider",
+      "title": "Guides"
+    },
+    {
+      "type": "group",
+      "title": "Integrations",
+      "items": [
+        {
+          "type": "group",
+          "title": "Catalog",
+          "items": [
+            {
+              "type": "item",
+              "title": "Integration Overview",
+              "uri": "guides/integrations/catalog/general-integration-info.md"
+            },
+            {
+              "type": "item",
+              "title": "Integration Overview",
+              "uri": "guides/integrations/catalog/concepts-and-entities.md"
+            },
+            {
+              "type": "item",
+              "title": "Integration Overview",
+              "uri": "guides/integrations/catalog/csv-import.md"
+            },
+            {
+              "type": "item",
+              "title": "Integration Overview",
+              "uri": "guides/integrations/catalog/bulk-file-import.md"
+            },
+            {
+              "type": "item",
+              "title": "Integration Overview",
+              "uri": "guides/integrations/catalog/near-realtime-import.md"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "item",
+      "title": "External Link",
+      "uri": "https://stoplight.io"
+    }
+  ]
+}

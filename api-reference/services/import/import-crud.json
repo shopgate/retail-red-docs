@@ -1,0 +1,1191 @@
+{
+  "basePath": "/v1",
+  "consumes": [
+    "application/json"
+  ],
+  "definitions": {
+    "ActionCounts": {
+      "example": {
+        "dispatched": 3,
+        "failed": 3,
+        "succeeded": 3
+      },
+      "properties": {
+        "dispatched": {
+          "example": 3,
+          "type": "integer"
+        },
+        "failed": {
+          "example": 3,
+          "type": "integer"
+        },
+        "succeeded": {
+          "example": 3,
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "AdditionResponse": {
+      "properties": {
+        "errors": {
+          "$ref": "#/definitions/ErrorList"
+        }
+      },
+      "type": "object"
+    },
+    "EntityFile": {
+      "example": {
+        "context": "catalog1",
+        "created": {
+          "$ref": "#/definitions/ActionCounts/example"
+        },
+        "deleted": {
+          "$ref": "#/definitions/ActionCounts/example"
+        },
+        "entity": "product",
+        "importStrategy": "full",
+        "scopes": null,
+        "skipped": 1,
+        "total": 10,
+        "updated": {
+          "$ref": "#/definitions/ActionCounts/example"
+        }
+      },
+      "properties": {
+        "context": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created": {
+          "$ref": "#/definitions/ActionCounts"
+        },
+        "deleted": {
+          "$ref": "#/definitions/ActionCounts"
+        },
+        "entity": {
+          "type": "string"
+        },
+        "importStrategy": {
+          "default": "full",
+          "enum": [
+            "full",
+            "partial"
+          ],
+          "type": "string"
+        },
+        "scopes": {
+          "type": "string"
+        },
+        "skipped": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "integer"
+        },
+        "updated": {
+          "$ref": "#/definitions/ActionCounts"
+        }
+      },
+      "required": [
+        "entity",
+        "created",
+        "updated",
+        "deleted"
+      ],
+      "type": "object"
+    },
+    "ErrorList": {
+      "items": {
+        "$ref": "#/definitions/ErrorListObject"
+      },
+      "type": "array"
+    },
+    "ErrorListObject": {
+      "properties": {
+        "code": {
+          "example": 400,
+          "type": "number"
+        },
+        "entity": {
+          "example": "planet",
+          "type": "string"
+        },
+        "entityId": {
+          "example": "pluto",
+          "type": [
+            "string",
+            "object"
+          ]
+        },
+        "entityIndex": {
+          "example": 7,
+          "type": "number"
+        },
+        "reason": {
+          "example": "Planet pluto was not found (did you mean dwarf planet pluto?)",
+          "type": "string"
+        },
+        "subentityPath": {
+          "items": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ForbiddenError": {
+      "properties": {
+        "code": {
+          "example": "Forbidden",
+          "type": "string"
+        },
+        "message": {
+          "example": "No access to merchant 1",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message",
+        "code"
+      ],
+      "type": "object"
+    },
+    "Import": {
+      "example": {
+        "createDate": {
+          "$ref": "#/definitions/Import/properties/createDate/example"
+        },
+        "endDate": {
+          "$ref": "#/definitions/Import/properties/endDate/example"
+        },
+        "entityFiles": [
+          {
+            "$ref": "#/definitions/EntityFile/example"
+          }
+        ],
+        "ref": {
+          "$ref": "#/definitions/Import/properties/ref/example"
+        },
+        "scriptFinishDate": {
+          "$ref": "#/definitions/Import/properties/scriptFinishDate/example"
+        },
+        "source": {
+          "$ref": "#/definitions/Import/properties/source/example"
+        },
+        "startDate": {
+          "$ref": "#/definitions/Import/properties/startDate/example"
+        },
+        "status": {
+          "$ref": "#/definitions/Import/properties/status/example"
+        }
+      },
+      "properties": {
+        "createDate": {
+          "example": "2021-02-09T17:59:37.803Z",
+          "type": "string"
+        },
+        "endDate": {
+          "example": "2021-02-09T17:59:37.803Z",
+          "type": "string"
+        },
+        "entityFiles": {
+          "items": {
+            "$ref": "#/definitions/EntityFile"
+          },
+          "type": "array"
+        },
+        "ref": {
+          "example": "87eff434-4f89-4d83-a8c6-117e10817034",
+          "type": "string"
+        },
+        "scriptFinishDate": {
+          "example": "2021-02-09T17:59:37.803Z",
+          "type": "string"
+        },
+        "source": {
+          "example": "aName",
+          "type": "string"
+        },
+        "startDate": {
+          "example": "2021-02-09T17:59:37.803Z",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "new",
+            "started",
+            "processing",
+            "finished",
+            "aborted"
+          ],
+          "example": "finished",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "NotFoundError": {
+      "properties": {
+        "code": {
+          "example": "NotFound",
+          "type": "string"
+        },
+        "message": {
+          "example": "Merchant not found",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message",
+        "code"
+      ],
+      "type": "object"
+    },
+    "Pagination": {
+      "example": {
+        "limit": 10,
+        "offset": 0,
+        "totalItemCount": 1
+      },
+      "properties": {
+        "limit": {
+          "example": 10,
+          "type": "number"
+        },
+        "offset": {
+          "example": 0,
+          "type": "number"
+        },
+        "totalItemCount": {
+          "example": 1,
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "SwaggerValidationError": {
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "error": {
+          "properties": {
+            "code": {
+              "description": "machine readable error code",
+              "enum": [
+                "SCHEMA_VALIDATION_FAILED",
+                "ENUM_MISMATCH",
+                "MAXIMUM",
+                "MAXIMUM_EXCLUSIVE",
+                "MINIMUM",
+                "MINIMUM_EXCLUSIVE",
+                "MULTIPLE_OF",
+                "ARRAY_LENGTH_LONG",
+                "ARRAY_LENGTH_SHORT",
+                "ARRAY_ADDITIONAL_ITEMS",
+                "ARRAY_UNIQUE",
+                "MAX_LENGTH",
+                "MIN_LENGTH",
+                "MAX_PROPERTIES",
+                "MIN_PROPERTIES",
+                "OBJECT_MISSING_REQUIRED_PROPERTY",
+                "OBJECT_PROPERTIES_MAXIMUM",
+                "OBJECT_PROPERTIES_MINIMUM",
+                "OBJECT_ADDITIONAL_PROPERTIES",
+                "OBJECT_DEPENDENCY_KEY",
+                "ONE_OF_MISSING",
+                "ONE_OF_MULTIPLE",
+                "NOT_PASSED",
+                "INVALID_FORMAT",
+                "UNKNOWN_FORMAT",
+                "PATTERN"
+              ],
+              "type": "string"
+            },
+            "message": {
+              "description": "human readable error code",
+              "type": "string"
+            },
+            "paramName": {
+              "description": "the parameter-field, that failed to validate, like \"userId\"",
+              "type": "string"
+            },
+            "paramValue": {
+              "description": "the value, that was sent, like \"xxx\""
+            },
+            "results": {
+              "properties": {
+                "errors": {
+                  "items": {
+                    "$ref": "#/definitions/ValidationErrorResult"
+                  },
+                  "type": "array"
+                },
+                "warnings": {
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "required": [
+            "message"
+          ],
+          "type": "object"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "ValidationError": {
+      "properties": {
+        "code": {
+          "description": "machine readable error code",
+          "enum": [
+            "INVALID_TOKEN",
+            "ALREADY_CONNECTED"
+          ],
+          "type": "string"
+        },
+        "field": {
+          "description": "the parameter-field, that failed to validate, like \"sequenceId\"",
+          "type": "string"
+        },
+        "message": {
+          "description": "human readable error code",
+          "type": "string"
+        },
+        "value": {
+          "description": "the value, that was sent, like \"xxx\"",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "ValidationErrorResult": {
+      "properties": {
+        "code": {
+          "description": "machine readable error code",
+          "enum": [
+            "ENUM_MISMATCH",
+            "MAXIMUM",
+            "MAXIMUM_EXCLUSIVE",
+            "MINIMUM",
+            "MINIMUM_EXCLUSIVE",
+            "MULTIPLE_OF",
+            "ARRAY_LENGTH_LONG",
+            "ARRAY_LENGTH_SHORT",
+            "ARRAY_ADDITIONAL_ITEMS",
+            "ARRAY_UNIQUE",
+            "MAX_LENGTH",
+            "MIN_LENGTH",
+            "MAX_PROPERTIES",
+            "MIN_PROPERTIES",
+            "OBJECT_MISSING_REQUIRED_PROPERTY",
+            "OBJECT_PROPERTIES_MAXIMUM",
+            "OBJECT_PROPERTIES_MINIMUM",
+            "OBJECT_ADDITIONAL_PROPERTIES",
+            "OBJECT_DEPENDENCY_KEY",
+            "ONE_OF_MISSING",
+            "ONE_OF_MULTIPLE",
+            "NOT_PASSED",
+            "INVALID_FORMAT",
+            "UNKNOWN_FORMAT",
+            "PATTERN"
+          ],
+          "type": "string"
+        },
+        "description": {
+          "example": "human readable error code",
+          "type": "string"
+        },
+        "message": {
+          "description": "human readable error code",
+          "type": "string"
+        },
+        "path": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ValidationErrors": {
+      "properties": {
+        "errors": {
+          "items": {
+            "$ref": "#/definitions/ValidationError"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "host": "import.shopgate.io",
+  "info": {
+    "contact": {
+      "email": "mail@retail.red",
+      "name": "retail.red API",
+      "url": "https://retail.red"
+    },
+    "description": "Check out the [Catalog Integration Guide > JSON Import](/guides/integrations/catalog-integration/bulk-file-import) or start with [creating an import](/api-reference/import-api/import/createimport).\n",
+    "title": "Import Service",
+    "version": "1.0.0"
+  },
+  "parameters": {
+    "PaginationLimit": {
+      "default": 100,
+      "description": "the limit of entries of one page",
+      "in": "query",
+      "name": "limit",
+      "type": "integer"
+    },
+    "PaginationOffset": {
+      "default": 0,
+      "description": "the offset where to start the page",
+      "in": "query",
+      "name": "offset",
+      "type": "integer"
+    },
+    "Sort": {
+      "description": "sorting of the products (sequenceId only works with filter catalogCode)",
+      "in": "query",
+      "name": "sort",
+      "type": "string"
+    },
+    "importRef": {
+      "in": "path",
+      "name": "importRef",
+      "required": true,
+      "type": "string"
+    }
+  },
+  "paths": {
+    "/checkAborted": {
+      "post": {
+        "description": "Checks for aborted imports",
+        "operationId": "checkAborted",
+        "responses": {
+          "204": {
+            "description": "Successfully set aborted"
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "$ref": "#/definitions/SwaggerValidationError"
+            }
+          }
+        },
+        "summary": "Check aborted",
+        "tags": [
+          "Import"
+        ],
+        "x-private": true
+      }
+    },
+    "/imports/{importRef}": {
+      "delete": {
+        "description": "Delete an import",
+        "operationId": "deleteImport",
+        "parameters": [
+          {
+            "$ref": "#/parameters/importRef"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted."
+          },
+          "404": {
+            "description": "Import not found",
+            "schema": {
+              "$ref": "#/definitions/NotFoundError"
+            }
+          }
+        },
+        "summary": "Delete import",
+        "tags": [
+          "Import"
+        ],
+        "x-private": true
+      }
+    },
+    "/imports/{importRef}/entityFiles": {
+      "patch": {
+        "description": "Update Counts of Entity File for Specific Import",
+        "operationId": "updateEntityFiles",
+        "parameters": [
+          {
+            "$ref": "#/parameters/importRef"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "entityFiles": {
+                  "items": {
+                    "properties": {
+                      "context": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "count": {
+                        "type": "integer"
+                      },
+                      "counterType": {
+                        "enum": [
+                          "succeeded",
+                          "failed",
+                          "skipped"
+                        ],
+                        "type": "string"
+                      },
+                      "entity": {
+                        "type": "string"
+                      },
+                      "operation": {
+                        "enum": [
+                          "created",
+                          "updated",
+                          "deleted"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "entity",
+                      "counterType",
+                      "count"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "entityFiles"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully updated.",
+            "schema": {
+              "$ref": "#/definitions/AdditionResponse"
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "$ref": "#/definitions/SwaggerValidationError"
+            }
+          },
+          "404": {
+            "description": "Import not found",
+            "schema": {
+              "$ref": "#/definitions/NotFoundError"
+            }
+          }
+        },
+        "summary": "Update entity file metrics",
+        "tags": [
+          "Import"
+        ],
+        "x-private": true
+      }
+    },
+    "/imports/{importRef}/entityFiles/entities/{entity}": {
+      "put": {
+        "description": "Set Dispatch Count of an Entity File per Specific Import",
+        "operationId": "updateEntity",
+        "parameters": [
+          {
+            "$ref": "#/parameters/importRef"
+          },
+          {
+            "in": "path",
+            "name": "entity",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "context": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "created": {
+                  "properties": {
+                    "dispatched": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "dispatched"
+                  ],
+                  "type": "object"
+                },
+                "deleted": {
+                  "properties": {
+                    "dispatched": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "dispatched"
+                  ],
+                  "type": "object"
+                },
+                "total": {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "updated": {
+                  "properties": {
+                    "dispatched": {
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "dispatched"
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "total",
+                "created",
+                "updated",
+                "deleted"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully updated."
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "$ref": "#/definitions/SwaggerValidationError"
+            }
+          }
+        },
+        "summary": "Update entity metrics",
+        "tags": [
+          "Import"
+        ],
+        "x-private": true
+      }
+    },
+    "/imports/{importRef}/status": {
+      "post": {
+        "description": "Update status of the import",
+        "operationId": "updateImportStatus",
+        "parameters": [
+          {
+            "$ref": "#/parameters/importRef"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "processing",
+                    "aborted"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "status"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully set status."
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "$ref": "#/definitions/SwaggerValidationError"
+            }
+          },
+          "404": {
+            "description": "Import not found",
+            "schema": {
+              "$ref": "#/definitions/NotFoundError"
+            }
+          }
+        },
+        "summary": "Update import status",
+        "tags": [
+          "Import"
+        ],
+        "x-private": true
+      }
+    },
+    "/merchants/{merchantCode}/imports": {
+      "get": {
+        "description": "Get all imports",
+        "operationId": "getImports",
+        "parameters": [
+          {
+            "description": "Filter string. Supported filters: ref, status",
+            "in": "query",
+            "name": "filters",
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/PaginationLimit"
+          },
+          {
+            "$ref": "#/parameters/PaginationOffset"
+          },
+          {
+            "$ref": "#/parameters/Sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of imports",
+            "examples": {
+              "application/json": {
+                "imports": [
+                  {
+                    "createDate": "2021-02-09T17:59:37.803Z",
+                    "endDate": "2021-02-09T17:59:37.803Z",
+                    "entityFiles": [
+                      {
+                        "context": "catalog1",
+                        "created": {
+                          "dispatched": 3,
+                          "failed": 3,
+                          "succeeded": 3
+                        },
+                        "deleted": {
+                          "dispatched": 3,
+                          "failed": 3,
+                          "succeeded": 3
+                        },
+                        "entity": "product",
+                        "importStrategy": "full",
+                        "scopes": null,
+                        "skipped": 1,
+                        "total": 10,
+                        "updated": {
+                          "dispatched": 3,
+                          "failed": 3,
+                          "succeeded": 3
+                        }
+                      }
+                    ],
+                    "ref": "87eff434-4f89-4d83-a8c6-117e10817034",
+                    "scriptFinishDate": "2021-02-09T17:59:37.803Z",
+                    "source": "aName",
+                    "startDate": "2021-02-09T17:59:37.803Z",
+                    "status": "finished"
+                  }
+                ],
+                "meta": {
+                  "limit": 10,
+                  "offset": 0,
+                  "totalItemCount": 1
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "imports": {
+                  "items": {
+                    "$ref": "#/definitions/Import"
+                  },
+                  "type": "array"
+                },
+                "meta": {
+                  "$ref": "#/definitions/Pagination"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "$ref": "#/definitions/SwaggerValidationError"
+            }
+          },
+          "403": {
+            "description": "Forbidden error",
+            "schema": {
+              "$ref": "#/definitions/ForbiddenError"
+            }
+          }
+        },
+        "summary": "Get imports",
+        "tags": [
+          "Import"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "merchantCode",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "description": "Create a new import",
+        "operationId": "createImport",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "source": {
+                  "maxLength": 255,
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "x-examples": {
+              "application/json": {
+                "source": "aName"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Import created",
+            "examples": {
+              "application/json": {
+                "ref": "87eff434-4f89-4d83-a8c6-117e10817034"
+              }
+            },
+            "schema": {
+              "properties": {
+                "ref": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "$ref": "#/definitions/ValidationErrors"
+            }
+          },
+          "403": {
+            "description": "Forbidden error",
+            "schema": {
+              "$ref": "#/definitions/ForbiddenError"
+            }
+          }
+        },
+        "summary": "Create import",
+        "tags": [
+          "Import"
+        ]
+      }
+    },
+    "/merchants/{merchantCode}/imports/{importRef}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "merchantCode",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "$ref": "#/parameters/importRef"
+        }
+      ],
+      "post": {
+        "description": "Triggers a formerly created import",
+        "operationId": "triggerImport",
+        "responses": {
+          "204": {
+            "description": "Imported started"
+          },
+          "403": {
+            "description": "Forbidden error",
+            "schema": {
+              "$ref": "#/definitions/ForbiddenError"
+            }
+          },
+          "404": {
+            "description": "Import not found",
+            "schema": {
+              "$ref": "#/definitions/NotFoundError"
+            }
+          }
+        },
+        "summary": "Trigger import",
+        "tags": [
+          "Import"
+        ]
+      }
+    },
+    "/merchants/{merchantCode}/imports/{importRef}/logs": {
+      "get": {
+        "description": "Get logs for an import",
+        "operationId": "getImportLogs",
+        "parameters": [
+          {
+            "$ref": "#/parameters/importRef"
+          },
+          {
+            "$ref": "#/parameters/PaginationLimit"
+          },
+          {
+            "$ref": "#/parameters/PaginationOffset"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs for the import",
+            "examples": {
+              "getImportLogs": {
+                "imports": [
+                  "Category 'men' not found"
+                ],
+                "meta": {
+                  "limit": "10,",
+                  "offset": "0,",
+                  "totalItemCount": 1
+                }
+              }
+            },
+            "schema": {
+              "properties": {
+                "imports": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "meta": {
+                  "$ref": "#/definitions/Pagination"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "Forbidden error",
+            "schema": {
+              "$ref": "#/definitions/ForbiddenError"
+            }
+          }
+        },
+        "summary": "Get import logs",
+        "tags": [
+          "Import"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "merchantCode",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/merchants/{merchantCode}/imports/{importRef}/logs.txt": {
+      "get": {
+        "description": "Get log file for an import",
+        "operationId": "getImportLogFile",
+        "parameters": [
+          {
+            "$ref": "#/parameters/importRef"
+          }
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "responses": {
+          "200": {
+            "description": "Log file for the import (txt)"
+          },
+          "403": {
+            "description": "Forbidden error",
+            "schema": {
+              "$ref": "#/definitions/ForbiddenError"
+            }
+          }
+        },
+        "summary": "Get import log file",
+        "tags": [
+          "Import"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "merchantCode",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/merchants/{merchantCode}/imports/{importRef}/urls": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "merchantCode",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "description": "Get a signed URL for file",
+        "operationId": "getSignedUrl",
+        "parameters": [
+          {
+            "$ref": "#/parameters/importRef"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "catalogCode": {
+                  "description": "Required for product and category entity as they are sub entities of a catalog",
+                  "type": "string"
+                },
+                "entity": {
+                  "enum": [
+                    "product",
+                    "category",
+                    "attribute",
+                    "inventory",
+                    "customer",
+                    "segment",
+                    "segmentMember"
+                  ],
+                  "type": "string"
+                },
+                "importStrategy": {
+                  "default": "full",
+                  "enum": [
+                    "full",
+                    "partial"
+                  ],
+                  "type": "string"
+                },
+                "locationCodes": {
+                  "description": "Optional for an inventory import with strategy 'full'. It performs a full import only for the given locations.",
+                  "items": {
+                    "description": "Shopgate location code",
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "operation": {
+                  "default": "upload",
+                  "enum": [
+                    "upload",
+                    "download"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "entity"
+              ],
+              "type": "object"
+            },
+            "x-examples": {
+              "application/json": {
+                "catalogCode": "catalog1",
+                "entity": "product",
+                "importStrategy": "full",
+                "locationCodes": [],
+                "operation": "upload"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "New URL created",
+            "examples": {
+              "application/json": {
+                "url": "https://some.url"
+              }
+            },
+            "schema": {
+              "properties": {
+                "url": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "403": {
+            "description": "Forbidden error",
+            "schema": {
+              "$ref": "#/definitions/ForbiddenError"
+            }
+          }
+        },
+        "summary": "Get signed url",
+        "tags": [
+          "Import"
+        ]
+      }
+    }
+  },
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "https"
+  ],
+  "swagger": "2.0"
+}

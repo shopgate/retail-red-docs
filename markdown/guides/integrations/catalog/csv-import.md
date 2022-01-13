@@ -39,7 +39,7 @@ You can specify the import startegy per file via the dropdown menu `import type`
 
 <!-- focus: center  -->
 
-![](../../../assets/csv-upload.gif)
+![](../../../../assets/csv-upload.gif)
 
 ## CSV Import Via FTP
 
@@ -184,4 +184,4 @@ In order to check the import logs navigate to _Settings > Imports_ and click on 
 
 <!-- focus: center  -->
 
-![](../../../assets/logs.png)
+![](../../../../assets/logs.png)

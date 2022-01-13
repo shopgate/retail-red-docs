@@ -52,11 +52,11 @@ The following part covers important concepts of the Catalog API.
 
 Some entities are arranged in a tree-like structure. Product Attributes, and Inventory are independent entities. Products and Categories are tied to a catalog and cannot be shared between Catalogs. If there are the same Products or Categories in multiple Catalogs, these entities must be created for each Catalog separately.
 
-![Entity Tree](../../../assets/entity-tree.png "Entity Tree")
+![Entity Tree](../../../../assets/entity-tree.png "Entity Tree")
 
 Attributes and Inventory however are independent of catalogs and directly tied to the merchant. For example inventory are shared between all catalog products. If catalog A product X is out of stock catalog B product X is also out of stock.
 
-![Entity Relations](../../../assets/entity-relations.png "Entity Relations")
+![Entity Relations](../../../../assets/entity-relations.png "Entity Relations")
 
 ## Inventory handling for direct ship and in store availability
 

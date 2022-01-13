@@ -50,7 +50,7 @@ The following fast food restaurant example describes how both entities work toge
 
 <!--  inline: true -->
 
-![](../../../assets/order.gif)
+![](../../../../assets/order.gif)
 
 #### Sales Order
 
@@ -120,7 +120,7 @@ Fulfillment Order line items are the smallest part of a FO. FO line items can be
 
 <!--  inline: true -->
 
-![](../../../assets/fo.png)
+![](../../../../assets/fo.png)
 
 All of those grouping entities have states that will be impicitly set during state transition of the line items. E.g. if all line items are set to fulfilled, all packages, all fulfillments and the Fulfillment Order is/are fulfilled.
 
@@ -132,7 +132,7 @@ Generally the basic order flow consists of four stages. In the first stage (1) t
 
 <!--  inline: true -->
 
-![](../../../assets/platform.png)
+![](../../../../assets/platform.png)
 
 > **NOTE:** this is an overview for a basic highlevel order without all the subflows and details. More complex order flows are also possible.
 

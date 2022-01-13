@@ -18,7 +18,7 @@ The webhook service can call an external HTTP route upon certain events that occ
 
 <!--  inline: true -->
 
-![](../../../assets/webhooks.png)
+![](../../../../assets/webhooks.png)
 
 **For example:** a merchant can receive a HTTP call to a configured endpoint when a fulfillment order was added. The endpoint could then process this call and light a shiny red rotating beacon in the relevant location along with sounding a deep horn.
 

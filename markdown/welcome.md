@@ -1,5 +1,3 @@
-
-anchor
 # Welcome!
 
 ## On these pages you will find technical documentation of our APIs and a lot of tutorials and guidance related to them.

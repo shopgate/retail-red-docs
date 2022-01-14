@@ -1,6 +1,11 @@
 {
   "items": [
     {
+      "type": "item",
+      "title": "Intro",
+      "uri": "markdown/welcome.md"
+    },
+    {
       "type": "divider",
       "title": "Guides"
     },

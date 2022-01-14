@@ -84,7 +84,7 @@
     {
       "type": "item",
       "title": "Catalog",
-      "uri": "swagger/services/catalog/catalog-crud.json"
+      "uri": "swagger/services/catalog/swagger.yaml"
     },
     {
       "type": "item",

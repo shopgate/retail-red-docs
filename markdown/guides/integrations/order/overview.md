@@ -161,6 +161,6 @@ For all processes the line items of the FO need to be picked from the inventory.
 
 It is possible to hook into various actions during the order process. This can be done in two ways:
 
-- by calling the [retail.red API](/api-reference) from an external system or
+- by calling the retail.red API from an external system or
 
-- by hooking into events emitted by the retail.red order process like `salesOrderAdded`, `fulfillmentOrderUpdated`, and `schedulePickupReminderTimeReached`. For a complete list of supported events see [Webhook Events](../webhooks/available-webhooks.md). To learn how to work with the retail.red webhooks see [Webhook Integration Guide](../webhooks/overview.md)
+- by hooking into events emitted by the retail.red order process like `salesOrderAdded`, `fulfillmentOrderUpdated`, and `schedulePickupReminderTimeReached`. For a complete list of supported events see [Webhook Events](../webhook/available-webhooks.md). To learn how to work with the retail.red webhooks see [Webhook Integration Guide](../webhook/overview.md)

@@ -14,13 +14,13 @@ The catalog data consists of multiple entities:
 - Inventory (for direct ship fulfillment as well as retail store availability)
 - Catalogs (only relevant in case of multi-store / multi-catalog setups)
 
-For the detailed specification of each entity, please check the [retail.red Catalog API](/api-reference/catalog-api).
+For the detailed specification of each entity, please check the [retail.red Catalog API](/docs/retail-red/YXBpOjM1Nzg0Nzgz-catalog).
 
 The goal of the catalog integration is to transfer the catalog data to retail.red and keep it up to date. There are different options how catalog information can be transferred:
 
-- [Bulk file imports in CSV format](./csv-import) via FTP or manual upload in [retail.red Admin](https://next.admin.shopgate.com/)
-- [Bulk file imports in JSON format](./bulk-file-import) via [retail.red Import API](/docs/retail-red/YXBpOjM1NjU0NzY0-import)
-- [Near-real-time updates](./near-realtime-import) in JSON format via the [retail.red Catalog API](/docs/retail-red/YXBpOjM1NjU0NzYz-catalog)
+- [Bulk file imports in CSV format](./csv-import.md) via FTP or manual upload in [retail.red Admin](https://next.admin.shopgate.com/)
+- [Bulk file imports in JSON format](./bulk-file-import.md) via [retail.red Import API](/docs/retail-red/YXBpOjM1NjU0NzY0-import)
+- [Near-real-time updates](./near-realtime-import.md) in JSON format via the [retail.red Catalog API](/docs/retail-red/YXBpOjM1NjU0NzYz-catalog)
 
 ## Comparison
 
@@ -52,7 +52,7 @@ General rule of thumb here is:
 
 > **For JSON Import:** If all entities get uploaded into the same import via the JSON [Import Service](/docs/retail-red/YXBpOjM1NjU0NzY0-import), the process will automatically take care of the correct logical order.
 
-If you want to learn more about the entity relationships see [Concepts and Entities](./catalog-integration/concepts-and-entities#entity-relationships).
+If you want to learn more about the entity relationships see [Concepts and Entities](./concepts-and-entities.md#entity-relationships).
 
 ## Import Strategies
 

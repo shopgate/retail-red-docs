@@ -23,7 +23,7 @@ The _Catalog_ > _Upload Data_ tab allows you to easily upload category, product,
 
 Once you have properly formatted your CSV files, simply drag and drop each file into the appropriate box to upload your data. The data begins to process immediately and may take up to 15 minutes. Once the upload completes, details for the category, product, and inventory are available in their respective tabs.
 
-You can specify the import startegy per file via the dropdown menu `import type`. Here you can choose between incremental (partial) and full import.
+You can specify the import strategy per file via the dropdown menu `import type`. Here you can choose between incremental (partial) and full import.
 
 <!-- focus: center  -->
 

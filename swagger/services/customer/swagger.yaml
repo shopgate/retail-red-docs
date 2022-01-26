@@ -1,0 +1,1329 @@
+swagger: '2.0'
+info:
+  title: Omni User Service
+  description: OmniChannel Service
+  version: '1.0'
+basePath: /v1
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  '/users/auth':
+    post:
+      description: 'gets data about the current user'
+      tags:
+        - Auth
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            additionalProperties: false
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                format: email
+                example: john@doe.com
+              password:
+                $ref: '#/definitions/PasswordWithoutValidation'
+              tenant:
+                type: object
+                required:
+                  - type
+                  - id
+                properties:
+                  type:
+                    type: string
+                    enum:
+                      - merchant
+                  id:
+                    type: string
+      responses:
+        '200':
+          description: Returns current user
+          schema:
+            type: object
+            properties:
+              user:
+                $ref: '#/definitions/User'
+              scopes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    permission:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                          example: FOV
+        '400':
+          description: On schema validation errors or when an unsupported tenant type has been provided.
+        '401':
+          description: Wrong user name or password
+        '403':
+          description: Insufficient permissions
+
+  '/users/resetPassword':
+    post:
+      description: 'Send out the password reset mail'
+      tags:
+        - Auth
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            additionalProperties: false
+            required:
+              - email
+            properties:
+              email:
+                type: string
+                description: Email address which request the password reset
+      responses:
+        '204':
+          description: Successfully sent
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: User not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+  '/users/validateToken':
+    post:
+      description: 'Validate the given reset token'
+      tags:
+        - Auth
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            additionalProperties: false
+            required:
+              - token
+            properties:
+              token:
+                type: string
+                description: Email address which request the password reset
+      responses:
+        '204':
+          description: Token exist
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Token is invalid or does not exist
+  '/users/setPasswordByToken':
+    post:
+      description: 'Set new password by reset token'
+      tags:
+        - Auth
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            additionalProperties: false
+            required:
+              - token
+              - password
+            properties:
+              token:
+                type: string
+                description: Email address which request the password reset
+              password:
+                $ref: '#/definitions/Password'
+      responses:
+        '204':
+          description: Successfully sent
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Token is invalid or does not exist
+  '/users/me':
+    get:
+      tags:
+        - User
+      description: 'gets data about the current user'
+      parameters:
+        - in: header
+          name: user-id
+          type: string
+      responses:
+        '200':
+          description: Returns current user
+          schema:
+            $ref: '#/definitions/User'
+    post:
+      tags:
+        - User
+      description: 'Sets data about the current user.'
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/BaseUser'
+      responses:
+        204:
+          description: User updated
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        404:
+          description: user or merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+  '/users/me/password':
+    post:
+      tags:
+        - User
+      description: 'change password'
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - oldPassword
+              - newPassword
+            properties:
+              oldPassword:
+                type: string
+                example: oldPassword
+              newPassword:
+                $ref: '#/definitions/Password'
+      responses:
+        '204':
+          description: Password changed
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: user or merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+  '/users/me/merchants':
+    get:
+      tags:
+        - User
+      description: 'gets data about the current users merchants'
+      parameters:
+        - in: header
+          name: user-id
+          type: string
+        - $ref: '#/parameters/PaginationLimit'
+        - $ref: '#/parameters/PaginationOffset'
+      responses:
+        '200':
+          description: Returns current users merchants
+          schema:
+            type: object
+            properties:
+              merchants:
+                $ref: '#/definitions/Merchants'
+              meta:
+                $ref: '#/definitions/Meta'
+  '/users/me/merchants/{merchantCode}/scopes':
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+    get:
+      tags:
+        - User
+      parameters:
+        - in: query
+          name: filters
+          description: Filter to filter entities for applications
+          format: json
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              scopes:
+                type: array
+                items:
+                  $ref: '#/definitions/UserScope'
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: user or merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+  '/users/me/merchants/{merchantCode}/locations':
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+    get:
+      description: Returns all active locations where the current user has access to
+      parameters:
+        - $ref: '#/parameters/PaginationLimit'
+        - $ref: '#/parameters/PaginationOffset'
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              meta:
+                $ref: '#/definitions/Meta'
+              locations:
+                type: array
+                items:
+                  $ref: '#/definitions/Location'
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: user or merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+        
+
+  '/users/me/metrics':
+    get:
+      tags:
+        - User
+      description: 'gets metrics about current user'
+      parameters:
+        - in: header
+          name: user-id
+          type: string
+      responses:
+        200:
+          description: Returns current users metrics
+          schema:
+            type: object
+            properties:
+              metrics:
+                $ref: '#/definitions/UserMetrics'
+        404:
+          description: User not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+
+  '/users/{userId}/metrics':
+    parameters:
+      - name: userId
+        in: path
+        type: string
+        required: true
+    post:
+      tags:
+        - Metrics
+      description: Set metrics for a specific user
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserMetrics'
+      responses:
+        '204':
+          description: Metrics updated
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: User not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+
+
+
+  '/permissions':
+    get:
+      tags:
+        - Roles & Permissions
+      description: "[PRIVATE] Get available permissions of the system."
+      parameters:
+        - in: query
+          name: filters
+          description: Filter to filter entities for applications
+          format: json
+          type: string
+        - in: query
+          description: the limit of entries of one page (custom for get permissions route)
+          name: limit
+          type: integer
+          maximum: 1000
+          default: 100
+        - $ref: '#/parameters/PaginationOffset'
+      responses:
+        '200':
+          description: Returns permissions
+          schema:
+            type: object
+            properties:
+              meta:
+                $ref: '#/definitions/Meta'
+              permissions:
+                type: array
+                items:
+                  $ref: '#/definitions/Permission'
+
+  '/merchants/{merchantCode}/roles':
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+    get:
+      tags:
+        - Roles & Permissions
+      description: Get all available roles for this merchant
+      parameters:
+        - in: query
+          name: filters
+          description: Filter to filter entities by name or/and
+          format: json
+          type: string
+      responses:
+        '200':
+          description: Returns roles
+          schema:
+            type: object
+            properties:
+              roles:
+                type: array
+                items:
+                  $ref: '#/definitions/GetRole'
+        404:
+          description: Merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    post:
+      tags:
+        - Roles & Permissions
+      description: Creating a new custom role for the given merchant
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/AddRole'
+      responses:
+        '201':
+          description: Role created
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 53bfc810-9bb3-4019-9698-d0659ff6e8f4
+        404:
+          description: Merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+        409:
+          description: A role with the given code already exist
+  '/merchants/{merchantCode}/roles/{roleCode}':
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: roleCode
+        in: path
+        type: string
+        maxLength: 100
+        required: true
+    get:
+      tags:
+        - Roles & Permissions
+      description: Returns the role
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              role:
+                allOf:
+                  - $ref: '#/definitions/GetRole'
+                  - type: object
+                    properties:
+                      permissions:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Permission'
+        404:
+          description: Merchant or role not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    post:
+      tags:
+        - Roles & Permissions
+      description: Update role. If the permission array is passed all included roles will overwrite the current permissions.
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateRole'
+      responses:
+        204:
+          description: OK
+        404:
+          description: Merchant or role not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    delete:
+      tags:
+        - Roles & Permissions
+      description: Delete the role in general and the assignment to users
+      parameters:
+        - name: force
+          in: query
+          required: false
+          default: false
+          description: Force the deletion of the role. This will also remove all connections to if there are any
+          type: string
+      responses:
+        204:
+          description: OK
+        404:
+          description: Merchant or role not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+        409:
+          description: This status occures if a role where users are assigned to should be deleted
+  '/merchants/{merchantCode}/users':
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+    get:
+      description: Returns all user which have access to the given merchant
+      parameters:
+        - in: query
+          name: filters
+          description: Filter to filter users by status, email address or name
+          format: json
+          type: string
+        - in: query
+          name: fields
+          type: string
+          format: csv
+          description: Fields which should be returned
+        - in: query
+          name: sort
+          type: string
+          description: Sorting of users.
+        - $ref: '#/parameters/PaginationLimit'
+        - $ref: '#/parameters/PaginationOffset'
+      responses:
+        200:
+          description: Returns all users
+          schema:
+            type: object
+            properties:
+              meta:
+                $ref: '#/definitions/Meta'
+              users:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/definitions/User'
+                    - type: object
+                      properties:
+                        lastLoginDate:
+                          $ref: '#/definitions/LastLoginDate'
+                        userRoles:
+                          $ref: '#/definitions/UserRoles'
+        '404':
+          description: Merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    post:
+      description: 'Add new user to this organization. In case the user is not created yet it will be created and a welcome email will be sent out. Otherwise an invite email will be sent out.'
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateUser'
+        - in: header
+
+          name: user-id
+          type: string
+        - in: header
+          name: email
+          type: string
+      responses:
+        '201':
+          description: User created
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                example: a704791c-7998-4d6e-9e11-8fdf4c956907
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant or User not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+        '409':
+          description: User with the email address already exist
+  '/merchants/{merchantCode}/users/{userId}':
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: userId
+        in: path
+        type: string
+        required: true
+    get:
+      description: Get the user record for this specific user
+      responses:
+        '200':
+          description: Returns given user
+          schema:
+            type: object
+            properties:
+              user:
+                allOf:
+                  - $ref: '#/definitions/User'
+                  - type: object
+                    properties:
+                      metrics:
+                        $ref: '#/definitions/UserMetrics'
+                      lastLoginDate:
+                        $ref: '#/definitions/LastLoginDate'
+                      userRoles:
+                        $ref: '#/definitions/UserRoles'
+
+    post:
+      description: Update the user record. If the status was changed it will be only updated for this specific merchant
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateMerchantUser'
+      responses:
+        '204':
+          description: Successfully updated
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    delete:
+      description: Deletes the user record. Removes all merchant- and role-associations.
+      responses:
+        '204':
+          description: Successfully deleted
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+
+  '/merchants/{merchantCode}/users/{userId}/password':
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: userId
+        in: path
+        type: string
+        required: true
+    post:
+      description: Update user's password.
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            required:
+              - password
+            properties:
+              password:
+                type: string
+
+      responses:
+        204:
+          description: Password for user is set.
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        404:
+          description: Merchant or user not found.
+          schema:
+            $ref: '#/definitions/NotFoundError'
+
+  '/merchants/{merchantCode}/users/{userId}/metrics':
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: userId
+        in: path
+        type: string
+        required: true
+    get:
+      description: Returns metrics for a user in the context of a given merchant.
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              properties:
+                metrics:
+                  $ref: '#/definitions/UserMetricsAll'
+        404:
+          description: Merchant or user not found.
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    post:
+      description: Update user metrics.
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserMerchantMetrics'
+      responses:
+        204:
+          description: Metrics updated.
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        404:
+          description: Merchant or user not found.
+          schema:
+            $ref: '#/definitions/NotFoundError'
+
+  '/merchants/{merchantCode}/users/{userId}/roles':
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: userId
+        in: path
+        type: string
+        required: true
+    get:
+      tags:
+        - Roles & Permissions
+      description: Get roles
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              userRoles:
+                $ref: '#/definitions/UserRoles'
+        '404':
+          description: Merchant or User not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    put:
+      tags:
+        - Roles & Permissions
+      description: "[PRIVATE] Set permissions"
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - userRoles
+            properties:
+              userRoles:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - role
+                  properties:
+                    context:
+                      $ref: '#/definitions/RoleContext'
+                    role:
+                      type: object
+                      required:
+                        - code
+                      properties:
+                        code:
+                          $ref: '#/definitions/RoleCode'
+
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant or User not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+parameters:
+  PaginationLimit:
+    description: the limit of entries of one page
+    in: query
+    name: limit
+    type: integer
+    maximum: 100
+    default: 100
+  PaginationOffset:
+    description: the offset where to start the page
+    in: query
+    name: offset
+    type: integer
+    default: 0
+definitions:
+  Meta:
+    type: object
+    properties:
+      limit:
+        type: number
+      offset:
+        type: number
+      totalItemCount:
+        type: number
+  Merchants:
+    type: array
+    items:
+      $ref: '#/definitions/Merchant'
+  Merchant:
+    type: object
+    properties:
+      code:
+        type: string
+        example: '3128F6EB-B031-4039-B9B3-A1A10445F7E1'
+      name:
+        type: string
+        example: 'Ponder Nerd'
+      region:
+        type: string
+        example: 'US'
+      appLogo:
+        type: string
+        example: 'https://scontent-ber1-1.xx.fbcdn.net/v/t1.0-1/p200x200/28471572_10156169825948781_8970975354537639936_n.jpg?_nc_cat=106&_nc_ht=scontent-ber1-1.xx&oh=b7c659809d68e285aca5fcfab13dec91&oe=5C6E1AD0'
+  Permission:
+    type: object
+    properties:
+      code:
+        description: Permission identifier for the services and applications
+        type: string
+        example: FOV
+      application:
+        description: Application for which the permission is available
+        type: string
+        enum:
+          - deliver
+          - relate
+          - admin
+        example: deliver
+      module:
+        type: string
+        description: Module to which the permission applies
+        example: fulfillment
+      submodule:
+        type: string
+        description: submodule to which the permission applies
+        example: orders
+      function:
+        type: string
+        enum:
+          - view
+          - edit
+          - create
+          - delete
+  UserScope:
+    description: The "context" property is omitted on scopes for application "api".
+    type: object
+    example:
+      - permission:
+          code: FOV
+          application: api
+      - context:
+          type: location
+          id: 1
+        permission:
+          code: FOV
+          application: deliver
+
+    properties:
+      context:
+        $ref: '#/definitions/RoleContext'
+      permission:
+        type: object
+        properties:
+          code:
+            description: Permission code
+            type: string
+            example: FOV
+          application:
+            description: The application that the permission applies to
+            type: string
+            enum: ['admin', 'api', 'deliver', 'relate']
+
+  RoleContext:
+    type: object
+    properties:
+      type:
+        type: string
+        enum: ["location", "admin"]
+      id:
+        type: ["string", "null"]
+        example: "DERetail001"
+  Status:
+    type: string
+    enum:
+      - active
+      - inactive
+  BasicRole:
+    type: object
+    properties:
+      code:
+        $ref: '#/definitions/RoleCode'
+      name:
+        type: string
+        example: Sales Representative
+      isCustom:
+        type: boolean
+      type:
+        $ref: '#/definitions/RoleType'
+      status:
+        type: string
+        enum:
+          - active
+          - inactive
+  GetRole:
+    allOf:
+      - $ref: '#/definitions/BasicRole'
+      - type: object
+        properties:
+          userCount:
+            type: number
+            example: 5
+
+  UserRoles:
+    type: array
+    items:
+      type: object
+      properties:
+        context:
+          $ref: '#/definitions/RoleContext'
+        role:
+          $ref: '#/definitions/BasicRole'
+  AddUserRoles:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required:
+        - role
+      properties:
+        context:
+          $ref: '#/definitions/RoleContext'
+        role:
+          type: object
+          required:
+            - code
+          properties:
+            code:
+              $ref: '#/definitions/RoleCode'
+  AddRole:
+    type: object
+    additionalProperties: false
+    required:
+      - name
+      - type
+      - code
+    properties:
+      code:
+        $ref: '#/definitions/RoleCode'
+      name:
+        type: string
+        example: Sales Representative
+      type:
+        $ref: '#/definitions/RoleType'
+      status:
+        $ref: '#/definitions/Status'
+      permissions:
+        type: array
+        description: Permissions Codes
+        items:
+          type: object
+          required:
+            - code
+            - application
+          properties:
+            code:
+              type: string
+              example: FOV
+            application:
+              type: string
+              example: deliver
+  UpdateRole:
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+      type:
+        $ref: '#/definitions/RoleType'
+      status:
+        $ref: '#/definitions/Status'
+      permissions:
+        type: array
+        description: Permissions Codes
+        items:
+          type: object
+          required:
+            - code
+            - application
+          properties:
+            code:
+              type: string
+              example: FOV
+            application:
+              type: string
+              example: deliver
+
+
+  RoleType:
+    type: string
+    enum:
+      - admin
+      - "relate&deliver"
+  User:
+    allOf:
+      - type: object
+        properties:
+          id:
+            type: string
+            example: '3128F6EB-B031-4039-B9B3-A1A10445F7E1'
+      - $ref: '#/definitions/BaseUser'
+  UpdateUser:
+    type: object
+    additionalProperties: false
+    required:
+      - email
+      - firstName
+      - lastName
+    properties:
+      email:
+        $ref: '#/definitions/Email'
+      firstName:
+        $ref: '#/definitions/FirstName'
+      lastName:
+        $ref: '#/definitions/LastName'
+      profileImage:
+        type: string
+        example: 'https://scontent-ber1-1.xx.fbcdn.net/v/t1.0-1/p200x200/28471572_10156169825948781_8970975354537639936_n.jpg?_nc_cat=106&_nc_ht=scontent-ber1-1.xx&oh=b7c659809d68e285aca5fcfab13dec91&oe=5C6E1AD0'
+  UpdateMerchantUser:
+    type: object
+    required:
+      - status
+    properties:
+      status:
+        $ref: '#/definitions/Status'
+
+  CreateUser:
+    type: object
+    additionalProperties: false
+    required:
+      - email
+      - firstName
+      - lastName
+      - userRoles
+    properties:
+      email:
+        type: string
+        format: email
+        example: john@doe.com
+      firstName:
+        type: string
+        example: John
+      lastName:
+        type: string
+        example: Doe
+      profileImage:
+        type: string
+        example: 'https://scontent-ber1-1.xx.fbcdn.net/v/t1.0-1/p200x200/28471572_10156169825948781_8970975354537639936_n.jpg?_nc_cat=106&_nc_ht=scontent-ber1-1.xx&oh=b7c659809d68e285aca5fcfab13dec91&oe=5C6E1AD0'
+      userRoles:
+        $ref: '#/definitions/AddUserRoles'
+      imported:
+        type: boolean
+        default: false
+  BaseUser:
+    type: object
+    properties:
+      email:
+        type: string
+        example: john@doe.com
+      firstName:
+        type: string
+        example: John
+      lastName:
+        type: string
+        example: Doe
+      profileImage:
+        type: string
+        example: 'https://scontent-ber1-1.xx.fbcdn.net/v/t1.0-1/p200x200/28471572_10156169825948781_8970975354537639936_n.jpg?_nc_cat=106&_nc_ht=scontent-ber1-1.xx&oh=b7c659809d68e285aca5fcfab13dec91&oe=5C6E1AD0'
+      status:
+        type: string
+        enum:
+          - active
+          - inactive
+      imported:
+        type: boolean
+        default: false
+  Email:
+    type: string
+    example: john@doe.com
+  FirstName:
+    type: string
+    example: John
+  LastName:
+    type: string
+    example: Doe
+  ValidationErrors:
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/ValidationError'
+  RoleCode:
+    type: string
+    maxLength: 100
+    example: saleRep
+    pattern: "[a-zA-Z0-9-_]"
+  LastLoginDate:
+    type: string
+    format: date-time
+    description: The last login date to the given merchant. If the value is null the user never logged in
+    example: "2019-05-19T20:05:02.434Z"
+  UserMetricsAll:
+    allOf:
+      - $ref: '#/definitions/UserMetrics'
+      - $ref: '#/definitions/UserMerchantMetrics'
+
+  UserMerchantMetrics:
+    type: object
+    additionalProperties: false
+    properties:
+      numberOfAdminLogins:
+        type: ['number', 'null']
+        description: Number of successful admin logins
+        example: 10
+      lastAdminLoginDate:
+        type: ['string', 'null']
+        format: date-time
+        description: Last date when the user logged in successfully to the admin
+        example: "2019-05-19T20:05:02.434Z"
+      numberOfRelateAndDeliverLogins:
+        type: ['number', 'null']
+        description: Number of successful Relate and Deliver logins
+        example: 10
+      lastRelateAndDeliverLoginDate:
+        type: ['string', 'null']
+        format: date-time
+        description: Last date when the user logged in successfully to the admin
+        example: "2019-05-19T20:05:02.434Z"
+
+  UserMetrics:
+    type: object
+    additionalProperties: false
+    properties:
+      lastPasswordResetDate:
+        type: ['string', 'null']
+        format: date-time
+        description: Date of the last password reset action
+        example: "2019-05-19T20:05:02.434Z"
+      numberOfinvalidLoginAttempts:
+        type: ['number', 'null']
+        example: 2
+      lastPasswordChangeDate:
+        type: ['string', 'null']
+        format: date-time
+        description: Last date when the user updated his password
+        example: "2019-05-19T20:05:02.434Z"
+
+  Password:
+    type: string
+    pattern: ^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@!"§$€%&\/()=?\\#*+\-_.:,;´><°^']).{8,}$
+    example: new2Secure@Password!
+  PasswordWithoutValidation:
+    type: string
+    example: new2Secure@Password!
+  Location:
+    type: object
+    properties:
+      code:
+        description: Code of the location
+        type: string
+        example: 'LOCATION123'
+      name:
+        description: Name of the location
+        type: string
+        example: 'Awesome retail store somewhere'
+      status:
+        type: string
+        example: 'active'
+        enum:
+          - active
+          - inactive
+          - onhold
+          - deleted
+        default: 'active'
+      supportedFulfillmentMethods:
+        type: array
+        items:
+          type: string
+          example: pickUpInStore
+          enum:
+          - directShip
+          - pickUpInStore
+          - ROPIS
+      latitude:
+        type: number
+        description: 'Latitude location'
+        example: 30.286858
+        minimum: -90
+        maximum: 90
+      longitude:
+        type: number
+        description: 'Longitude location'
+        example: -97.745575
+        minimum: -180
+        maximum: 180
+      localeCode:
+        type: string
+        description: 'Locale of the location'
+        example: 'en-us'
+      timeZone:
+        type: string
+        description: 'Timezone of the location'
+        example: 'Europe/Berlin'
+      isComingSoon:
+        type: boolean
+        example: true
+        default: false
+        description: Coming soon flag marks that location is in preparation.
+      isDefault:
+        type: boolean
+        description: Is the location default
+        example: false
+      type:
+        type: object
+        properties:
+          name:
+            type: string
+            example: Warehouse
+          code:
+            type: string
+            example: 'warehouse'
+            enum:
+              - store
+              - warehouse
+              - dropShipping
+              - 3rdPartyFulfillment
+  ValidationError:
+    type: object
+    required:
+      - field
+      - code
+      - message
+    properties:
+      field:
+        type: string
+        description: 'the parameter-field, that failed to validate, like "sequenceId"'
+      value:
+        type: string
+        description: 'the value, that was sent, like "xxx"'
+      code:
+        type: string
+        description: machine readable error code
+        enum:
+          - INVALID_TOKEN
+          - ALREADY_CONNECTED
+      message:
+        type: string
+        description: human readable error code
+    example:
+      field: sequenceId
+      message: 'Request validation failed: Parameter (sequenceId) is not a valid integer: 100n06'
+      code: validation.INVALID_TYPE
+      value: 100n06
+  NotFoundError:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      code:
+        type: string
+        example: NotFound
+      message:
+        type: string
+        example: Merchant not found
+  Error:
+    type: object
+    required:
+      - message
+    properties:
+      code:
+        type: string
+        description: machine readable error code
+      message:
+        type: string
+        description: human readable error code

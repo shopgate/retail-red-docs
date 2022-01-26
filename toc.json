@@ -93,6 +93,11 @@
     },
     {
       "type": "item",
+      "title": "customer",
+      "uri": "swagger/services/customer/swagger.yaml"
+    },
+    {
+      "type": "item",
       "title": "Import",
       "uri": "swagger/services/import/import-crud.json"
     },

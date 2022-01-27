@@ -931,7 +931,6 @@ paths:
     parameters:
       - $ref: '#/parameters/MerchantCode'
     post:
-      x-private: true
       x-internal: true
       parameters:
         - in: body
@@ -957,7 +956,7 @@ paths:
         required: false
         default: false
     post:
-      x-private: true
+      x-internal: true
       parameters:
         - in: body
           name: body
@@ -980,7 +979,7 @@ paths:
       - $ref: '#/parameters/MerchantCode'
       - $ref: '#/parameters/SegmentCode'
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Segment
       parameters:
@@ -1012,7 +1011,7 @@ paths:
       - $ref: '#/parameters/MerchantCode'
       - $ref: '#/parameters/SegmentCode'
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Segment
       parameters:
@@ -1051,7 +1050,7 @@ paths:
       - $ref: '#/parameters/MerchantCode'
       - $ref: '#/parameters/SegmentCode'
     post:
-      x-private: true
+      x-internal: true
       consumes:
         - application/octet-stream
       produces:
@@ -1091,7 +1090,7 @@ paths:
       - $ref: '#/parameters/MerchantCode'
       - $ref: '#/parameters/SegmentCode'
     get:
-      x-private: true
+      x-internal: true
       summary: Get all members of a segment.
       tags:
         - Segment
@@ -1148,7 +1147,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     delete:
-      x-private: true
+      x-internal: true
       description: Deletes members from segment
       tags:
         - Segment
@@ -1189,7 +1188,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Segment
       parameters:
@@ -1228,7 +1227,7 @@ paths:
         type: string
         required: true
     get:
-      x-private: true
+      x-internal: true
       tags:
         - Notes
       parameters:
@@ -1264,7 +1263,7 @@ paths:
                       type: string
                       example: John Doe
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Notes
       parameters:
@@ -1331,7 +1330,7 @@ paths:
         type: string
         required: true
     get:
-      x-private: true
+      x-internal: true
       tags:
         - Metrics
       responses:
@@ -1349,7 +1348,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Metrics
       description: Update metrics
@@ -1375,7 +1374,7 @@ paths:
         type: string
         required: true
     post:
-      x-private: true
+      x-internal: true
       description: 'Try to login customer'
       tags:
         - Auth
@@ -1422,7 +1421,7 @@ paths:
         type: string
         required: true
     get:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       responses:
@@ -1442,7 +1441,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       description: Create new wishlist
@@ -1483,7 +1482,7 @@ paths:
         type: string
         required: true
     get:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       description: Return the wishlist from the given wishlistcode
@@ -1502,7 +1501,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       parameters:
@@ -1521,7 +1520,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     delete:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       description: Delete the current wishlist
@@ -1550,7 +1549,7 @@ paths:
         type: string
         required: true
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       description: Add items to wishlist
@@ -1590,7 +1589,7 @@ paths:
         type: string
         required: true
     delete:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       description: Delete product from wishlist code
@@ -1615,7 +1614,7 @@ paths:
         type: string
         required: true
     get:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       responses:
@@ -1635,7 +1634,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       description: Create new wishlist
@@ -1676,7 +1675,7 @@ paths:
         type: string
         required: true
     get:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       description: Return the wishlist from the given wishlistcode
@@ -1695,7 +1694,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       parameters:
@@ -1714,7 +1713,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     delete:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       description: Delete the current wishlist
@@ -1743,7 +1742,7 @@ paths:
         type: string
         required: true
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       description: Add items to wishlist
@@ -1783,7 +1782,7 @@ paths:
         type: string
         required: true
     delete:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       description: Delete product from wishlist code
@@ -1816,7 +1815,7 @@ paths:
         type: string
         required: true
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Wishlist
       description: Merges device wishlist with customer whishlist
@@ -1834,7 +1833,7 @@ paths:
     parameters:
       - $ref: '#/parameters/MerchantCode'
     get:
-      x-private: true
+      x-internal: true
       description: Get all devices
       tags:
         - Device
@@ -1877,7 +1876,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      x-private: true
+      x-internal: true
       description: Create devices
       tags:
         - Device
@@ -1918,7 +1917,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     delete:
-      x-private: true
+      x-internal: true
       tags:
         - Device
       parameters:
@@ -1965,7 +1964,7 @@ paths:
         type: string
         required: true
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Device
       parameters:
@@ -1989,7 +1988,7 @@ paths:
     parameters:
       - $ref: '#/parameters/MerchantCode'
     get:
-      x-private: true
+      x-internal: true
       parameters:
         - in: query
           name: fields
@@ -2099,7 +2098,7 @@ paths:
     parameters:
       - $ref: '#/parameters/MerchantCode'
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Internal
       parameters:
@@ -2144,7 +2143,7 @@ paths:
 
   /merchants/{merchantCode}/shops/{shopCode}/customers/resetPassword:
     post:
-      x-private: true
+      x-internal: true
       parameters:
         - $ref: '#/parameters/MerchantCode'
         - $ref: '#/parameters/ShopCode'
@@ -2164,7 +2163,7 @@ paths:
 
   /customers/validateToken:
     post:
-      x-private: true
+      x-internal: true
       parameters:
         - in: body
           name: body
@@ -2180,7 +2179,7 @@ paths:
           description: Token is valid
 
   /customers/setPasswordByToken:
-    x-private: true
+    x-internal: true
     post:
       parameters:
         - in: body

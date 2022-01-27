@@ -1072,7 +1072,7 @@ paths:
         '404':
           description: Merchant or segment not found
     post:
-      x-private: true
+      x-internal: true
       operationId: createExport
       summary: Create export
       description: Creates an google export feed
@@ -1115,7 +1115,7 @@ paths:
           description: Merchant or segment not found
   /merchants/{merchantCode}/exports/{exportId}:
     post:
-      x-private: true
+      x-internal: true
       operationId: updateExport
       summary: Update export
       description: Updates an google export entity
@@ -1805,7 +1805,7 @@ paths:
       - $ref: '#/parameters/MerchantCode'
       - $ref: '#/parameters/CatalogCode'
     post:
-      x-private: true
+      x-internal: true
       operationId: batchCodeCompare
       description: Private. Batch compares entities for import
       summary: Batch compare
@@ -1867,7 +1867,7 @@ paths:
     parameters:
       - $ref: '#/parameters/MerchantCode'
     post:
-      x-private: true
+      x-internal: true
       operationId: batch
       summary: Batch
       description: Private. Batch operations of entities
@@ -2688,7 +2688,7 @@ paths:
     parameters:
       - $ref: '#/parameters/MerchantCode'
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Inventories
       operationId: getLocationInventories
@@ -2739,7 +2739,7 @@ paths:
           schema:
             $ref: '#/definitions/NotFoundError'
     delete:
-      x-private: true
+      x-internal: true
       tags:
         - Inventories
       operationId: deleteLocationInventories
@@ -3228,7 +3228,7 @@ paths:
     post:
       tags:
         - Inventories
-      x-private: true
+      x-internal: true
       operationId: processCumulatedInventory
       summary: Process cumulated inventory
       description: Process cumulated inventory
@@ -3271,7 +3271,7 @@ paths:
         type: string
         required: true
     get:
-      x-private: true
+      x-internal: true
       tags:
         - Inventories
       parameters:
@@ -3321,7 +3321,7 @@ paths:
     post:
       tags:
         - Inventories
-      x-private: true
+      x-internal: true
       parameters:
         - name: body
           in: body
@@ -3382,7 +3382,7 @@ paths:
         type: string
         required: true
     post:
-      x-private: true
+      x-internal: true
       tags:
         - Inventories
       parameters:
@@ -3426,7 +3426,7 @@ paths:
     delete:
       tags:
         - Inventories
-      x-private: true
+      x-internal: true
       responses:
         204:
           description: Sucessfully deleted cumulated reservation
@@ -3451,7 +3451,7 @@ paths:
     post:
       tags:
         - Inventories
-      x-private: true
+      x-internal: true
       responses:
         200:
           description: Successfully settled

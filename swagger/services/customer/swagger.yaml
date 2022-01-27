@@ -533,10 +533,10 @@ paths:
             createCustomers:
               customers:
               - externalCustomerNumber: '10001'
-                firstName: John
-                middleName: Doug
-                lastName: Doe
-                emailAddress: john.doe@shopgate.com
+                firstName: Max
+                middleName: René
+                lastName: Muster
+                emailAddress: max.muster@shopgate.com
                 password: superSecurePassword
                 status: active
                 isAnonymous: true
@@ -724,9 +724,7 @@ paths:
               taxExempt: true
               taxClass: 'Unknown Type: string,null'
               contacts:
-              - id: 55a94ee0-6671-11e9-bb49-13684cb7b248
-                externalContactCode: 357709b0-9378-470b-976e-1b040e29b97b
-                status: active
+              - status: active
                 firstName: John
                 middleName: Doug
                 lastName: Doe

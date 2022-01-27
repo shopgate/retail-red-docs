@@ -394,6 +394,8 @@ paths:
     parameters:
       - $ref: '#/parameters/MerchantCode'
     get:
+      tags:
+        - Customers
       operationId: getCustomers
       summary: Get customers
       description: Get customers
@@ -506,6 +508,8 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
+      tags:
+        - Customers
       operationId: createCustomers
       summary: Create customers
       description: Create customers
@@ -614,6 +618,8 @@ paths:
         type: boolean
         default: false
     get:
+      tags:
+        - Customers
       operationId: getCustomer
       summary: Get customers
       description: Get customers
@@ -688,6 +694,8 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
+      tags:
+        - Customers
       operationId: updateCustomer
       summary: Update customer
       description: "Update customer. To update sub-entities (contacts, attributes):
@@ -763,6 +771,8 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     delete:
+      tags:
+        - Customers
       operationId: deleteCustomer
       summary: Delete customer
       description: Delete customer

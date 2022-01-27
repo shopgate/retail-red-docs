@@ -93,7 +93,7 @@
     },
     {
       "type": "item",
-      "title": "customer",
+      "title": "Customer",
       "uri": "swagger/services/customer/swagger.yaml"
     },
     {

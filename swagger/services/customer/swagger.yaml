@@ -7,6 +7,9 @@ info:
     name: retail.red API
     url: https://retail.red
     email: mail@retail.red
+host: customer.shopgate.io
+schemes:
+  - https
 basePath: /v1
 produces:
   - application/json
@@ -621,8 +624,8 @@ paths:
       tags:
         - Customers
       operationId: getCustomer
-      summary: Get customers
-      description: Get customers
+      summary: Get customer
+      description: Get customer
       responses:
         '200':
           description: ''
@@ -2189,8 +2192,8 @@ paths:
           description: Token is valid
 
   /customers/setPasswordByToken:
-    x-internal: true
     post:
+      x-internal: true
       parameters:
         - in: body
           name: body

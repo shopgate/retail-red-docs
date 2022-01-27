@@ -932,6 +932,7 @@ paths:
       - $ref: '#/parameters/MerchantCode'
     post:
       x-private: true
+      x-internal: true
       parameters:
         - in: body
           name: body

@@ -1279,7 +1279,7 @@
         }
       },
       "delete": {
-        "x-private": true,
+        "x-internal": true,
         "summary": "Delete sales order",
         "tags": [
           "SalesOrder"
@@ -1305,7 +1305,7 @@
         "operationId": "getSalesOrderId",
         "summary": "Get id of sales order",
         "description": "Get id of sales order",
-        "x-private": true,
+        "x-internal": true,
         "tags": [
           "SalesOrder"
         ],
@@ -2476,7 +2476,7 @@
         "operationId": "getFulfillmentOrderId",
         "summary": "Get id of fulfillment order",
         "description": "Get id of fulfillment order",
-        "x-private": true,
+        "x-internal": true,
         "tags": [
           "FulfillmentOrder"
         ],
@@ -2849,7 +2849,7 @@
         "operationId": "getIntervalCycleTimes",
         "summary": "Get interval cycle times",
         "description": "Get interval cycle times",
-        "x-private": true,
+        "x-internal": true,
         "tags": [
           "Analytics"
         ],
@@ -2947,7 +2947,7 @@
         }
       ],
       "post": {
-        "x-private": true,
+        "x-internal": true,
         "tags": [
           "SalesOrder"
         ],
@@ -3502,7 +3502,7 @@
         }
       ],
       "post": {
-        "x-private": true,
+        "x-internal": true,
         "description": "Create Batch",
         "operationId": "createBatch",
         "summary": "Create Batch",

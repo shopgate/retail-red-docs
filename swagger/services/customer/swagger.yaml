@@ -1,0 +1,3366 @@
+swagger: '2.0'
+info:
+  title: Omni Customer Service
+  description: Documentaion of the Customer API
+  version: '1.0'
+  contact:
+    name: retail.red API
+    url: https://retail.red
+    email: mail@retail.red
+host: customer.shopgate.io
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  # TODO:
+  /merchants/{merchantCode}/attributes:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/LocaleCode'
+    get:
+      operationId: getAttributes
+      summary: Get attributes
+      description: Get attributes
+      tags:
+        - Attributes
+      parameters:
+        - $ref: '#/parameters/PaginationLimit'
+        - $ref: '#/parameters/PaginationOffset'
+      responses:
+        '200':
+          description: Attribute information
+          schema:
+            type: object
+            properties:
+              meta:
+                $ref: '#/definitions/Pagination'
+              attributes:
+                type: array
+                items:
+                  $ref: '#/definitions/Attribute'
+          examples:
+            getAttributes:
+              meta:
+                limit: 100
+                offset: 0
+                totalItemCount: 1
+              attributes:
+                - type: text
+                  isRequired: true
+                  name: Favorite Pet
+                  code: favoritePet
+                  visibility: public
+                  displayGroup: default
+                  values:
+                    - name: Dog
+                      code: dog
+                      sequenceId: 0
+                    - name: Fish
+                      code: fish
+                      sequenceId: 1
+                    - name: Cat
+                      code: cat
+                      sequenceId: 2
+                    - name: Rabbit
+                      code: rabbit
+                      sequenceId: 3
+                - type: collectionOfValues
+                  isRequired: true
+                  name: Favorite Sport Team
+                  code: favoriteSportTeam
+                  visibility: internal
+                  displayGroup: default
+                  values:
+                    - name: gsw
+                      code: Golden State Warriors
+                      sequenceId: 0
+                    - name: oct
+                      code: Oklahoma City Thunder
+                      sequenceId: 1
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      operationId: createAttributes
+      summary: Create attributes
+      description: Create attributes
+      tags:
+        - Attributes
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - attributes
+            properties:
+              attributes:
+                type: array
+                items:
+                  $ref: '#/definitions/AddAttribute'
+                example:
+                  - type: text
+                    isRequired: true
+                    name: Favorite Pet
+                    code: favoritePet
+                    visibility: public
+                    displayGroup: default
+                    values:
+                      - name: Dog
+                        code: dog
+                        sequenceId: 0
+                      - name: Fish
+                        code: fish
+                        sequenceId: 1
+                      - name: Cat
+                        code: cat
+                        sequenceId: 2
+                      - name: Rabbit
+                        code: rabbit
+                        sequenceId: 3
+          x-examples:
+            createAttributes:
+              attributes:
+              - type: text
+                isRequired: true
+                name: Favorite Pet
+                code: favoritePet
+                visibility: public
+                displayGroup: default
+                values:
+                - name: Dog
+                  code: dog
+                  sequenceId: 0
+                - name: Fish
+                  code: fish
+                  sequenceId: 1
+                - name: Cat
+                  code: cat
+                  sequenceId: 2
+                - name: Rabbit
+                  code: rabbit
+                  sequenceId: 3
+      responses:
+        '201':
+          description: Attributes were created
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: '#/definitions/BatchErrors'
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  # TODO:
+  /merchants/{merchantCode}/attributes/{attributeCode}:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/AttributeCode'
+    get:
+      operationId: getAttribute
+      summary: Get attribute
+      description: Get attribute
+      tags:
+        - Attributes
+      parameters:
+        - $ref: '#/parameters/LocaleCode'
+      responses:
+        '200':
+          description: Attribute information
+          schema:
+            type: object
+            properties:
+              attribute:
+                $ref: '#/definitions/Attribute'
+          examples:
+            getAttribute:
+              attribute:
+                type: text
+                isRequired: true
+                name: Favorite Pet
+                code: favoritePet
+                visibility: public
+                displayGroup: default
+                values:
+                  - name: Dog
+                    code: dog
+                    sequenceId: 0
+                  - name: Fish
+                    code: fish
+                    sequenceId: 1
+                  - name: Cat
+                    code: cat
+                    sequenceId: 2
+                  - name: Rabbit
+                    code: rabbit
+                    sequenceId: 3
+        '404':
+          description: Merchant or attribute not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      operationId: updateAttribute
+      summary: Update attribute
+      tags:
+        - Attributes
+      description: |
+        Update attribute
+
+        **Preserving attribute values**
+
+        To preserve an existing attribute value pass its "code" property only.
+
+        Example to remove all values except "green" from an attribute:
+
+        ```json
+        {
+          "values": [
+            { "code": "green" }
+          ]
+        }
+        ```
+      parameters:
+        - $ref: '#/parameters/LocaleCode'
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/UpdateAttribute'
+          x-examples:
+            updateAttribute:
+              isRequired: true
+              name: Favorite Pet
+              visibility: internal
+              values:
+              - name: Dog
+                code: dog
+                sequenceId: 0
+              - name: Fish
+                code: fish
+                sequenceId: 1
+              - name: Cat
+                code: cat
+                sequenceId: 2
+              - name: Rabbit
+                code: rabbit
+                sequenceId: 3
+      responses:
+        '204':
+          description: Successfully updated
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Attribute not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+        '409':
+          description: One or more attribute values are used for products and cannot be replaced
+    delete:
+      operationId: deleteAttribute
+      summary: Delete attribute
+      description: Delete attribute
+      tags:
+        - Attributes
+      responses:
+        '204':
+          description: Successfully deleted
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant, attribute or attribute value not found
+        '409':
+          description: Attribute is used for a product option or an extra
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  # TODO:
+  /merchants/{merchantCode}/attributes/{attributeCode}/values:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/AttributeCode'
+      - $ref: '#/parameters/LocaleCode'
+    post:
+      operationId: addAttributeValues
+      summary: Add attribute values
+      description: Add attribute values
+      tags:
+        - Attributes
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              values:
+                type: array
+                items:
+                  $ref: '#/definitions/AttributeValue'
+          x-examples:
+            addAttributeValues:
+              values:
+              - name: Rabbit
+                sequenceId: 3
+                code: rabbit
+      responses:
+        '201':
+          description: Successfully created
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant or attribute not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  # TODO:
+  /merchants/{merchantCode}/attributes/{attributeCode}/values/{attributeValueCode}:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/AttributeCode'
+      - $ref: '#/parameters/AttributeValueCode'
+    post:
+      operationId: updateAttributeValue
+      summary: Update attribute value
+      description: Update attribute value
+      tags:
+        - Attributes
+      parameters:
+        - $ref: '#/parameters/LocaleCode'
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/BaseAttributeValue'
+          x-examples:
+            updateAttributeValue:
+              name: Rabbit
+              sequenceId: 3
+      responses:
+        '204':
+          description: Successfully updated
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant, attribute or attribute value not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      operationId: deleteAttributeValue
+      summary: Delete attribute value
+      description: Delete attribute value
+      tags:
+        - Attributes
+      responses:
+        '204':
+          description: Successfully deleted
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Attribute not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+        '409':
+          description: Value is used for product option or extra
+  # TODO:
+  /merchants/{merchantCode}/customers:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+    get:
+      tags:
+        - Customers
+      operationId: getCustomers
+      summary: Get customers
+      description: Get customers
+      parameters:
+        - name: fields
+          in: query
+          type: string
+          required: false
+          description: "Add fields to response.<br />Available fields: contacts, settings, attributes.<i>attributeName</i>"
+        - in: query
+          name: filters
+          type: string
+          description: "Filter for
+          <ul>
+            <li>id</li>
+            <li>name</li>
+            <li>emailAddress</li>
+            <li>status</li>
+            <li>externalCustomerNumber</li>
+            <li>internalCustomerNumber</li>
+            <li>contactStatus</li>
+            <li>isAnonymous</li>
+            <li>contacts.postalCode</li>
+            <li>contacts.region</li>
+            <li>contacts.country</li>
+            <li>contacts.isDefaultBilling</li>
+            <li>contacts.isDefaultShipping</li>
+            <li>metrics.lifetimeValue</li>
+            <li>metrics.averageOrderValue</li>
+            <li>metrics.averageItemsPerOrder</li>
+            <li>metrics.averageOnlineOrderValue</li>
+            <li>metrics.averagePickupInStoreOrderValue</li>
+            <li>metrics.customerCreateAt</li>
+            <li>metrics.lastOrderDate</li>
+            <li>metrics.pushOpenRate</li>
+            <li>metrics.pushConversionRate</li>
+            <li>metrics.numberOfOrders</li>
+            <li>metrics.numberOfBOPUISOrders</li>
+            <li>metrics.numberOfROPUISOrders</li>
+            <li>metrics.numberOfDirectShipOrders</li>
+            <li>metrics.averageBOPUISItemsPerOrder</li>
+            <li>metrics.averageROPUISItemsPerOrder</li>
+            <li>metrics.averageDirectShipItemsPerOrder</li>
+            <li>metrics.averageBOPUISOrderRevenue</li>
+            <li>metrics.averageROPUISOrderRevenue</li>
+            <li>metrics.averageDirectShipOrderRevenue</li>
+            <li>attributes.&lt;attributeCode&gt;</li>
+          </ul>"
+        - in: query
+          name: translationPriority
+          type: string
+          required: false
+          format: csv
+          description: "Comma separated list of where to get the locale from that should be used for translation of
+                        multi-language fields. Valid values are `query`, `customer` and `merchant`. Type `query` means
+                        that the locale will be taken from parameter `localeCode` if set.<br /><br />
+                        <i>Default values:</i><ul>
+                          <li>`customer,merchant` if no localeCode was passed</li>
+                          <li>`query` if localeCode was passed</li>
+                        </ul>"
+        - in: query
+          name: localeCode
+          type: string
+          required: false
+          description: "This will make `translationPriority` value `query` match if it is set."
+        - $ref: '#/parameters/PaginationLimit'
+        - $ref: '#/parameters/PaginationOffset'
+        - $ref: '#/parameters/Sort'
+      responses:
+        '200':
+          description: Returns customers
+          schema:
+            type: object
+            properties:
+              meta:
+                $ref: '#/definitions/Pagination'
+              customers:
+                type: array
+                items:
+                  allOf:
+                    - type: object
+                      properties:
+                        id:
+                          type: string
+                          example: d162439c-e2f9-4050-8b94-6bff33e8163b
+                    - $ref: '#/definitions/BasicCustomer'
+          examples:
+            getCustomers:
+              meta:
+                limit: 10
+                offset: 0
+                totalItemCount: 1
+              customers:
+              - id: d162439c-e2f9-4050-8b94-6bff33e8163b
+                internalCustomerNumber: 2
+                externalCustomerNumber: '10001'
+                firstName: Max
+                middleName: René
+                lastName: Muster
+                emailAddress: max.muster@shopgate.com
+                status: active
+                isAnonymous: true
+                externalUpdateDate: '2022-01-26T15:50:07.478Z'
+                taxExempt: false
+                taxClass: yourTaxCode
+        '404':
+          description: Merchant not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      tags:
+        - Customers
+      operationId: createCustomers
+      summary: Create customers
+      description: Create customers
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            required:
+              - customers
+            properties:
+              customers:
+                type: array
+                items:
+                  $ref: '#/definitions/CreateCustomer'
+          x-examples:
+            createCustomers:
+              customers:
+              - externalCustomerNumber: '10001'
+                firstName: Max
+                middleName: René
+                lastName: Muster
+                emailAddress: max.muster@shopgate.com
+                password: superSecurePassword
+                status: active
+                isAnonymous: true
+                taxExempt: true
+                taxClass: yourTaxCode
+                contacts:
+                - externalContactCode: 357709b0-9378-470b-976e-1b040e29b97b
+                  status: active
+                  firstName: Max
+                  middleName: René
+                  lastName: Muster
+                  companyName: Shopgate GmbH
+                  address1: Schloßstr. 10
+                  address2: Haus B
+                  address3: erste Etage
+                  address4: null
+                  city: Butzbach
+                  postalCode: '78732'
+                  region: HE
+                  country: DE
+                  phone: +49 12345 6789 001
+                  fax: +49 12345 6789 002
+                  mobile: +49 12345 6789 003
+                  emailAddress: max.muster@shopgate.com
+                  isDefaultShipping: true
+                  isDefaultBilling: true
+                  externalUpdateDate: '2022-01-26T15:51:21.125Z'
+                attributes:
+                - code: tshirtSize
+                  value:
+                    code: l
+                - code: nameOfCat
+                  value: Some Cats Name
+                settings:
+                  defaultLocale: en-us
+                  defaultCurrency: USD
+                  communicationPreferences:
+                  - email
+                  - push
+                  - sms
+                  defaultLocationCode: DERetail001
+                  marketingOptIn: false
+                externalUpdateDate: '2022-01-26T15:51:21.125Z'
+      responses:
+        '201':
+          description: 'Customer created'
+          schema:
+            type: object
+            properties:
+              ids:
+                type: array
+                items:
+                  type: string
+                  example: 57de7a67-bd83-46e9-8276-c1206c301380
+              errors:
+                $ref: '#/definitions/BatchErrors'
+        '400':
+          description: Bad request (mostly missing or invalid parameters/values)
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  # TODO:
+  /merchants/{merchantCode}/customers/{customerId}:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: customerId
+        in: path
+        type: string
+        required: true
+      - $ref: '#/parameters/LocaleCode'
+      - name: ignoreInternalAttributes
+        in: query
+        description: Ignores internal attributes in the result set
+        type: boolean
+        default: false
+    get:
+      tags:
+        - Customers
+      operationId: getCustomer
+      summary: Get customer
+      description: Get customer
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            properties:
+              customer:
+                $ref: '#/definitions/Customer'
+          examples:
+            getCustomers:
+              customer:
+                id: d162439c-e2f9-4050-8b94-6bff33e8163b
+                internalCustomerNumber: 2
+                externalCustomerNumber: '10001'
+                firstName: Max
+                middleName: René
+                lastName: Muster
+                emailAddress: max.muster@shopgate.com
+                status: active
+                isAnonymous: true
+                externalUpdateDate: '2022-01-26T15:56:48.047Z'
+                taxExempt: false
+                taxClass: string
+                contacts:
+                - id: 55a94ee0-6671-11e9-bb49-13684cb7b248
+                  externalContactCode: 357709b0-9378-470b-976e-1b040e29b97b
+                  status: active
+                  firstName: Max
+                  middleName: René
+                  lastName: Muster
+                  companyName: Shopgate GmbH
+                  address1: Schloßstr. 10
+                  address2: Haus B
+                  address3: erste Etage
+                  address4: null
+                  city: Butzbach
+                  postalCode: '78732'
+                  region: HE
+                  country: DE
+                  phone: +49 12345 6789 001
+                  fax: +49 12345 6789 002
+                  mobile: +49 12345 6789 003
+                  emailAddress: max.muster@shopgate.com
+                  isDefaultShipping: true
+                  isDefaultBilling: true
+                  externalUpdateDate: '2022-01-26T15:51:21.125Z'
+                attributes:
+                - code: tshirtSize
+                  name: T-Shirt Size
+                  value:
+                    code: l
+                    name: L
+                - code: nameOfCat
+                  name: Name of your cat
+                  value: Some Cat Name
+                settings:
+                  defaultLocale: en-us
+                  defaultCurrency: USD
+                  communicationPreferences:
+                  - email
+                  - push
+                  - sms
+                  defaultLocationCode: DERetail001
+                  marketingOptIn: false
+        '404':
+          description: Merchant not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      tags:
+        - Customers
+      operationId: updateCustomer
+      summary: Update customer
+      description: "Update customer. To update sub-entities (contacts, attributes):
+      <ul>
+        <li>Existing sub entities that are not passed at all will be DELETED.</li>
+        <li>To KEEP existing sub entities, pass their codes without values.</li>
+        <li>To ADD or UPDATE sub entities pass their codes and the value(s) to be added or updated.</li>
+      </ul>"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/UpdateCustomer'
+          x-examples:
+            updateCustomer:
+              externalCustomerNumber: '10001'
+              firstName: John
+              middleName: Doug
+              lastName: Doe
+              emailAddress: john.doe@shopgate.com
+              status: active
+              isAnonymous: true
+              taxExempt: true
+              taxClass: 'Unknown Type: string,null'
+              contacts:
+              - status: active
+                firstName: John
+                middleName: Doug
+                lastName: Doe
+                companyName: Shopgate Inc
+                address1: 12 Somestreet
+                address2: ''
+                address3: ''
+                address4: ''
+                city: Austin
+                postalCode: '78732'
+                region: TX
+                country: US
+                phone: 000-000-0000
+                fax: 000-000-0000
+                mobile: 000-000-0000
+                emailAddress: somelocation@someRetailer.com
+                isDefaultBilling: true
+                isDefaultShipping: true
+                externalUpdateDate: '2022-01-26T16:00:56.799Z'
+              attributes:
+              - code: tshirtSize
+                value:
+                  code: l
+              - code: nameOfCat
+                value: Some Cats Name
+              settings:
+                defaultLocale: en-us
+                defaultCurrency: USD
+                communicationPreferences:
+                - email
+                - push
+                - sms
+                defaultLocationCode: DERetail001
+                marketingOptIn: false
+              externalUpdateDate: '2022-01-26T16:00:56.799Z'
+      responses:
+        204:
+          description: Customer updated
+        '404':
+          description: Merchant or customer not found
+        '409':
+          description: Customer number already taken by other customer or cannot delete required customer attributes
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags:
+        - Customers
+      operationId: deleteCustomer
+      summary: Delete customer
+      description: Delete customer
+      responses:
+        204:
+          description: Customer deleted
+        '404':
+          description: Merchant or customer not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  # TODO:
+  /merchants/{merchantCode}/customers/{customerId}/contacts:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: customerId
+        in: path
+        type: string
+        required: true
+    post:
+      tags:
+        - Contacts
+      operationId: addCustomerContacts
+      summary: Add customer contacts
+      description: Add customer contacts
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            required:
+              - contacts
+            properties:
+              contacts:
+                type: array
+                items:
+                  $ref: '#/definitions/ContactCreate'
+          x-examples:
+            addCustomerContacts:
+              contacts:
+              - externalContactCode: 357709b0-9378-470b-976e-1b040e29b97b
+                status: active
+                firstName: John
+                middleName: Doug
+                lastName: Doe
+                companyName: Shopgate Inc
+                address1: 12 Somestreet
+                address2: ''
+                address3: ''
+                address4: ''
+                city: Austin
+                postalCode: '78732'
+                region: TX
+                country: US
+                phone: 000-000-0000
+                fax: 000-000-0000
+                mobile: 000-000-0000
+                emailAddress: somelocation@someRetailer.com
+                isDefaultShipping: true
+                isDefaultBilling: true
+                externalUpdateDate: '2022-01-26T16:10:03.134Z'
+      responses:
+        '201':
+          description: 'Contacts created'
+          schema:
+            type: object
+            properties:
+              ids:
+                type: array
+                items:
+                  type: string
+                  example: 87f1dd94-5b8c-11e9-bcee-bfe9849008be
+        '400':
+          description: <ul>
+            <li>More than one primary contact passed</li>
+            <li>Invalid contact type(s) passed</li>
+            </ul>
+        '404':
+          description: Merchant or customer not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  # TODO:
+  /merchants/{merchantCode}/customers/{customerId}/contacts/{contactId}:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: customerId
+        in: path
+        type: string
+        required: true
+      - name: contactId
+        in: path
+        type: string
+        required: true
+    post:
+      tags:
+        - Contacts
+      operationId: updateCustomerContact
+      summary: Update customer contact
+      description: Update customer contact
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/ContactUpdate'
+          x-examples:
+            updateCustomerContact:
+              externalContactCode: 357709b0-9378-470b-976e-1b040e29b97b
+              status: active
+              firstName: John
+              middleName: Doug
+              lastName: Doe
+              companyName: Shopgate Inc
+              address1: 12 Somestreet
+              address2: ''
+              address3: ''
+              address4: ''
+              city: Austin
+              postalCode: '78732'
+              region: TX
+              country: US
+              phone: 000-000-0000
+              fax: 000-000-0000
+              mobile: 000-000-0000
+              emailAddress: somelocation@someRetailer.com
+              isDefaultShipping: true
+              isDefaultBilling: true
+              externalUpdateDate: '2022-01-26T16:10:46.320Z'
+      responses:
+        204:
+          description: Contact successfully updated
+        '400':
+          description: Invalid contact type passed
+        '404':
+          description: Merchant, customer or contact not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags:
+        - Contacts
+      operationId: deleteCustomerContact
+      summary: Delete customer contact
+      description: Delete customer contact
+      responses:
+        204:
+          description: Contact successfully updated
+        '404':
+          description: Merchant, customer or contact not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/batchCodeCompare:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+    post:
+      x-internal: true
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              externalCustomerNumbers:
+                type: array
+                items:
+                  type: string
+      responses:
+        '200':
+          description: OK
+
+  /merchants/{merchantCode}/batch:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - in: query
+        type: boolean
+        name: useInternalEntityId
+        required: false
+        default: false
+    post:
+      x-internal: true
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: '#/definitions/BatchErrors'
+
+  /merchants/{merchantCode}/segments/{segmentCode}/members/copy:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/SegmentCode'
+    post:
+      x-internal: true
+      tags:
+        - Segment
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              destinationSegmentCode:
+                type: string
+      responses:
+        202:
+          description: Copy of the members has been accepted and processed in the background.
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        404:
+          description: Merchant not found or segment not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/segments/{segmentCode}/members/addByFilter:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/SegmentCode'
+    post:
+      x-internal: true
+      tags:
+        - Segment
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            additionalProperties: false
+            required:
+              - filter
+            properties:
+              filter:
+                type: object
+      responses:
+        202:
+          description: Accepted request
+          schema:
+            type: object
+            properties:
+              memberCount:
+                type: number
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        404:
+          description: Merchant not found or segment not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/segments/{segmentCode}/batchCodeCompare:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/SegmentCode'
+    post:
+      x-internal: true
+      consumes:
+        - application/octet-stream
+      produces:
+        - application/octet-stream
+      tags:
+        - Internal
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              members:
+                $ref: '#/definitions/SegmentMembers'
+      responses:
+        '200':
+          description: Returns members that are not found
+          schema:
+            type: object
+            properties:
+              members:
+                $ref: '#/definitions/SegmentMembers'
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        404:
+          description: Merchant not found or segment not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/segments/{segmentCode}/members:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/SegmentCode'
+    get:
+      x-internal: true
+      summary: Get all members of a segment.
+      tags:
+        - Segment
+      parameters:
+        - $ref: '#/parameters/SearchAfter'
+        - $ref: '#/parameters/Sort'
+        - $ref: '#/parameters/PaginationLimit'
+        - name: fields
+          in: query
+          type: string
+          format: csv
+        - name: filters
+          in: query
+          type: string
+          format: json
+          description: "Filter for
+          <ul>
+            <li>customer.name</li>
+            <li>customer.emailAddress</li>
+            <li>customer.status</li>
+            <li>customer.externalCustomerNumber</li>
+            <li>customer.internalCustomerNumber</li>
+            <li>devices.code</li>
+            <li>devices.platform</li>
+            <li>devices.type</li>
+            <li>devices.pushToken</li>
+            <li>devices.model</li>
+          </ul>"
+      responses:
+        200:
+          description: List of members
+          schema:
+            type: object
+            properties:
+              meta:
+                $ref: '#/definitions/CursorPagination'
+              members:
+                type: array
+                items:
+                  $ref: '#/definitions/SegmentMemberFull'
+        400:
+          description: "Returned in cases of:
+            <ul>
+            <li>giving invalid filters</li>
+            <li>getting members of dynamic segment</li>
+            <li>swagger validation errors</li>
+            </ul>"
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        404:
+          description: Merchant not found or segment not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      x-internal: true
+      description: Deletes members from segment
+      tags:
+        - Segment
+      parameters:
+        - in: query
+          type: boolean
+          name: runInBackground
+          required: false
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SegmentMembersDelete'
+
+      responses:
+        200:
+          description: Accepted request
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: '#/definitions/BatchErrors'
+        202:
+          description: Accepted request
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: '#/definitions/BatchErrors'
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        404:
+          description: Merchant not found or segment not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      x-internal: true
+      tags:
+        - Segment
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SegmentMembers'
+      responses:
+        '201':
+          description: Members added
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: '#/definitions/BatchErrors'
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        404:
+          description: Merchant not found or segment not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/customers/{customerId}/notes:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: customerId
+        in: path
+        type: string
+        required: true
+    get:
+      x-internal: true
+      tags:
+        - Notes
+      parameters:
+        - $ref: '#/parameters/PaginationLimit'
+        - $ref: '#/parameters/PaginationOffset'
+      responses:
+        200:
+          description: ''
+          schema:
+            type: object
+            properties:
+              meta:
+                $ref: '#/definitions/Pagination'
+              notes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: 3572ee73-1c88-43c2-89f6-fa5a054d0a5a
+                    externalCode:
+                      type: string
+                      example: 234j
+                    note:
+                      type: string
+                      example: 'Customer called in and asked if he could pick up the package at 2PM'
+                    date:
+                      type: string
+                      format: date-time
+                      example: "2019-06-13T12:17:33.023Z"
+                    creator:
+                      type: string
+                      example: John Doe
+    post:
+      x-internal: true
+      tags:
+        - Notes
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            required:
+              - notes
+            additionalProperties: false
+            properties:
+              notes:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - note
+                  additionalProperties: false
+                  properties:
+                    externalCode:
+                      type: string
+                      example: 234j
+                    note:
+                      type: string
+                      example: 'Customer called in and asked if he could pick up the package at 2PM'
+                    date:
+                      type: string
+                      format: date-time
+                      example: "2019-06-13T12:17:33.023Z"
+                    creator:
+                      type: string
+                      description: If its not set it will fallback to the API user
+                      example: John Doe
+      responses:
+        201:
+          description: 'created'
+          schema:
+            type: object
+            properties:
+              ids:
+                type: array
+                items:
+                  type: string
+                  example: 3572ee73-1c88-43c2-89f6-fa5a054d0a5a
+        400:
+          description: 'Validation Error'
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant or Customer not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/customers/{customerId}/metrics:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: customerId
+        in: path
+        type: string
+        required: true
+    get:
+      x-internal: true
+      tags:
+        - Metrics
+      responses:
+        200:
+          description: Returns all metrics
+          schema:
+            type: object
+            properties:
+              metrics:
+                $ref: '#/definitions/Metrics'
+        '404':
+          description: Merchant or Customer not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      x-internal: true
+      tags:
+        - Metrics
+      description: Update metrics
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/Metrics'
+      responses:
+        204:
+          description: Metrics successfully updated
+        404:
+          description: Merchant or Customer not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/auth:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+    post:
+      x-internal: true
+      description: 'Try to login customer'
+      tags:
+        - Auth
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            additionalProperties: false
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                format: email
+                example: john@doe.com
+              password:
+                $ref: '#/definitions/Password'
+      responses:
+        '200':
+          description: Returns current customer
+          schema:
+            type: object
+            properties:
+              customer:
+                $ref: '#/definitions/Customer'
+        '400':
+          description: On schema validation errors or when an unsupported tenant type has been provided.
+        '401':
+          description: Wrong user name or password
+        '403':
+          description: Insufficient permissions
+
+  /merchants/{merchantCode}/devices/{deviceCode}/wishlists:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: deviceCode
+        in: path
+        type: string
+        required: true
+    get:
+      x-internal: true
+      tags:
+        - Wishlist
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            properties:
+              wishlists:
+                type: array
+                items:
+                  $ref: '#/definitions/BasicWishlist'
+        '404':
+          description: Merchant or Customer not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Create new wishlist
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            required:
+              - wishlists
+            properties:
+              wishlists:
+                type: array
+                items:
+                  $ref: '#/definitions/AddWishlist'
+      responses:
+        201:
+          description: Wishlist was created
+        '404':
+          description: Merchant or Customer not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/devices/{deviceCode}/wishlists/{wishlistCode}:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: deviceCode
+        in: path
+        type: string
+        required: true
+      - name: wishlistCode
+        in: path
+        type: string
+        required: true
+    get:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Return the wishlist from the given wishlistcode
+      responses:
+        200:
+          description: Returns the full wishlist
+          schema:
+            type: object
+            properties:
+              wishlist:
+                $ref: '#/definitions/Wishlist'
+        '404':
+          description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      x-internal: true
+      tags:
+        - Wishlist
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/Wishlist'
+      description: Update wishlist. If the items array is passed it will overwrite the current items
+      responses:
+        204:
+          description: Successfully updated
+        '404':
+          description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Delete the current wishlist
+      responses:
+        204:
+          description: Successfully deleted
+        '404':
+          description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/devices/{deviceCode}/wishlists/{wishlistCode}/items:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: deviceCode
+        in: path
+        type: string
+        required: true
+      - name: wishlistCode
+        in: path
+        type: string
+        required: true
+    post:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Add items to wishlist
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/WishlistItem'
+      responses:
+        201:
+          description: Successfully added
+        '404':
+          description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/devices/{deviceCode}/wishlists/{wishlistCode}/items/{productCode}:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: deviceCode
+        in: path
+        type: string
+        required: true
+      - name: wishlistCode
+        in: path
+        type: string
+        required: true
+      - name: productCode
+        in: path
+        type: string
+        required: true
+    delete:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Delete product from wishlist code
+      responses:
+        204:
+          description: Successfully deleted
+        '404':
+          description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/customers/{customerId}/wishlists:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: customerId
+        in: path
+        type: string
+        required: true
+    get:
+      x-internal: true
+      tags:
+        - Wishlist
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            properties:
+              wishlists:
+                type: array
+                items:
+                  $ref: '#/definitions/BasicWishlist'
+        '404':
+          description: Merchant or Customer not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Create new wishlist
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            required:
+              - wishlists
+            properties:
+              wishlists:
+                type: array
+                items:
+                  $ref: '#/definitions/AddWishlist'
+      responses:
+        201:
+          description: Wishlist was created
+        '404':
+          description: Merchant or Customer not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/customers/{customerId}/wishlists/{wishlistCode}:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: customerId
+        in: path
+        type: string
+        required: true
+      - name: wishlistCode
+        in: path
+        type: string
+        required: true
+    get:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Return the wishlist from the given wishlistcode
+      responses:
+        200:
+          description: Returns the full wishlist
+          schema:
+            type: object
+            properties:
+              wishlist:
+                $ref: '#/definitions/Wishlist'
+        '404':
+          description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      x-internal: true
+      tags:
+        - Wishlist
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/Wishlist'
+      description: Update wishlist. If the items array is passed it will overwrite the current items
+      responses:
+        204:
+          description: Successfully updated
+        '404':
+          description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Delete the current wishlist
+      responses:
+        204:
+          description: Successfully deleted
+        '404':
+          description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/customers/{customerId}/wishlists/{wishlistCode}/items:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: customerId
+        in: path
+        type: string
+        required: true
+      - name: wishlistCode
+        in: path
+        type: string
+        required: true
+    post:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Add items to wishlist
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/WishlistItem'
+      responses:
+        201:
+          description: Successfully added
+        '404':
+          description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/customers/{customerId}/wishlists/{wishlistCode}/items/{productCode}:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: customerId
+        in: path
+        type: string
+        required: true
+      - name: wishlistCode
+        in: path
+        type: string
+        required: true
+      - name: productCode
+        in: path
+        type: string
+        required: true
+    delete:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Delete product from wishlist code
+      responses:
+        204:
+          description: Successfully deleted
+        '404':
+          description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/devices/{deviceCode}/wishlists/{wishlistCode}/customers/{customerId}/mergeWishlist:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: deviceCode
+        in: path
+        type: string
+        required: true
+      - name: wishlistCode
+        in: path
+        type: string
+        required: true
+      - name: customerId
+        in: path
+        type: string
+        required: true
+    post:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Merges device wishlist with customer whishlist
+      responses:
+        '201':
+          description: Successfully merged
+        '404':
+          description: Merchant, device, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/devices:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+    get:
+      x-internal: true
+      description: Get all devices
+      tags:
+        - Device
+      parameters:
+        - name: fields
+          in: query
+          type: string
+          required: false
+        - name: includeInternalIds
+          in: query
+          type: boolean
+          required: false
+        - in: query
+          name: filters
+          type: string
+          description: Filter for code, platform, type, pushToken, loggedInCustomerId
+        - $ref: '#/parameters/PaginationLimit'
+        - $ref: '#/parameters/SearchAfter'
+        - $ref: '#/parameters/Sort'
+      responses:
+        200:
+          description: Returns devices
+          schema:
+            type: object
+            properties:
+              meta:
+                $ref: '#/definitions/CursorPagination'
+              devices:
+                type: array
+                items:
+                  $ref: '#/definitions/Device'
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      x-internal: true
+      description: Create devices
+      tags:
+        - Device
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            required:
+              - devices
+            properties:
+              devices:
+                type: array
+                items:
+                  $ref: '#/definitions/BasicDevice'
+      responses:
+        '201':
+          description: 'Devices created'
+          schema:
+            type: object
+            properties:
+              ids:
+                type: array
+                items:
+                  type: string
+                  example: 57de7a67-bd83-46e9-8276-c1206c301380
+              errors:
+                $ref: '#/definitions/BatchErrors'
+        '400':
+          description: Bad request (mostly missing or invalid parameters/values)
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      x-internal: true
+      tags:
+        - Device
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - deviceCodes
+            properties:
+              deviceCodes:
+                type: array
+                items:
+                  type: string
+                  example: 4b654b5b-219d-4dc7-8707-c491f9d1200e
+
+      responses:
+        200:
+          description: Deleted
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: '#/definitions/BatchErrors'
+        '400':
+          description: Bad request (mostly missing or invalid parameters/values)
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/devices/{deviceCode}:
+    parameters:
+      - name: merchantCode
+        in: path
+        type: string
+        required: true
+      - name: deviceCode
+        in: path
+        type: string
+        required: true
+    post:
+      x-internal: true
+      tags:
+        - Device
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/UpdateDevice'
+      responses:
+        204:
+          description: Device successfully updated
+        '400':
+          description: Bad request (mostly missing or invalid parameters/values)
+        '404':
+          description: Merchant or device not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/search:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+    get:
+      x-internal: true
+      parameters:
+        - in: query
+          name: fields
+          type: string
+          format: csv
+          description: "Specify field to be additionally added to the response. Supported: customer.contacts"
+        - in: query
+          name: filters
+          type: string
+          default:
+          description: "Filter for
+          <ul>
+            <li>customer.name</li>
+            <li>customer.emailAddress</li>
+            <li>customer.status</li>
+            <li>customer.externalCustomerNumber</li>
+            <li>customer.isAnonymous</li>
+            <li>customer.settings.communicationPreferences</li>
+            <li>customer.settings.marketingOptIn</li>
+            <li>customer.contacts.status</li>
+            <li>customer.contacts.emailAddress</li>
+            <li>customer.contacts.postalCode</li>
+            <li>customer.contacts.region</li>
+            <li>customer.contacts.country</li>
+            <li>customer.contacts.isDefaultBilling</li>
+            <li>customer.contacts.isDefaultShipping</li>
+            <li>customer.metrics.lifetimeValue</li>
+            <li>customer.metrics.averageOrderValue</li>
+            <li>customer.metrics.averageItemsPerOrder</li>
+            <li>customer.metrics.averageOnlineOrderValue</li>
+            <li>customer.metrics.averagePickupInStoreOrderValue</li>
+            <li>customer.metrics.customerCreateAt</li>
+            <li>customer.metrics.lastOrderDate</li>
+            <li>customer.metrics.pushOpenRate</li>
+            <li>customer.metrics.pushConversionRate</li>
+            <li>customer.metrics.numberOfOrders</li>
+            <li>customer.metrics.numberOfBOPUISOrders</li>
+            <li>customer.metrics.numberOfROPUISOrders</li>
+            <li>customer.metrics.numberOfDirectShipOrders</li>
+            <li>customer.metrics.averageBOPUISItemsPerOrder</li>
+            <li>customer.metrics.averageROPUISItemsPerOrder</li>
+            <li>customer.metrics.averageDirectShipItemsPerOrder</li>
+            <li>customer.metrics.averageBOPUISOrderRevenue</li>
+            <li>customer.metrics.averageROPUISOrderRevenue</li>
+            <li>customer.metrics.averageDirectShipOrderRevenue</li>
+            <li>customer.attributes.&lt;attributeCode&gt;</li>
+            <li>devices.code</li>
+            <li>devices.platform</li>
+            <li>devices.type</li>
+            <li>devices.pushToken</li>
+            <li>devices.model</li>
+            <li>devices.attributes.&lt;attributeCode&gt;</li>
+          </ul>"
+        - in: query
+          name: after
+          type: string
+          default:
+          description: The "after" position of the cursor returned from the last request to get the next page or omit to get the first page
+        - $ref: '#/parameters/Sort'
+        - $ref: '#/parameters/PaginationLimit'
+      description: Search for customers and/or devices.
+      responses:
+        '200':
+          description: Customer/device information.
+          schema:
+            type: object
+            properties:
+              meta:
+                $ref: '#/definitions/CursorPagination'
+              results:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      example: 'customer'
+                    customer:
+                      allOf:
+                        - $ref: '#/definitions/BasicCustomer'
+                        - type: object
+                          properties:
+                            contacts:
+                              type: array
+                              items:
+                                $ref: '#/definitions/ContactFull'
+                    device:
+                      $ref: '#/definitions/BasicDevice'
+            example:
+              meta:
+                limit: 100
+                cursor: { "after": "WyJQYXVsIEJvcmRrbm9ja2VyIiwiODBhYTU3ZjItMWMwMC0xMWVhLWJlZGUtZmYyNjJmZGI1ZjYxIl0=" }
+                totalItemCount: 2
+              results: [ { type: 'customer', customer: {...: ...} }, { type: 'device', device: {...: ...} } ]
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationErrors'
+        '404':
+          description: Merchant not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/multiSearch:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+    post:
+      x-internal: true
+      tags:
+        - Internal
+      parameters:
+        - in: query
+          name: limitEach
+          type: number
+          description: The maximum number of results on each query; put 0 to only get the number of hits per query. Is
+            overridden by the specific `limit` of a filter if provided.
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - filterSet
+            properties:
+              filterSet:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - filters
+                  properties:
+                    filters:
+                      type: object
+                    limit:
+                      type: number
+                      maximum: 1000
+      responses:
+        '200':
+          description: Search results
+        '400':
+          description: One or more filters could not be parsed.
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: '#/definitions/BatchErrors'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/shops/{shopCode}/customers/resetPassword:
+    post:
+      x-internal: true
+      parameters:
+        - $ref: '#/parameters/MerchantCode'
+        - $ref: '#/parameters/ShopCode'
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - email
+            properties:
+              email:
+                type: string
+                example: manfred@manfreds-trucker-heaven.de
+      responses:
+        '204':
+          description: Sends email in the process
+
+  /customers/validateToken:
+    post:
+      x-internal: true
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - token
+            properties:
+              token:
+                type: string
+      responses:
+        '200':
+          description: Token is valid
+
+  /customers/setPasswordByToken:
+    post:
+      x-internal: true
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - token
+            properties:
+              token:
+                type: string
+              password:
+                type: string
+      responses:
+        '204':
+          description: Password set
+
+parameters:
+  MerchantCode:
+    name: merchantCode
+    in: path
+    type: string
+    required: true
+  ShopCode:
+    name: shopCode
+    in: path
+    type: string
+    required: true
+  SegmentCode:
+    name: segmentCode
+    in: path
+    type: string
+    required: true
+  SearchAfter:
+    in: query
+    name: after
+    type: string
+    description: A base64 encoded JSON array representing the cursor after which the search result should be continued.
+      Use the value returned in the response of your last query (`meta.cursors.after`) or omit on the first query.
+  Sort:
+    description: Comma-separated list of fields to sort by and sort directions, separated by a colon each (e.g. field1:asc,field2:desc).
+    in: query
+    name: sort
+    type: string
+    default: null
+  PaginationLimit:
+    description: the limit of entries of one page
+    in: query
+    name: limit
+    type: integer
+    default: 100
+    maximum: 1000
+  PaginationOffset:
+    description: the offset where to start the page
+    in: query
+    name: offset
+    type: integer
+    default: 0
+  LocaleCode:
+    in: query
+    name: localeCode
+    description: Locale code to change the language of the attributes
+    type: string
+  AttributeCode:
+    name: attributeCode
+    in: path
+    type: string
+    required: true
+  AttributeValueCode:
+    name: attributeValueCode
+    in: path
+    type: string
+    required: true
+definitions:
+  SegmentMember:
+    type: object
+    additionalProperties: false
+    required:
+        - id
+        - type
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+          - customer
+          - device
+  SegmentMemberFull:
+    allOf:
+      - type: object
+        properties:
+          device:
+            $ref: '#/definitions/SegmentDevice'
+            description: Device member. Available only when type of the member is device.
+          customer:
+            $ref: '#/definitions/SegmentCustomer'
+            description: Customer member. Available only when type of the member is customer.
+      - $ref: '#/definitions/SegmentMember'
+  SegmentCustomer:
+    type: object
+    properties:
+      id:
+        $ref: '#/definitions/CustomerId'
+      externalCustomerNumber:
+        type: string
+        example: "10001"
+      internalCustomerNumber:
+        type: string
+        example: "123"
+      firstName:
+        type: string
+        example: John
+      middleName:
+        type: string
+        example: Doug
+      lastName:
+        type: string
+        example: Doe
+      emailAddress:
+        type: string
+        example: john.doe@shopgate.com
+      contacts:
+        type: array
+        items:
+          $ref: '#/definitions/ContactFull'
+  SegmentDevice:
+    type: object
+    required:
+      - code
+      - platform
+      - type
+      - model
+      - osVersion
+    properties:
+      code:
+        type: string
+        example: 5ea79881-0dd6-46dd-ac61-df56c3b234a7
+      platform:
+        type: string
+        enum:
+          - ios
+          - android
+      type:
+        type: string
+        enum:
+          - phone
+          - tablet
+      model:
+        type: string
+        example: Pixel3
+      osVersion:
+        type: string
+        description: Version of the OS on the device
+        example: "10"
+      localeCode:
+        type: ["string", "null"]
+        description: Default locale code of the device
+        example: de-DE
+      lastActivity:
+        type: ["string", "null"]
+        format: date-time
+        example: "2019-10-03T16:01:13.582Z"
+      pushToken:
+        type: string
+      loggedInCustomerId:
+        type: ["string", "null"]
+        default: null
+        example: 7e06af60-53c9-4fe9-be83-48c1cafb6cce
+
+  CustomerId:
+    type: string
+    example: 9df58ed4-a160-4cf6-a558-480965ba176e
+
+  SegmentMembersDelete:
+    type: array
+    additionalProperties: false
+    items:
+      $ref: '#/definitions/SegmentMember'
+    description: Array list of members to delete. Use asterisk in property `id` to delete all members for a given type.
+    example:
+      - { id: '*', type: 'device'}
+      - { id: '602b47e-e581-415b-aff0-d47d5fdd2825', type: 'customer'}
+
+  SegmentMembers:
+    type: array
+    additionalProperties: false
+    items:
+      $ref: '#/definitions/SegmentMember'
+  AttributeCode:
+    type: string
+    example: color
+  AttributeName:
+    type: string
+    description: Name of the attribute which will be shown to the customer. It's saved in the language of the passed locale.
+    example: Color
+  AttributeType:
+    description:
+      Describes which type of validation to apply to an attribute's value. "collectionOfValues" will check for an
+      existing attribute value, the others will check for customer inputs to meet validation criteria of the suggested
+      type (e.g. for type "boolean", passing "123" will fail validation). The type cannot be changed once an attribute
+      has been created.
+    type: string
+    enum:
+      - text
+      - number
+      - boolean
+      - date
+      - collectionOfValues
+  AttributeValueName:
+    description: Name of the attribute value which will be shown to the customer. It's saved in the language of the passed locale.
+    type: string
+    example: Black
+  AttributeValueCode:
+    description: Unique identifier for the attribute value
+    type: string
+    example: black
+  AttributeValueSequenceId:
+    description: Sequence id of the order of the values. The lowest number is at the top and the highest number is at the botton.
+    type: number
+    example: 0
+  AddAttribute:
+    type: object
+    required:
+      - type
+      - name
+    properties:
+      type:
+        $ref: '#/definitions/AttributeType'
+      name:
+        $ref: '#/definitions/AttributeName'
+      isRequired:
+        type: boolean
+        default: false
+      values:
+        type: array
+        items:
+          $ref: '#/definitions/AttributeValue'
+      visibility:
+        type: string
+        description: controls the visibility of attributes on a customer
+        enum:
+          - internal
+          - public
+        default: public
+      displayGroup:
+        type: ["string", "null"]
+        description: controls display grouping of attributes
+  UpdateAttribute:
+    type: object
+    properties:
+      name:
+        $ref: '#/definitions/AttributeName'
+      isRequired:
+        type: boolean
+        default: false
+      values:
+        type: array
+        items:
+          $ref: '#/definitions/AttributeValueUpdateInList'
+      visibility:
+        type: string
+        description: controls the visibility of attributes on a customer
+        enum:
+          - internal
+          - public
+      displayGroup:
+        type: ["string", "null"]
+        description: controls display grouping of attributes
+    example:
+      isRequired: true
+      name: Favorite Pet
+      visibility: internal
+      values:
+        - name: Dog
+          code: dog
+          sequenceId: 0
+        - name: Fish
+          code: fish
+          sequenceId: 1
+        - name: Cat
+          code: cat
+          sequenceId: 2
+        - name: Rabbit
+          code: rabbit
+          sequenceId: 3
+  BaseAttribute:
+    type: object
+    properties:
+      type:
+        $ref: '#/definitions/AttributeType'
+      name:
+        $ref: '#/definitions/AttributeName'
+      isRequired:
+        type: boolean
+        default: false
+      values:
+        type: array
+        items:
+          $ref: '#/definitions/AttributeValue'
+    example:
+      type: text
+      isRequired: true
+      name: Favorite Pet
+      values:
+        - name: Dog
+          code: dog
+          sequenceId: 0
+        - name: Fish
+          code: fish
+          sequenceId: 1
+        - name: Cat
+          code: cat
+          sequenceId: 2
+        - name: Rabbit
+          code: rabbit
+          sequenceId: 3
+  Attribute:
+    allOf:
+      - type: object
+        properties:
+          code:
+            $ref: '#/definitions/AttributeCode'
+      - type: object
+        properties:
+          visibility:
+            type: string
+            description: controls the visibility of attributes on a customer
+            enum:
+              - internal
+              - public
+          displayGroup:
+            type: ["string", "null"]
+            description: controls display grouping of attributes
+      - $ref: '#/definitions/BaseAttribute'
+  BaseAttributeValue:
+    type: object
+    required:
+      - sequenceId
+      - name
+    properties:
+      sequenceId:
+        $ref: '#/definitions/AttributeValueSequenceId'
+      name:
+        $ref: '#/definitions/AttributeValueName'
+    example:
+      name: Rabbit
+      sequenceId: 3
+  AttributeValue:
+    allOf:
+      - type: object
+        required:
+          - code
+        properties:
+          code:
+            $ref: '#/definitions/AttributeValueCode'
+      - $ref: '#/definitions/BaseAttributeValue'
+    example:
+      name: Rabbit
+      code: rabbit
+      sequenceId: 3
+  AttributeValueUpdateInList:
+    type: object
+    required:
+      - code
+    properties:
+      code:
+        $ref: '#/definitions/AttributeValueCode'
+      sequenceId:
+        $ref: '#/definitions/AttributeValueSequenceId'
+      name:
+        $ref: '#/definitions/AttributeValueName'
+    example:
+      name: Rabbit
+      sequenceId: 3
+  Customer:
+    allOf:
+      - type: object
+        properties:
+          id:
+            type: string
+            example: d162439c-e2f9-4050-8b94-6bff33e8163b
+      - $ref: '#/definitions/BasicCustomer'
+      - type: object
+        properties:
+          contacts:
+            type: array
+            items:
+              $ref: '#/definitions/ContactFull'
+          attributes:
+            type: array
+            items:
+              $ref: '#/definitions/CustomerAttribute'
+            example:
+              - code: tshirtSize
+                name: T-Shirt Size
+                value:
+                  code: l
+                  name: L
+              - code: nameOfCat
+                name: Name of your cat
+                value: Some Cat Name
+          settings:
+            $ref: '#/definitions/CustomerSettings'
+
+  BasicCustomerAttribute:
+    type: object
+    additionalProperties: false
+    required:
+      - code
+    description: Custom customer attribute
+    properties:
+      code:
+        type: string
+        description: Code of the defined customer attribute
+        example: tshirtSize
+      value:
+        description: 'Value for this attribute. Its a free text field for attributes where no values are set. Attributes which have value set should contains the code in an object. For instance `value: { "code": "fish" }`'
+        example: L
+  CustomerAttribute:
+    description: Custom customer attribute
+    allOf:
+      - $ref: '#/definitions/BasicCustomerAttribute'
+      - type: object
+        properties:
+          name:
+            type: string
+            description: Human readable name of the attribute
+            example: T-Shirt size
+  CustomerSettings:
+    type: object
+    description: All customer settings which are defined by Shopgate
+    additionalProperties: false
+    properties:
+      defaultLocale:
+        type: string
+        example: en-us
+      defaultCurrency:
+        type: string
+        example: USD
+      communicationPreferences:
+        description: Communication Preferences.
+        type: array
+        items:
+          type: string
+          enum:
+            - sms
+            - email
+            - push
+        example:
+          - email
+          - push
+          - sms
+        default: ['sms', 'push']
+      defaultLocationCode:
+        type: string
+        example: DERetail001
+      marketingOptIn:
+        type: boolean
+        default: false
+  UpdateCustomer:
+    type: object
+    additionalProperties: false
+    properties:
+      externalCustomerNumber:
+        description: External Customer number
+        type: string
+        example: "10001"
+      firstName:
+        description: First name of the customer
+        type: string
+        example: "John"
+      middleName:
+        description: Middle name of the customer
+        type: ["string", "null"]
+        example: "Doug"
+      lastName:
+        description: Last name of the customer
+        type: string
+        example: "Doe"
+      emailAddress:
+        type: string
+        format: email
+        example: "john.doe@shopgate.com"
+      status:
+        $ref: '#/definitions/Status'
+      isAnonymous:
+        description: Indicates anonymous/guest customer.
+        type: boolean
+        example: true
+        default: false
+      taxExempt:
+        description: Indicates if customer is exempted from tax.
+        type: boolean
+        example: true
+      taxClass:
+        description: Tax class of the customer.
+        type:
+            - string
+            - "null"
+      contacts:
+        type: array
+        items:
+          $ref: '#/definitions/ContactSync'
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/CustomerAttribute'
+        example:
+          - code: tshirtSize
+            value:
+              code: l
+          - code: nameOfCat
+            value: Some Cats Name
+      settings:
+        $ref: '#/definitions/CustomerSettings'
+      externalUpdateDate:
+        type: string
+        format: date-time
+
+  CreateCustomer:
+    type: object
+    additionalProperties: false
+    required:
+      - firstName
+      - lastName
+      - emailAddress
+    properties:
+      externalCustomerNumber:
+        description: External Customer number
+        type: string
+        example: "10001"
+      firstName:
+        description: First name of the customer
+        type: string
+        example: "John"
+      middleName:
+        description: Middle name of the customer
+        type: ["string", "null"]
+        example: "Doug"
+      lastName:
+        description: Last name of the customer
+        type: string
+        example: "Doe"
+      emailAddress:
+        type: string
+        format: email
+        example: "john.doe@shopgate.com"
+      password:
+        $ref: '#/definitions/Password'
+      status:
+        $ref: '#/definitions/Status'
+      isAnonymous:
+        description: Indicates anonymous/guest customer.
+        type: boolean
+        example: true
+        default: false
+      taxExempt:
+        description: Indicates if customer is exempted from tax.
+        type: boolean
+        example: true
+        default: false
+      taxClass:
+        description: Tax class of the customer.
+        type:
+          - string
+          - "null"
+      contacts:
+        type: array
+        items:
+          $ref: '#/definitions/ContactCreate'
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/CustomerAttribute'
+        example:
+          - code: tshirtSize
+            value:
+              code: l
+          - code: nameOfCat
+            value: Some Cats Name
+      settings:
+        $ref: '#/definitions/CustomerSettings'
+      externalUpdateDate:
+        type: string
+        format: date-time
+
+  BasicCustomer:
+    type: object
+    properties:
+      internalCustomerNumber:
+        description: Internal Customer number, set automatically upon creation
+        type: number
+        example: 2
+      externalCustomerNumber:
+        description: External Customer number
+        type: string
+        example: "10001"
+      firstName:
+        description: First name of the customer
+        type: string
+        example: "John"
+      middleName:
+        description: Middle name of the customer
+        type: ["string", "null"]
+        example: "Doug"
+      lastName:
+        description: Last name of the customer
+        type: string
+        example: "Doe"
+      emailAddress:
+        type: string
+        format: email
+        example: "john.doe@shopgate.com"
+      status:
+        $ref: '#/definitions/Status'
+      isAnonymous:
+        description: Indicates anonymous/guest customer.
+        type: boolean
+        example: true
+        default: false
+      externalUpdateDate:
+        type: string
+        format: date-time
+      taxExempt:
+        type: boolean
+        default: false
+      taxClass:
+        description: Tax class of the customer.
+        type: string
+  Status:
+    type: string
+    example: "active"
+    default: "active"
+    enum:
+      - active
+      - inactive
+      - deleted
+  Password:
+    type: string
+    minLength: 8
+    example: superSecurePassword
+  ContactFull:
+    type: object
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        description: API identifier for the contact
+        example: 55a94ee0-6671-11e9-bb49-13684cb7b248
+      externalContactCode:
+        type: ["string", "null"]
+        description: External identifier of the contact
+        example: 357709b0-9378-470b-976e-1b040e29b97b
+      status:
+        $ref: '#/definitions/Status'
+      firstName:
+        type: string
+        example: John
+      middleName:
+        type: ["string", "null"]
+        example: Doug
+      lastName:
+        type: string
+        example: Doe
+      companyName:
+        type: ["string", "null"]
+        example: Shopgate Inc
+      address1:
+        type: string
+        example: 12 Somestreet
+      address2:
+        type: ["string", "null"]
+        example: ""
+      address3:
+        type: ["string", "null"]
+        example: ""
+      address4:
+        type: ["string", "null"]
+        example: ""
+      city:
+        type: string
+        example: Austin
+      postalCode:
+        type: string
+        example: "78732"
+      region:
+        type: string
+        example: TX
+      country:
+        type: string
+        example: US
+      phone:
+        type: ["string", "null"]
+        example: 000-000-0000
+      fax:
+        type: ["string", "null"]
+        example: 000-000-0000
+      mobile:
+        type: ["string", "null"]
+        example: 000-000-0000
+      emailAddress:
+        type: string
+        format: email
+        example: somelocation@someRetailer.com
+      isDefaultBilling:
+        type: boolean
+        default: false
+        example: true
+      isDefaultShipping:
+        type: boolean
+        default: false
+        example: true
+      externalUpdateDate:
+        type: string
+        format: date-time
+  ContactNoId:
+    type: object
+    additionalProperties: false
+    properties:
+      externalContactCode:
+        type: ["string", "null"]
+        description: External identifier of the contact
+        example: 357709b0-9378-470b-976e-1b040e29b97b
+      status:
+        $ref: '#/definitions/Status'
+      firstName:
+        type: string
+        example: John
+      middleName:
+        type: ["string", "null"]
+        example: Doug
+      lastName:
+        type: string
+        example: Doe
+      companyName:
+        type: ["string", "null"]
+        example: Shopgate Inc
+      address1:
+        type: string
+        example: 12 Somestreet
+      address2:
+        type: ["string", "null"]
+        example: ""
+      address3:
+        type: ["string", "null"]
+        example: ""
+      address4:
+        type: ["string", "null"]
+        example: ""
+      city:
+        type: string
+        example: Austin
+      postalCode:
+        type: string
+        example: "78732"
+      region:
+        type: string
+        example: TX
+      country:
+        type: string
+        example: US
+      phone:
+        type: ["string", "null"]
+        example: 000-000-0000
+      fax:
+        type: ["string", "null"]
+        example: 000-000-0000
+      mobile:
+        type: ["string", "null"]
+        example: 000-000-0000
+      emailAddress:
+        type: string
+        format: email
+        example: somelocation@someRetailer.com
+      isDefaultShipping:
+        type: boolean
+        default: false
+        example: true
+      isDefaultBilling:
+        type: boolean
+        default: false
+        example: true
+      externalUpdateDate:
+        type: string
+        format: date-time
+  ContactCreate:
+    required:
+      - firstName
+      - lastName
+    allOf:
+      - $ref: '#/definitions/ContactNoId'
+  ContactUpdate:
+    allOf:
+      - $ref: '#/definitions/ContactNoId'
+  ContactSync:
+    allOf:
+      - $ref: '#/definitions/ContactFull'
+  Metrics:
+    type: object
+    additionalProperties: false
+    properties:
+      lifetimeValue:
+        type: number
+      averageOrderValue:
+        type: number
+      averageItemsPerOrder:
+        type: number
+      averageOnlineOrderValue:
+        type: number
+      averagePickupInStoreOrderValue:
+        type: number
+      customerCreateAt:
+        type: string
+        format: date-time
+      pushOpenRate:
+        type: number
+      pushConversionRate:
+        type: number
+      numberOfOrders:
+        type: number
+      numberOfBOPUISOrders:
+        type: number
+      numberOfROPUISOrders:
+        type: number
+      numberOfDirectShipOrders:
+        type: number
+      averageBOPUISItemsPerOrder:
+        type: number
+      averageROPUISItemsPerOrder:
+        type: number
+      averageDirectShipItemsPerOrder:
+        type: number
+      averageBOPUISOrderRevenue:
+        type: number
+      averageROPUISOrderRevenue:
+        type: number
+      averageDirectShipOrderRevenue:
+        type: number
+      lastOrderDate:
+        type: string
+        format: date-time
+
+  Pagination:
+    type: object
+    properties:
+      limit:
+        type: number
+      offset:
+        type: number
+      totalItemCount:
+        type: number
+
+  CursorPagination:
+    type: object
+    properties:
+      limit:
+        type: number
+      cursors:
+        type: object
+        properties:
+          after:
+            type: string
+            description: base64 encoded cursor to use as the next after parameter while paginating through records. If
+              this is `null` the end of the result has been reached.
+      totalItemCount:
+        type: number
+
+  AddWishlist:
+    allOf:
+      - $ref: '#/definitions/BasicWishlist'
+      - type: object
+        required:
+          - code
+        properties:
+          code:
+            type: string
+            description: Wishlist code. This needs to be unique within every user
+            example: 1-wedding
+          items:
+            type: array
+            items:
+              $ref: '#/definitions/WishlistItem'
+  BasicWishlist:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Wishlist code. This needs to be unique within every user
+        example: 1-wedding
+      name:
+        description: Optional name of the wishlist. Free text field which can be filled by the customer
+        maxLength: 255
+        minLength: 1
+        type: string
+        example: Wedding gifts
+  WishlistItem:
+    type: object
+    required:
+      - productCode
+    properties:
+      productCode:
+        description: code of the product
+        example: 24001-1
+  Wishlist:
+    allOf:
+      - $ref: '#/definitions/BasicWishlist'
+      - type: object
+        properties:
+          items:
+            type: array
+            items:
+              $ref: '#/definitions/WishlistItem'
+    example:
+      code: default
+      name: Default Wish List
+      items:
+        - productCode: 24001-1
+
+  NotFoundError:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      code:
+        type: string
+        example: NotFound
+      message:
+        type: string
+        example: Merchant not found
+
+  UpdateDevice:
+    type: object
+    additionalProperties: false
+    properties:
+      platform:
+        type: string
+        enum:
+          - ios
+          - android
+      type:
+        type: string
+        enum:
+          - phone
+          - tablet
+      model:
+        type: string
+        example: Pixel3
+      osVersion:
+        type: string
+        description: Version of the OS on the device
+        example: "10"
+      appVersion:
+        type: string
+        description: Version of the app on the device
+        example: "10"
+      localeCode:
+        type: string
+        description: Default locale code of the device
+        example: de-DE
+      lastActivity:
+        type: string
+        format: date-time
+        example: "2019-10-03T16:01:13.582Z"
+      loggedInCustomerId:
+        type: ["string", "null"]
+        example: 7e06af60-53c9-4fe9-be83-48c1cafb6cce
+      pushToken:
+        type: ["string", "null"]
+        description: Push token to send push to device
+        example: YOUR_REGISTRATION_TOKEN_1
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/BasicDeviceAttribute'
+
+  BasicDevice:
+    type: object
+    required:
+      - code
+      - platform
+      - type
+      - model
+      - osVersion
+    properties:
+      code:
+        type: string
+        example: 5ea79881-0dd6-46dd-ac61-df56c3b234a7
+      platform:
+        type: string
+        enum:
+          - ios
+          - android
+      type:
+        type: string
+        enum:
+          - phone
+          - tablet
+      model:
+        type: string
+        example: Pixel3
+      osVersion:
+        type: string
+        description: Version of the OS on the device
+        example: "10"
+      appVersion:
+        type: ["string", "null"]
+        description: Version of the app on the device
+        example: "10"
+      localeCode:
+        type: ["string", "null"]
+        description: Default locale code of the device
+        example: de-DE
+      lastActivity:
+        type: ["string", "null"]
+        format: date-time
+        example: "2019-10-03T16:01:13.582Z"
+      pushToken:
+        type: string
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/BasicDeviceAttribute'
+      loggedInCustomerId:
+        type: ["string", "null"]
+        default: null
+        example: 7e06af60-53c9-4fe9-be83-48c1cafb6cce
+
+  Device:
+    type: object
+    allOf:
+      - $ref: '#/definitions/BasicDevice'
+      - type: object
+        properties:
+          attributes:
+            type: array
+            items:
+              $ref: '#/definitions/DeviceAttribute'
+    additionalProperties: false
+
+  BasicDeviceAttribute:
+    type: object
+    required:
+      - code
+    description: Device attribute
+    properties:
+      code:
+        type: string
+        description: Code of the defined customer attribute
+        example: preferredTheme
+      value:
+        description: 'Value for this attribute. Its a free text field for attributes where no values are set. Attributes which have value set should contains the code in an object. For instance `value: { "code": "fish" }`'
+        example: blue
+  DeviceAttribute:
+    description: Device attribute
+    allOf:
+      - $ref: '#/definitions/BasicDeviceAttribute'
+      - type: object
+        properties:
+          name:
+            type: string
+            description: Human readable name of the attribute
+            example: Preferred Theme
+
+  ValidationErrors:
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/ValidationError'
+  ValidationError:
+    type: object
+    required:
+      - field
+      - code
+      - message
+    properties:
+      field:
+        type: string
+        description: 'the parameter-field, that failed to validate, like "shopNumber"'
+      value:
+        type: string
+        description: 'the value, that was sent, like "xxx"'
+      code:
+        type: string
+        description: machine readable error code
+        enum:
+          - ENUM_MISMATCH
+          - MAXIMUM
+          - MAXIMUM_EXCLUSIVE
+          - MINIMUM
+          - MINIMUM_EXCLUSIVE
+          - MULTIPLE_OF
+          - ARRAY_LENGTH_LONG
+          - ARRAY_LENGTH_SHORT
+          - ARRAY_ADDITIONAL_ITEMS
+          - ARRAY_UNIQUE
+          - MAX_LENGTH
+          - MIN_LENGTH
+          - MAX_PROPERTIES
+          - MIN_PROPERTIES
+          - OBJECT_MISSING_REQUIRED_PROPERTY
+          - OBJECT_PROPERTIES_MAXIMUM
+          - OBJECT_PROPERTIES_MINIMUM
+          - OBJECT_ADDITIONAL_PROPERTIES
+          - OBJECT_DEPENDENCY_KEY
+          - ONE_OF_MISSING
+          - ONE_OF_MULTIPLE
+          - NOT_PASSED
+          - INVALID_FORMAT
+          - UNKNOWN_FORMAT
+          - PATTERN
+      message:
+        type: string
+        description: human readable error code
+  Error:
+    type: object
+    required:
+      - message
+    properties:
+      code:
+        type: string
+        description: machine readable error code
+      message:
+        type: string
+        description: human readable error code
+
+  BatchErrors:
+    type: array
+    items:
+      type: object
+      properties:
+        code:
+          type: number
+        message:
+          type: string
+        validationError:
+          type: object
+          description: (optional) The original validation error that occured.
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            paramName:
+              type: string
+            paramValue:
+              type: string
+        entity:
+          type: string
+        entityIndex:
+          type: number
+          description: The index of the element the error refers to in the list of elements passed, starting from 0.
+        entityId:
+          type: string
+    example:
+      - code: 409
+        message: customer already exists
+        entity: customer
+        entityIndex: 0
+        entityId: 7a81af64-a25d-11e9-8352-0bb2329f4819
+      - code: 400
+        message: Validation error.
+        validationError:
+          code: INVALID_TYPE
+          message: "Request validation failed: Parameter (externalUpdateDate) at index 1 is not a valid date: today"
+          paramName: externalUpdateDate
+          paramValue: today
+        entity: customer
+        entityIndex: 1
+        entityId: null

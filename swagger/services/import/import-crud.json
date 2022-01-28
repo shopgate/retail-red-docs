@@ -497,7 +497,7 @@
         "tags": [
           "Import"
         ],
-        "x-private": true
+        "x-internal": true
       }
     },
     "/imports/{importRef}": {
@@ -524,7 +524,7 @@
         "tags": [
           "Import"
         ],
-        "x-private": true
+        "x-internal": true
       }
     },
     "/imports/{importRef}/entityFiles": {
@@ -613,7 +613,7 @@
         "tags": [
           "Import"
         ],
-        "x-private": true
+        "x-internal": true
       }
     },
     "/imports/{importRef}/entityFiles/entities/{entity}": {
@@ -707,7 +707,7 @@
         "tags": [
           "Import"
         ],
-        "x-private": true
+        "x-internal": true
       }
     },
     "/imports/{importRef}/status": {
@@ -759,7 +759,7 @@
         "tags": [
           "Import"
         ],
-        "x-private": true
+        "x-internal": true
       }
     },
     "/merchants/{merchantCode}/imports": {

@@ -10,7 +10,7 @@ Also the error handling with these routes work a little different as the single 
 
 The incomming request body is always an object containing a collection property like this:
 
-```
+```json
 {
   "products": [
     { "code": "product1", ... },
@@ -23,15 +23,15 @@ The incomming request body is always an object containing a collection property 
 
 In case no 4xx/5xx HTTP error occured the response will generally look like this:
 
-```
+```json
 {
   "errors": [
     {
-      "code": "400"
-      "entity": "product"
-      "entityId": "product1"
-      "entityIndex": 0
-      "reason": "category does not exist"
+      "code": "400",
+      "entity": "product",
+      "entityId": "product1",
+      "entityIndex": 0,
+      "reason": "category does not exist",
       "subentityPath": ["categories", 0]
     }
   ]

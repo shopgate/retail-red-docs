@@ -1275,6 +1275,17 @@
         "responses": {
           "204": {
             "description": "Sales order updated"
+          },
+          "400": {
+            "description": "Bad request 'addressSequences' validation failed.",
+            "schema": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/BatchErrors"
+                }
+              ]
+            }
           }
         }
       },
@@ -4216,7 +4227,7 @@
           "type": "array",
           "description": "If the array is set it will replace all addresses",
           "items": {
-            "$ref": "#/definitions/SetAddressSequence"
+            "$ref": "#/definitions/UpdateAddressSequence"
           },
           "example": [
             {
@@ -5040,6 +5051,145 @@
         "emailAddress": {
           "type": "string",
           "format": "email",
+          "example": "max.muster@shopgate.com"
+        },
+        "orderSegment": {
+          "type": "object",
+          "properties": {
+            "selectedShippingMethod": {
+              "$ref": "#/definitions/SetSelectedShippingMethod"
+            }
+          }
+        }
+      }
+    },
+    "UpdateAddressSequence": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "pickup",
+            "shipping",
+            "billing"
+          ]
+        },
+        "customerContactId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "'addressSequences' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
+          "example": "0b475af4-7ed9-4065-b4bb-7d76c537d820"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "'addressSequences' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
+          "example": "Max"
+        },
+        "middleName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "René"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "'addressSequences' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
+          "example": "Muster"
+        },
+        "company": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "Shopgate GmbH"
+        },
+        "address1": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "Schloßstr. 10"
+        },
+        "address2": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "Haus B"
+        },
+        "address3": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "erste Etage"
+        },
+        "address4": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": null
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "Butzbach"
+        },
+        "region": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "HE"
+        },
+        "postalCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "\"35510\""
+        },
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "DE"
+        },
+        "phone": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "+49 12345 6789 001"
+        },
+        "fax": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "+49 12345 6789 002"
+        },
+        "mobile": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "example": "+49 12345 6789 003"
+        },
+        "emailAddress": {
+          "type": "string",
+          "format": "email",
+          "description": "'addressSequences' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
           "example": "max.muster@shopgate.com"
         },
         "orderSegment": {

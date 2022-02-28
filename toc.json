@@ -88,6 +88,21 @@
     },
     {
       "type": "item",
+      "title": "Batch Routes",
+      "uri": "markdown/api-reference/general/batch-routes.md"
+    },
+    {
+      "type": "item",
+      "title": "Service URLs",
+      "uri": "markdown/api-reference/general/service-urls.md"
+    },
+    {
+      "type": "item",
+      "title": "Sorting and Filtering",
+      "uri": "markdown/api-reference/general/sorting-and-filtering.md"
+    },
+    {
+      "type": "item",
       "title": "Catalog",
       "uri": "swagger/services/catalog/swagger.yaml"
     },

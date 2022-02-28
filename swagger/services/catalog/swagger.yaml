@@ -42,10 +42,10 @@ paths:
           x-examples:
             createParentCatalogs:
               parentCatalogs:
-                - code: parentCatalog1,
-                  defaultCurrencyCode: USD,
-                  defaultLocaleCode: en-us,
-                  isDefault: true,
+                - code: parentCatalog1
+                  defaultCurrencyCode: USD
+                  defaultLocaleCode: en-us
+                  isDefault: true
                   name: Parent Catalog 1
       responses:
         200:
@@ -1247,7 +1247,7 @@ paths:
             getProducts:
               meta:
                 limit: 10
-                cursor:
+                cursors:
                   after: 1b
                 totalItemCount: 2
               products:
@@ -1575,7 +1575,7 @@ paths:
                   isSerialized: true
                   isTaxed: true
                   longDescription:
-                    en-us: Very long desciption.
+                    en-us: Very long description.
                     de-de: Sehr lange Beschreibung.
                   longName:
                     en-us: The Jeans. Just Jeans.
@@ -1688,7 +1688,7 @@ paths:
                   isSerialized: true
                   isTaxed: true
                   longDescription:
-                    en-us: Very long desciption.
+                    en-us: Very long description.
                     de-de: Sehr lange Beschreibung.
                   longName:
                     en-us: The Jeans. Just Jeans.
@@ -1771,7 +1771,7 @@ paths:
                     width: 2.3
                     widthUnit: cm
                   shortDescription:
-                    en-us: Short desciption.
+                    en-us: Short description.
                     de-de: Kurze Beschreibung.
                   startDate: '2018-12-01T00:00:00.114Z'
                   status: active
@@ -2204,7 +2204,7 @@ paths:
               isSerialized: true
               isTaxed: true
               longDescription:
-                en-us: Very long desciption.
+                en-us: Very long description.
                 de-de: Sehr lange Beschreibung.
               longName:
                 en-us: The Jeans. Just Jeans.
@@ -2273,7 +2273,7 @@ paths:
                 width: 2.3
                 widthUnit: cm
               shortDescription:
-                en-us: Short desciption.
+                en-us: Short description.
                 de-de: Kurze Beschreibung.
               startDate: '2018-12-01T00:00:00.114Z'
               status: active
@@ -2482,7 +2482,7 @@ paths:
           examples:
             getInventories:
               meta:
-                cursor:
+                cursors:
                   after: 16471
                 limit: 10
                 offset: 0
@@ -2590,7 +2590,9 @@ paths:
                     locationCode:
                       $ref: '#/definitions/LocationCode'
                     sku:
-                      type: string
+                      type:
+                        - "null"
+                        - string
                       example: SKU-1
                       maxLength: 255
                     bin:
@@ -2664,7 +2666,9 @@ paths:
                       $ref: '#/definitions/LocationCode'
                       maxLength: 255
                     sku:
-                      type: string
+                      type:
+                        - "null"
+                        - string
                       example: SKU-1
                       maxLength: 255
                     bin:
@@ -2687,8 +2691,7 @@ paths:
   /merchants/{merchantCode}/locationInventories:
     parameters:
       - $ref: '#/parameters/MerchantCode'
-    post:
-      x-internal: true
+    get:
       tags:
         - Inventories
       operationId: getLocationInventories
@@ -2698,13 +2701,64 @@ paths:
 
         > **Note**: The location has to be set up first.
       parameters:
-        - $ref: '#/parameters/MerchantCode'
         - $ref: '#/parameters/PaginationLimit'
         - $ref: '#/parameters/PaginationAfter'
         - in: query
           name: filters
           type: string
-          description: "Filter string. Supported filters: productCodes"
+          description: "Filter string. Supported filters: productCode, locationCode, product.modelType"
+      responses:
+        200:
+          description: Returns inventories
+          schema:
+            type: object
+            properties:
+              meta:
+                $ref: '#/definitions/PaginationCursor'
+              locationInventories:
+                type: array
+                items:
+                  $ref: '#/definitions/LocationInventoryExtended'
+          examples:
+            getLocationInventories:
+              meta:
+                limit: 100
+                cursors:
+                  after: 542ae3145
+                totalItemCount: 2876
+              inventories:
+                - productCode: jeans1
+                  locationCode: loc1
+                  onHand: 300
+                  onReserve: 50
+                  available: 250
+                  safetyStock: 50
+                  visible: 200
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationError'
+        404:
+          description: Merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    post:
+      x-internal: true
+      tags:
+        - Inventories
+      operationId: getLocationInventoriesBatch
+      summary: Get location inventories (Batch)
+      description: |
+        Get location inventories for merchant
+
+        > **Note**: The location has to be set up first.
+      parameters:
+        - $ref: '#/parameters/PaginationLimit'
+        - $ref: '#/parameters/PaginationAfter'
+        - in: query
+          name: filters
+          type: string
+          description: "Filter string. Supported filters: productCode"
         - in: body
           name: body
           required: true
@@ -2726,7 +2780,7 @@ paths:
             properties:
               meta:
                 $ref: '#/definitions/PaginationCursor'
-              inventories:
+              locationInventories:
                 type: array
                 items:
                   $ref: '#/definitions/LocationInventory'
@@ -2795,7 +2849,7 @@ paths:
         - $ref: '#/parameters/Sort'
       responses:
         200:
-          description: Returns inventories
+          description: Returns reservations
           schema:
             type: object
             properties:
@@ -2822,6 +2876,7 @@ paths:
                   salesOrderLineItemCode: someCode
                   salesOrderNumber: someCode
                   sku: SKU-1
+                  createDate: "2018-12-15T00:00:23.114Z"
         400:
           description: Validation error
           schema:
@@ -2865,6 +2920,14 @@ paths:
                   salesOrderLineItemCode: someCode
                   salesOrderNumber: someCode
                   sku: SKU-1
+                - bin: null
+                  binLocation: null
+                  locationCode: DERetail1
+                  productCode: jeans-1
+                  quantity: 1
+                  salesOrderLineItemCode: someCode
+                  salesOrderNumber: someCode
+                  sku: null
       responses:
         200:
           description: Successfully created
@@ -3002,6 +3065,10 @@ paths:
           description: Merchant, location or inventory reservations for the fulfillment order found.
           schema:
             $ref: '#/definitions/NotFoundError'
+        409:
+          description: Reservations can not get settled because of inventory misconfiguration
+          schema:
+            $ref: '#/definitions/Error'
   /merchants/{merchantCode}/reservations/{reservationCode}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -3076,6 +3143,7 @@ paths:
                 salesOrderLineItemCode: someCode
                 salesOrderNumber: someCode
                 sku: SKU-1
+                createDate: "2018-12-15T00:00:23.114Z"
         400:
           description: Validation error
           schema:
@@ -3084,10 +3152,6 @@ paths:
           description: Merchant, location or inventory not found
           schema:
             $ref: '#/definitions/NotFoundError'
-        409:
-          description: Reservation already exists
-          schema:
-            $ref: '#/definitions/Error'
   /merchants/{merchantCode}/productInventories:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -3213,7 +3277,7 @@ paths:
             getCumulatedInventories:
               meta:
                 limit: 100
-                cursor:
+                cursors:
                   after: 542ae3145
                 totalItemCount: 2876
               cumulatedInventories:
@@ -3511,6 +3575,7 @@ paths:
                     status: active
                     timeType: cron
                     timeValue: 4 5 * * *
+                    productLinkTemplate: "{{product.deeplinkUrl}}?store={store_code}"
                   username: sftp-user
                   productIdentifier: productCode
       responses:
@@ -4237,7 +4302,7 @@ definitions:
       url: https://awesomeShop.com/c/jeans
       externalUpdateDate: "2019-01-12T00:00:00.114Z"
       status: active
-      path: ["firstLevelCategory", "secondLevelCategory", "thridLevelCategory"]
+      path: ["firstLevelCategory", "secondLevelCategory", "thirdLevelCategory"]
       sequenceId: 0
   CategoryCreate:
     type: object
@@ -4462,7 +4527,9 @@ definitions:
       locationCode:
         $ref: '#/definitions/LocationCode'
       sku:
-        type: string
+        type:
+          - "null"
+          - string
         description: Stock keeping unit
         example: 54nf444
         maxLength: 255
@@ -4507,7 +4574,9 @@ definitions:
       locationCode:
         $ref: '#/definitions/LocationCode'
       sku:
-        type: string
+        type:
+          - "null"
+          - string
         description: Stock keeping unit
         example: 54nf444
         maxLength: 255
@@ -4543,7 +4612,9 @@ definitions:
       productCode:
         $ref: '#/definitions/Code'
       sku:
-        type: string
+        type:
+          - "null"
+          - string
         maxLength: 255
       locationCode:
         $ref: '#/definitions/LocationCode'
@@ -4661,6 +4732,28 @@ definitions:
       inventoryVisible:
         type: number
         example: 200
+  LocationInventoryExtended:
+    type: object
+    properties:
+      productCode:
+        $ref: '#/definitions/Code'
+      locationCode:
+        $ref: '#/definitions/Code'
+      onHand:
+        type: number
+        example: 300
+      onReserve:
+        type: number
+        example: 50
+      available:
+        type: number
+        example: 250
+      safetyStock:
+        type: number
+        example: 50
+      visible:
+        type: number
+        example: 200
   LongNameResolved:
     type: string
     description: Long name of the product
@@ -4775,7 +4868,7 @@ definitions:
     properties:
       limit:
         type: number
-      cursor:
+      cursors:
         type: object
         properties:
           after:
@@ -4796,7 +4889,7 @@ definitions:
         type: number
       offset:
         type: number
-      cursor:
+      cursors:
         type: object
         properties:
           after:
@@ -4855,7 +4948,7 @@ definitions:
       - string
     minLength: 1
     maxLength: 255
-    example: "55585"
+    example: '"55585"'
   PriceGet:
     allOf:
       - $ref: '#/definitions/Price'
@@ -5375,24 +5468,19 @@ definitions:
     description: Ratings from (1-5). To save fractions of a rating, pass in e.g. 0.5 for a "1/2 star" representation.
     example: 5
   Reservation:
-    allOf:
-      - $ref: '#/definitions/ReservationCreate'
-      - type: object
-        properties:
-          code:
-            type: string
-            example: 1278ab38-f5ad-488f-abf5-e834239e45a1
-            maxLength: 36
-  ReservationCreate:
     type: object
     required:
+      - code
       - productCode
       - locationCode
-      - sku
       - salesOrderNumber
       - quantity
       - salesOrderLineItemCode
     properties:
+      code:
+        type: string
+        example: 1278ab38-f5ad-488f-abf5-e834239e45a1
+        maxLength: 36
       productCode:
         type: string
         example: productCode1
@@ -5400,7 +5488,9 @@ definitions:
       locationCode:
         $ref: '#/definitions/LocationCode'
       sku:
-        type: string
+        type:
+          - "null"
+          - string
         example: SKU-1
         maxLength: 255
       salesOrderLineItemCode:
@@ -5424,6 +5514,59 @@ definitions:
       quantity:
         type: number
         example: 1
+      createDate:
+        type: string
+        format: date-time
+        example: "2018-12-15T00:00:23.114Z"
+  ReservationCreate:
+    type: object
+    required:
+      - productCode
+      - locationCode
+      - sku
+      - salesOrderNumber
+      - quantity
+      - salesOrderLineItemCode
+    properties:
+      productCode:
+        type: string
+        example: productCode1
+        maxLength: 255
+      locationCode:
+        $ref: '#/definitions/LocationCode'
+      sku:
+        type:
+          - "null"
+          - string
+        example: SKU-1
+        maxLength: 255
+      salesOrderLineItemCode:
+        type: string
+        example: someCode
+        maxLength: 100
+      fulfillmentOrderLineItemId:
+        type: number
+        example: 1
+        maxLength: 20
+      salesOrderNumber:
+        type: string
+        example: someCode
+      fulfillmentOrderNumber:
+        type: string
+        example: someCode
+      bin:
+        $ref: '#/definitions/Bin'
+      binLocation:
+        $ref: '#/definitions/BinLocation'
+      quantity:
+        type: number
+        example: 1
+      ignoreInventory:
+        description: this flag only works internally and can not be used by external clients
+        x-internal: true
+        type: boolean
+        example: false
+        default: false
   ShippingInformation:
     type: object
     properties:
@@ -5726,7 +5869,8 @@ definitions:
         "productExport": {
           "status": "active",
           "timeType": "cron",
-          "timeValue": "4 5 * * *"
+          "timeValue": "4 5 * * *",
+          "productLinkTemplate": "{{product.deeplinkUrl}}?store={store_code}"
         },
         "inventoryExport": {
           "status": "active",
@@ -5791,6 +5935,8 @@ definitions:
         type: string
       cronPattern:
         type: string
+      productLinkTemplate:
+        type: string
   InventoryExportOutput:
     allOf:
       - $ref: '#/definitions/ExportOutput'
@@ -5846,6 +5992,10 @@ definitions:
           - cron
           - time
       timeValue:
+        type:
+          - string
+          - "null"
+      productLinkTemplate:
         type:
           - string
           - "null"

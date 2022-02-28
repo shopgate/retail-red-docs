@@ -6079,6 +6079,7 @@
         "quantity",
         "currencyCode",
         "price",
+        "extendedPrice",
         "fulfillmentMethod",
         "fulfillmentLocationCode",
         "shipToAddressSequenceIndex",

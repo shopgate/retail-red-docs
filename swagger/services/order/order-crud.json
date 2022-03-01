@@ -5082,12 +5082,12 @@
             "string",
             "null"
           ],
-          "description": "'addressSequences' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
+          "description": "'addressSequences' with type 'billing' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
           "example": "0b475af4-7ed9-4065-b4bb-7d76c537d820"
         },
         "firstName": {
           "type": "string",
-          "description": "'addressSequences' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
+          "description": "'addressSequences' with type 'billing' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
           "example": "Max"
         },
         "middleName": {
@@ -5099,7 +5099,7 @@
         },
         "lastName": {
           "type": "string",
-          "description": "'addressSequences' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
+          "description": "'addressSequences' with type 'billing' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
           "example": "Muster"
         },
         "company": {
@@ -5189,7 +5189,7 @@
         "emailAddress": {
           "type": "string",
           "format": "email",
-          "description": "'addressSequences' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
+          "description": "'addressSequences' with type 'billing' must include either a 'customerContactId' or all of 'firstName', 'lastName' and 'emailAddress'",
           "example": "max.muster@shopgate.com"
         },
         "orderSegment": {

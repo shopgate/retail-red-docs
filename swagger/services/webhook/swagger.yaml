@@ -1,0 +1,521 @@
+swagger: "2.0"
+info:
+  title: Webhook Service
+  version: '1.0'
+  contact:
+    name: retail.red API
+    url: https://retail.red
+    email: mail@retail.red
+  description: |
+    Check out the [Webhook Integration Guide](/guides/integrations/webhook-integration/overview) or start with [creating a webhook](/api-reference/webhook-api/webhooks/createwebhooks).
+host: webhook.shopgate.io
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  /merchants/{merchantCode}/webhooks:
+    get:
+      tags:
+        - Webhooks
+      operationId: getWebhooks
+      summary: Get webhooks
+      description: Get webhooks
+      parameters:
+        - $ref: "#/parameters/MerchantCode"
+        - in: query
+          name: filters
+          type: string
+          description: Allowed filter is `code`
+      responses:
+        200:
+          description: Returns webhooks
+          schema:
+            type: object
+            properties:
+              webhooks:
+                type: array
+                items:
+                  $ref: "#/definitions/WebhookFull"
+          examples:
+            getWebhooks:
+              webhooks:
+                - id: 123e4567-e89b-12d3-a456-426614174000
+                  code: salesOrderAddedMagento
+                  name: salesOrderAdded Magento
+                  endpoint: https://your-service.url
+                  active: true
+                  events:
+                    - code: salesOrderAdded
+        400:
+          description: Validation error
+          schema:
+            $ref: "#/definitions/ValidationError"
+        404:
+          description: Merchant not found
+          schema:
+            $ref: "#/definitions/NotFoundError"
+    post:
+      tags:
+        - Webhooks
+      operationId: createWebhooks
+      summary: Create webhooks
+      description: Register new webhooks
+      parameters:
+        - $ref: "#/parameters/MerchantCode"
+        - $ref: "#/parameters/WebhookCreate"
+      responses:
+        200:
+          description: Invalid request
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: "#/definitions/ErrorList"
+              ids:
+                $ref: "#/definitions/Ids"
+          examples:
+            createWebhooks:
+              errors:
+                - code: 409
+                  entity: webhook
+                  entityId: salesOrderAddedMagento
+                  entityIndex: 0
+                  reason: Webhook with code 'salesOrderAddedMagento' already exists
+                  subentityPath: []
+              ids:
+                - 123e4567-e89b-12d3-a456-426614174000
+        400:
+          description: Validation error
+          schema:
+            $ref: "#/definitions/ValidationError"
+        404:
+          description: Merchant not found
+          schema:
+            $ref: "#/definitions/NotFoundError"
+  /merchants/{merchantCode}/webhooks/{webhookId}:
+    post:
+      tags:
+        - Webhooks
+      operationId: updateWebhook
+      summary: Update webhook
+      description: Update webhook
+      parameters:
+        - $ref: "#/parameters/MerchantCode"
+        - $ref: "#/parameters/WebhookId"
+        - $ref: "#/parameters/WebhookUpdate"
+      responses:
+        204:
+          description: Update successful
+        400:
+          description: Validation error
+          schema:
+            $ref: "#/definitions/ValidationError"
+        404:
+          description: Merchant or Webhook not found
+          schema:
+            $ref: "#/definitions/NotFoundError"
+    delete:
+      tags:
+        - Webhooks
+      operationId: deleteWebhook
+      summary: Delete webhook
+      description: Delete webhook
+      parameters:
+        - $ref: "#/parameters/MerchantCode"
+        - $ref: "#/parameters/WebhookId"
+      responses:
+        204:
+          description: Delete successful
+        400:
+          description: Invalid request
+          schema:
+            $ref: "#/definitions/ValidationError"
+        404:
+          description: Merchant or Webhook not found
+          schema:
+            $ref: "#/definitions/NotFoundError"
+  /merchants/{merchantCode}/webhooks/{webhookId}/test:
+    post:
+      tags:
+        - Webhooks
+      operationId: triggerWebhook
+      summary: Test webhook
+      description: Trigger example webhook event. The `body` property gets filled with the response body of the external service. The `error` property gets filled with the response body of the external service in case an error occured.
+      parameters:
+        - $ref: "#/parameters/MerchantCode"
+        - $ref: "#/parameters/WebhookId"
+      responses:
+        200:
+          description: Trigger successful
+          schema:
+            $ref: "#/definitions/WebhookResponse"
+          examples:
+            triggerWebhook:
+              error:
+                test: true
+              body:
+                test: true
+              statusCode: 200
+        400:
+          description: Validation error
+          schema:
+            $ref: "#/definitions/ValidationError"
+        404:
+          description: Merchant or Event not found
+  /merchants/{merchantCode}/webhookToken:
+    get:
+      tags:
+        - Webhooks
+      operationId: getWebhookToken
+      summary: Get webhook token
+      description: Get webhook token
+      parameters:
+        - $ref: "#/parameters/MerchantCode"
+      responses:
+        200:
+          description: Returns webhook token
+          schema:
+            type: object
+            properties:
+              webhookToken:
+                type: string
+                example: ajkJKSDLASfjk2N340jwfdsONlnvmylKLOJOFBjdslbL0in
+          examples:
+            getWebhookToken:
+              webhookToken: "ajkJKSDLASfjk2N340jwfdsONlnvmylKLOJOFBjdslbL0in"
+        400:
+          description: Validation error
+          schema:
+            $ref: "#/definitions/ValidationError"
+        404:
+          description: Merchant not found
+          schema:
+            $ref: "#/definitions/NotFoundError"
+parameters:
+  WebhookCreate:
+    in: body
+    name: body
+    required: true
+    description: "The following event codes are supported:
+      <ul>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#cartremindertimereached\">cartReminderTimeReached</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#customerdeleted\">customerDeleted</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#fulfillmentorderadded\">fulfillmentOrderAdded</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#fulfillmentorderstatusupdated\">fulfillmentOrderStatusUpdated</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#fulfillmentorderupdated\">fulfillmentOrderUpdated</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#importcompleted\">importCompleted</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#inventoryreservationdeleted\">inventoryReservationDeleted</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#inventoryreservationsettled\">inventoryReservationSettled</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#locationcreated\">locationCreated</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#locationdeleted\">locationDeleted</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#locationupdated\">locationUpdated</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#ordernotpickedup\">orderNotPickedUp</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#productcreated\">productCreated</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#productupdated\">productUpdated</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#salesorderadded\">salesOrderAdded</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#salesorderfulfillmentadded\">salesOrderFulfillmentAdded</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#salesorderstatusupdated\">salesOrderStatusUpdated</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#schedulepicktimereached\">schedulePickTimeReached</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#schedulepickupremindertimereached\">schedulePickupReminderTimeReached</a></li>
+      </ul>"
+    schema:
+      type: object
+      required:
+        - webhooks
+      properties:
+        webhooks:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/definitions/WebhookCreate"
+    x-examples:
+      createWebhooks:
+        webhooks:
+          - code: salesOrderAddedMagento
+            name: salesOrderAdded Magento
+            endpoint: https://your-service.url
+            active: true
+            events:
+              - code: salesOrderAdded
+  WebhookUpdate:
+    in: body
+    name: body
+    required: true
+    schema:
+      $ref: "#/definitions/WebhookUpdate"
+    x-examples:
+      updateWebhook:
+        name: salesOrderAdded Magento
+        endpoint: https://your-service.url
+        active: true
+        events:
+          - code: salesOrderAdded
+  Webhook:
+    in: body
+    name: body
+    required: true
+    schema:
+      $ref: "#/definitions/WebhookFull"
+  EventCode:
+    name: eventCode
+    in: path
+    type: string
+    required: true
+    maxLength: 255
+  MerchantCode:
+    name: merchantCode
+    in: path
+    type: string
+    required: true
+    maxLength: 255
+  WebhookId:
+    name: webhookId
+    in: path
+    type: string
+    required: true
+    maxLength: 255
+definitions:
+  Code:
+    type: string
+    example: a0302b84-8635-4ea6-9be3-ec48be12a15b
+  WebhookCreate:
+    type: object
+    additionalProperties: false
+    required:
+      - endpoint
+      - active
+      - events
+      - name
+    properties:
+      code:
+        type:
+          - string
+          - "null"
+        maxLength: 255
+        example: string
+      name:
+        type: string
+        maxLength: 255
+      endpoint:
+        type: string
+        maxLength: 255
+      active:
+        type: boolean
+      events:
+        type: array
+        items:
+          $ref: "#/definitions/Event"
+  WebhookUpdate:
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        maxLength: 255
+      endpoint:
+        type: string
+        maxLength: 255
+      active:
+        type: boolean
+      events:
+        type: array
+        items:
+          $ref: "#/definitions/Event"
+  WebhookFull:
+    type: object
+    properties:
+      id:
+        type: string
+        maxLength: 36
+      name:
+        type: string
+        maxLength: 255
+      endpoint:
+        type: string
+        maxLength: 255
+      active:
+        type: boolean
+      events:
+        type: array
+        items:
+          $ref: "#/definitions/Event"
+      code:
+        type: string
+        description: Human readable code of the entity
+        example: "someCode"
+        maxLength: 255
+  WebhookResponse:
+    type: object
+    properties:
+      error:
+        type: object
+        description: Webhook response error
+        example: { "test": true }
+      body:
+        type: object
+        description: Webhook response body
+        example: { "test": true }
+      statusCode:
+        type: number
+        description: Webhook response status code
+        example: 200
+  Event:
+    type: object
+    additionalProperties: false
+    required:
+      - code
+    properties:
+      code:
+        type: string
+  NotFoundError:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      code:
+        type: string
+        example: NotFound
+      message:
+        type: string
+        example: Merchant not found
+  ValidationError:
+    type: object
+    properties:
+      message:
+        type: string
+      code:
+        type: string
+      error:
+        type: object
+        required:
+          - message
+        properties:
+          paramName:
+            type: string
+            description: 'the parameter-field, that failed to validate, like "userId"'
+          paramValue:
+            description: 'the value, that was sent, like "xxx"'
+          code:
+            type: string
+            description: machine readable error code
+            enum:
+              - SCHEMA_VALIDATION_FAILED
+              - ENUM_MISMATCH
+              - MAXIMUM
+              - MAXIMUM_EXCLUSIVE
+              - MINIMUM
+              - MINIMUM_EXCLUSIVE
+              - MULTIPLE_OF
+              - ARRAY_LENGTH_LONG
+              - ARRAY_LENGTH_SHORT
+              - ARRAY_ADDITIONAL_ITEMS
+              - ARRAY_UNIQUE
+              - MAX_LENGTH
+              - MIN_LENGTH
+              - MAX_PROPERTIES
+              - MIN_PROPERTIES
+              - OBJECT_MISSING_REQUIRED_PROPERTY
+              - OBJECT_PROPERTIES_MAXIMUM
+              - OBJECT_PROPERTIES_MINIMUM
+              - OBJECT_ADDITIONAL_PROPERTIES
+              - OBJECT_DEPENDENCY_KEY
+              - ONE_OF_MISSING
+              - ONE_OF_MULTIPLE
+              - NOT_PASSED
+              - INVALID_FORMAT
+              - UNKNOWN_FORMAT
+              - PATTERN
+          message:
+            type: string
+            description: human readable error code
+          results:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: "#/definitions/ValidationErrorResult"
+              warnings:
+                type: array
+                items:
+                  $ref: "#/definitions/ValidationErrorResult"
+  ValidationErrorResult:
+    type: object
+    properties:
+      code:
+        type: string
+        description: machine readable error code
+        enum:
+          - ENUM_MISMATCH
+          - MAXIMUM
+          - MAXIMUM_EXCLUSIVE
+          - MINIMUM
+          - MINIMUM_EXCLUSIVE
+          - MULTIPLE_OF
+          - ARRAY_LENGTH_LONG
+          - ARRAY_LENGTH_SHORT
+          - ARRAY_ADDITIONAL_ITEMS
+          - ARRAY_UNIQUE
+          - MAX_LENGTH
+          - MIN_LENGTH
+          - MAX_PROPERTIES
+          - MIN_PROPERTIES
+          - OBJECT_MISSING_REQUIRED_PROPERTY
+          - OBJECT_PROPERTIES_MAXIMUM
+          - OBJECT_PROPERTIES_MINIMUM
+          - OBJECT_ADDITIONAL_PROPERTIES
+          - OBJECT_DEPENDENCY_KEY
+          - ONE_OF_MISSING
+          - ONE_OF_MULTIPLE
+          - NOT_PASSED
+          - INVALID_FORMAT
+          - UNKNOWN_FORMAT
+          - PATTERN
+      message:
+        type: string
+        description: human readable error code
+      description:
+        type: string
+        example: human readable error code
+      path:
+        type: array
+        items:
+          type: string
+  Ids:
+    type: array
+    items:
+      type: string
+      example: a0302b84-8635-4ea6-9be3-ec48be12a15b
+  ErrorList:
+    type: array
+    items:
+      $ref: "#/definitions/ErrorListObject"
+  ErrorListObject:
+    type: object
+    properties:
+      code:
+        type: number
+        example: 400
+      entity:
+        type: string
+        example: planet
+      entityId:
+        type: string
+        example: pluto
+      entityIndex:
+        type: number
+        example: 1
+      reason:
+        type: string
+        example: "Planet pluto was not found (did you mean dwarf planet pluto?)"
+      subentityPath:
+        type: array
+        items:
+          type:
+            - number
+            - string

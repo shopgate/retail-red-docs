@@ -124,7 +124,7 @@
     {
       "type": "item",
       "title": "Webhook",
-      "uri": "swagger/services/webhook/webhook-crud.json"
+      "uri": "swagger/services/webhook/swagger.yaml"
     }
   ]
 }

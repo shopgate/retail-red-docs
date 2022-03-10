@@ -119,7 +119,7 @@
     {
       "type": "item",
       "title": "Order",
-      "uri": "swagger/services/order/order-crud.json"
+      "uri": "swagger/services/order/swagger.yaml"
     },
     {
       "type": "item",

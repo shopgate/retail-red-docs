@@ -1787,6 +1787,9 @@ paths:
                 - code: minimalProduct
                   isInventoryManaged: true
                   modelType: standard
+                  name:
+                   en-us: 'Minimal Product'
+                   de-de: 'Minimales Produkt'
       responses:
         200:
           description: Successfully created
@@ -2703,10 +2706,11 @@ paths:
       parameters:
         - $ref: '#/parameters/PaginationLimit'
         - $ref: '#/parameters/PaginationAfter'
+        - $ref: '#/parameters/LocaleCode'
         - in: query
           name: filters
           type: string
-          description: "Filter string. Supported filters: productCode, locationCode, product.modelType"
+          description: "Filter string. Supported filters: productCode, locationCode, product.modelType, product.name, product.identifiers.ean, product.identifiers.upc, product.identifiers.sku, product.identifiers.isbn, product.identifiers.mfgPartNum, product.identifiers.distiPartNum"
       responses:
         200:
           description: Returns inventories
@@ -2888,7 +2892,7 @@ paths:
     post:
       tags:
         - Inventories
-      operationId: reserverInventory
+      operationId: reserveInventory
       summary: Reserve inventory
       description: |
         Reserve inventory for multiple products
@@ -4657,6 +4661,7 @@ definitions:
     description: Localization object, see [Entity Localization](/docs/retail-red/ZG9jOjM1NjU0NzY4-concepts-and-entities#entity-localization) for further information.
     additionalProperties:
       type: string
+      minLength: 1
       maxLength: 255
     example:
       en-us: "string in english"
@@ -5098,6 +5103,7 @@ definitions:
   ProductCreate:
     type: object
     required:
+      - name
       - modelType
       - isInventoryManaged
       - code

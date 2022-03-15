@@ -3178,6 +3178,8 @@ paths:
             type: array
             items:
               type: object
+              required:
+                - productCode
               properties:
                 productCode:
                   type: string
@@ -4699,7 +4701,7 @@ definitions:
       en-us: "string in english"
       de-de: "Zeichenkette auf Deutsch"
   LocalizationMedia:
-    description: Localization object, see [Entity Localization](/docs/retail-red/ZG9jOjM1NjU0NzY4-concepts-and-entities#entity-localization) for further information.
+    description: Localization object, see [Entity Localization](/docs/retail-red/ZG9jOjM1NjU0NzY4-concepts-and-entities#entity-localization) for further information. We support type image, video, or pdf. In case of type video, we currently support vimeo and youtube urls
     type: object
     additionalProperties:
       type: array
@@ -4807,6 +4809,7 @@ definitions:
         maxLength: 255
       type:
         type: string
+        description: In case of type video, we currently support vimeo and youtube urls
         enum:
           - image
           - video

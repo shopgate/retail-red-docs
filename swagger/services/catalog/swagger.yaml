@@ -3988,6 +3988,7 @@ parameters:
     type: integer
     default: 1000
     minimum: 1
+    maximum: 1000
   PaginationOffset:
     description: the offset where to start the page
     in: query

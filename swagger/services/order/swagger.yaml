@@ -2806,10 +2806,10 @@ definitions:
           - actionRequired
       primaryBillToAddressSequenceIndex:
         type: number
-        description: Position in the AddressSequences-Array
+        description: Position in the AddressSequences-Array, mandatory for all fulfillment methods that include billing like directShip and BOPIS
       primaryShipToAddressSequenceIndex:
         type: number
-        description: Position in the AddressSequences-Array
+        description: Position in the AddressSequences-Array, mandatory for all fulfillment methods that include shipping like directShip
       addressSequences:
         type: array
         items:
@@ -2991,10 +2991,10 @@ definitions:
           $ref: '#/definitions/SetAddressSequence'
       primaryBillToAddressSequenceIndex:
         type: number
-        description: Position in the AddressSequences-Array
+        description: Position in the AddressSequences-Array, mandatory for all fulfillment methods that include billing like directShip and BOPIS
       primaryShipToAddressSequenceIndex:
         type: number
-        description: Position in the AddressSequences-Array
+        description: Position in the AddressSequences-Array, mandatory for all fulfillment methods that include shipping like directShip
       coupons:
         type: array
         description:
@@ -3123,11 +3123,11 @@ definitions:
                 $ref: '#/definitions/AuthorizedAmount'
         primaryBillToAddressSequenceIndex:
           type: number
-          description: Position in the AddressSequences-Array
+          description: Position in the AddressSequences-Array, mandatory for all fulfillment methods that include billing like directShip and BOPIS
           example: 0
         primaryShipToAddressSequenceIndex:
           type: number
-          description: Position in the AddressSequences-Array
+          description: Position in the AddressSequences-Array, mandatory for all fulfillment methods that include shipping like directShip
           example: 1
         status:
           $ref: '#/definitions/SOStatus'

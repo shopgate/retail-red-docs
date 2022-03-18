@@ -16,7 +16,7 @@ produces:
 consumes:
   - application/json
 paths:
-  # TODO:
+  
   /merchants/{merchantCode}/attributes:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -169,7 +169,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  # TODO:
+  
   /merchants/{merchantCode}/attributes/{attributeCode}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -297,7 +297,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  # TODO:
+  
   /merchants/{merchantCode}/attributes/{attributeCode}/values:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -338,7 +338,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  # TODO:
+  
   /merchants/{merchantCode}/attributes/{attributeCode}/values/{attributeValueCode}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -392,7 +392,7 @@ paths:
             $ref: '#/definitions/NotFoundError'
         '409':
           description: Value is used for product option or extra
-  # TODO:
+  
   /merchants/{merchantCode}/customers:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -603,7 +603,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  # TODO:
+  
   /merchants/{merchantCode}/customers/{customerId}:
     parameters:
       - name: merchantCode
@@ -786,7 +786,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  # TODO:
+  
   /merchants/{merchantCode}/customers/{customerId}/contacts:
     parameters:
       - name: merchantCode
@@ -862,7 +862,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  # TODO:
+  
   /merchants/{merchantCode}/customers/{customerId}/contacts/{contactId}:
     parameters:
       - name: merchantCode
@@ -2886,12 +2886,15 @@ definitions:
       phone:
         type: ["string", "null"]
         example: 000-000-0000
+        description: Validated according to country code
       fax:
         type: ["string", "null"]
         example: 000-000-0000
+        description: Validated according to country code
       mobile:
         type: ["string", "null"]
         example: 000-000-0000
+        description: Validated according to country code
       emailAddress:
         type: string
         format: email
@@ -2956,12 +2959,15 @@ definitions:
       phone:
         type: ["string", "null"]
         example: 000-000-0000
+        description: Validated according to country code
       fax:
         type: ["string", "null"]
         example: 000-000-0000
+        description: Validated according to country code
       mobile:
         type: ["string", "null"]
         example: 000-000-0000
+        description: Validated according to country code
       emailAddress:
         type: string
         format: email

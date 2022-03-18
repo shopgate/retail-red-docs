@@ -3626,15 +3626,15 @@ definitions:
       phone:
         type: ["string", "null"]
         example: +49 12345 6789 001
-        description: Validated according to county code
+        description: Validated according to country code
       fax:
         type: ["string", "null"]
         example: +49 12345 6789 002
-        description: Validated according to county code
+        description: Validated according to country code
       mobile:
         type: ["string", "null"]
         example: +49 12345 6789 003
-        description: Validated according to county code
+        description: Validated according to country code
       emailAddress:
         type: string
         format: email
@@ -3701,15 +3701,15 @@ definitions:
       phone:
         type: ["string", "null"]
         example: +49 12345 6789 001
-        description: Validated according to county code
+        description: Validated according to country code
       fax:
         type: ["string", "null"]
         example: +49 12345 6789 002
-        description: Validated according to county code
+        description: Validated according to country code
       mobile:
         type: ["string", "null"]
         example: +49 12345 6789 003
-        description: Validated according to county code
+        description: Validated according to country code
       emailAddress:
         type: ["string", "null"]
         description: '"addressSequences" must include either a "customerContactId" or all of "firstName", "lastName" and "emailAddress"'
@@ -3769,15 +3769,15 @@ definitions:
       phone:
         type: [ "string", "null" ]
         example: +49 12345 6789 001
-        description: Validated according to county code
+        description: Validated according to country code
       fax:
         type: [ "string", "null" ]
         example: +49 12345 6789 002
-        description: Validated according to county code
+        description: Validated according to country code
       mobile:
         type: [ "string", "null" ]
         example: +49 12345 6789 003
-        description: Validated according to county code
+        description: Validated according to country code
       emailAddress:
         type: [ "string", "null" ]
         format: email
@@ -5137,12 +5137,15 @@ definitions:
       phone:
         type: ["string", "null"]
         example: +49 12345 6789 001
+        description: Validated according to country code
       fax:
         type: ["string", "null"]
         example: +49 12345 6789 002
+        description: Validated according to country code
       mobile:
         type: ["string", "null"]
         example: +49 12345 6789 003
+        description: Validated according to country code
       emailAddress:
         type: string
         example: max.muster@shopgate.com

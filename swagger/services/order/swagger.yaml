@@ -60,16 +60,8 @@ paths:
 
   /merchants/{merchantCode}/analytics/fulfillmentOrderBreakdown/intervals/{interval}:
     parameters:
-      - in: path
-        required: true
-        name: merchantCode
-        description: Unique merchant code which represents the unique "merchant account".
-        type: string
-      - in: query
-        name: timezone
-        description: Desired timezone to respresent date / time response
-        type: string
-        default: Etc/Utc
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/Timezone'
       - in: path
         name: interval
         description: Desired timeframe to include in results
@@ -114,26 +106,9 @@ paths:
 
   /merchants/{merchantCode}/analytics/salesOrderReporting:
     parameters:
-      - in: path
-        required: true
-        name: merchantCode
-        description: Unique merchant code which represents the unique "merchant account".
-        type: string
-      - in: query
-        name: timezone
-        description: Desired timezone to respresent date / time response
-        type: string
-        default: Etc/Utc
-      - in: query
-        name: resolution
-        description: Desired group or summary to return results in
-        default: day
-        type: string
-        enum:
-          - day
-          - week
-          - month
-          - quarter
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/Timezone'
+      - $ref: '#/parameters/Resolution'
       - in: query
         name: filters
         type: string
@@ -204,7 +179,7 @@ paths:
                     properties:
                       value:
                         type: number
-                        description: Total revenue for the given timeperiod in the default currency of the merchant
+                        description: Total revenue for the given time period in the default currency of the merchant
                         example: 350000.01
                   numberOfOrders:
                     type: object
@@ -256,28 +231,27 @@ paths:
                     - type: "engage"
                       value: 3.2
 
-  /merchants/{merchantCode}/analytics/fulfillmentOrderReporting/reservations:
+  /merchants/{merchantCode}/analytics/ropis/{reportType}:
     parameters:
+      - $ref: '#/parameters/MerchantCode'
       - in: path
-        required: true
-        name: merchantCode
-        description: Unique merchant code which represents the unique "merchant account".
+        name: reportType
         type: string
+        required: true
+        enum:
+          - reservations
+          - averageLineItems
+          - productAvailability
+          - statusDistribution
+          - checkIns
+          - abortedState
+          - averageReadyTime
+          - conversionsAfterCheckIn
+      - $ref: '#/parameters/Resolution'
       - in: query
         name: timezone
-        description: Desired timezone to respresent date / time response
         type: string
-        default: Etc/Utc
-      - in: query
-        name: resolution
-        description: Desired group or summary to return results in
-        default: day
-        type: string
-        enum:
-          - day
-          - week
-          - month
-          - quarter
+        description: Timezone of the reportings in the format of the IANA timezone. See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more informations
       - in: query
         name: filters
         type: string
@@ -303,14 +277,15 @@ paths:
           and ending 2021-04-16T23:59:59Z.
           `{"$and":[{"date":{"$lte":"2021-04-16T23:59:59Z"}}]}` - is equivalent to the above search
     get:
-      operationId: getfulfillmentOrderReportingReservations
-      summary: Get fulfillment order reservations reporting
-      description: Get fulfillment order reservations reporting
+      operationId: getRopisReporting
+      summary: Get ropis reporting
+      description: Get ropis reporting
+      x-internal: true
       tags:
         - Analytics
       responses:
         200:
-          description: 'Fulfillment order reservations reporting'
+          description: 'Ropis reporting'
           schema:
             type: object
             properties:
@@ -1695,6 +1670,7 @@ paths:
                         tracking: JJD000390007882823450
                         pickUpBy: Kim Muster
                         labelUrl: 'https://documentserver.internal/label/label.pdf'
+                        returnLabelUrl: 'https://documentserver.internal/label/returnLabel.pdf'
                         fulfillmentDate: '2021-12-17T09:19:14.290Z'
                         packageItems:
                           - salesOrderLineItemCode: '386'
@@ -2106,7 +2082,7 @@ paths:
     parameters:
       - $ref: '#/parameters/MerchantCode'
       - $ref: '#/parameters/Interval'
-      - $ref: '#/parameters/timezone'
+      - $ref: '#/parameters/Timezone'
     get:
       operationId: getIntervalCycleTimes
       summary: Get interval cycle times
@@ -2646,15 +2622,26 @@ parameters:
     required: true
   filters:
     name: filters
-    description: 'urlencoded json array of objects {locationCode: "LOCATION123"}'
+    description: 'url encoded json object {locationCode: "LOCATION123"}'
     in: query
     type: string
-  timezone:
+  Timezone:
     name: timezone
     in: query
     type: string
     description: Timezone of the reportings in the format of the IANA timezone. See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more informations
     default: Etc/UTC
+  Resolution:
+    name: resolution
+    in: query
+    description: Desired group or summary to return results in
+    default: day
+    type: string
+    enum:
+      - day
+      - week
+      - month
+      - quarter
   Sort:
     description: sorting of orders
     in: query
@@ -3623,6 +3610,9 @@ definitions:
       country:
         type: ["string", "null"]
         example: DE
+        description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code
+        minLength: 2
+        maxLength: 2
       phone:
         type: ["string", "null"]
         example: +49 12345 6789 001
@@ -3698,6 +3688,9 @@ definitions:
       country:
         type: ["string", "null"]
         example: DE
+        description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code
+        minLength: 2
+        maxLength: 2
       phone:
         type: ["string", "null"]
         example: +49 12345 6789 001
@@ -3766,6 +3759,9 @@ definitions:
       country:
         type: [ "string", "null" ]
         example: DE
+        description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code
+        minLength: 2
+        maxLength: 2
       phone:
         type: [ "string", "null" ]
         example: +49 12345 6789 001
@@ -3997,6 +3993,9 @@ definitions:
       labelUrl:
         type: string
         example: https://documentserver.internal/label/label.pdf
+      returnLabelUrl:
+        type: string
+        example: https://documentserver.internal/label/returnLabel.pdf
       fulfillmentDate:
         type: string
         format: date-time
@@ -4186,7 +4185,7 @@ definitions:
         type: string
         example: "386"
       sku:
-        type: 
+        type:
           - string
           - "null"
         example: "1337-hoodie-dark-green"
@@ -5373,7 +5372,7 @@ definitions:
       value:
         type: number
         example: 10.7
-      breakdown:
+      breakdowns:
         type: array
         items:
           type: object

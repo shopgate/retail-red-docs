@@ -294,6 +294,62 @@ paths:
                 items:
                   $ref: '#/definitions/ReportingMetric'
 
+  /merchants/{merchantCode}/analytics/shipFromStore/{reportType}:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - in: path
+        name: reportType
+        type: string
+        required: true
+        enum:
+          - averageLineItems
+      - $ref: '#/parameters/Resolution'
+      - in: query
+        name: timezone
+        type: string
+        description: Timezone of the reportings in the format of the IANA timezone. See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more informations
+      - in: query
+        name: filters
+        type: string
+        format: json
+        description: |
+          Filter string. Available filters: date.
+
+          The date filter is mandatory and has to be located under a first-level $and query.
+
+          Use filter types $lte and $gte to filter for a start or end date respectively.
+
+          The date can be the date without the timezone like "2020-01-01", in which case the start/end date based on
+          the resolution and timezone passed as query parameters will be used.
+
+          In the case of a full date-time string like "2020-01-01T00:00:00+01:00" that will override the timezone
+          parameter passed in the query.
+
+          If only the start date ($gte) was passed, the end date will be set to the end of the start date's day.
+          If only the end date ($lte) was passed, the start date will be set to the beginning of the end date's day.
+
+          Examples:
+          `{"$and":[{"date":{"$gte":"2021-04-16T00:00:00Z"}}]}` - results in a search starting at 2021-04-16T00:00:01Z
+          and ending 2021-04-16T23:59:59Z.
+          `{"$and":[{"date":{"$lte":"2021-04-16T23:59:59Z"}}]}` - is equivalent to the above search
+    get:
+      operationId: getShipFromStore
+      summary: Get ship from store reporting
+      description: Get ship from store reporting
+      x-internal: true
+      tags:
+        - Analytics
+      responses:
+        200:
+          description: 'Ship from store reporting'
+          schema:
+            type: object
+            properties:
+              reportingData:
+                type: array
+                items:
+                  $ref: '#/definitions/ReportingMetric'
+
   /merchants/{merchantCode}/orders:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -3589,6 +3645,7 @@ definitions:
       address1:
         type: ["string", "null"]
         example: Schloßstr. 10
+        description: This field is required if used as shipping address for direct ship
       address2:
         type: ["string", "null"]
         example: Haus B
@@ -3601,16 +3658,18 @@ definitions:
       city:
         type: ["string", "null"]
         example: Butzbach
+        description: This field is required if used as shipping address for direct ship
       region:
         type: ["string", "null"]
         example: HE
       postalCode:
         type: ["string", "null"]
         example: '"35510"'
+        description: This field is required if used as shipping address for direct ship
       country:
         type: ["string", "null"]
         example: DE
-        description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code
+        description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code. This field is required if used as shipping address for direct ship
         minLength: 2
         maxLength: 2
       phone:
@@ -5112,6 +5171,7 @@ definitions:
       address1:
         type: ["string", "null"]
         example: Schloßstr. 10
+        description: If used as shipping address for direct ship, this field is required
       address2:
         type: ["string", "null"]
         example: Haus B
@@ -5124,15 +5184,18 @@ definitions:
       city:
         type: ["string", "null"]
         example: Butzbach
+        description: This field is required if used as shipping address for direct ship
       region:
         type: ["string", "null"]
         example: HE
       postalCode:
         type: ["string", "null"]
         example: '"35510"'
+        description: This field is required if used as shipping address for direct ship
       country:
         type: ["string", "null"]
         example: DE
+        description: This field is required if used as shipping address for direct ship
       phone:
         type: ["string", "null"]
         example: +49 12345 6789 001

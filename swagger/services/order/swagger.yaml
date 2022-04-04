@@ -4509,8 +4509,8 @@ definitions:
           orderCount: 10
       appliedPromotions:
         $ref: '#/definitions/AppliedPromotions'
-      replacedLineItemId:
-        type: ["number", "null"]
+      # replacedLineItemId:
+      #   type: ["number", "null"]
   LineItemProduct:
     type: object
     required:

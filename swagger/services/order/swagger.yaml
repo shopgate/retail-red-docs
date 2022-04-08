@@ -2845,7 +2845,7 @@ definitions:
         enum:
           - open
           - inProgress
-          - fulfilled
+          - completed
           - actionRequired
       primaryBillToAddressSequenceIndex:
         type: number
@@ -3670,7 +3670,7 @@ definitions:
         type: ["string", "null"]
         example: DE
         description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code. This field is required if used as shipping address for direct ship
-        minLength: 2
+        # minLength: 2
         maxLength: 2
       phone:
         type: ["string", "null"]
@@ -3748,7 +3748,7 @@ definitions:
         type: ["string", "null"]
         example: DE
         description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code
-        minLength: 2
+        # minLength: 2
         maxLength: 2
       phone:
         type: ["string", "null"]
@@ -3819,7 +3819,7 @@ definitions:
         type: [ "string", "null" ]
         example: DE
         description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code
-        minLength: 2
+        # minLength: 2
         maxLength: 2
       phone:
         type: [ "string", "null" ]

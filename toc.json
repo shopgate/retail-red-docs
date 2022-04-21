@@ -114,7 +114,7 @@
     {
       "type": "item",
       "title": "Import",
-      "uri": "swagger/services/import/import-crud.json"
+      "uri": "swagger/services/import/swagger.yaml"
     },
     {
       "type": "item",

@@ -104,27 +104,27 @@
     {
       "type": "item",
       "title": "Catalog",
-      "uri": "swagger/catalog.yaml"
+      "uri": "swagger/services/catalog.yaml"
     },
     {
       "type": "item",
       "title": "Customer",
-      "uri": "swagger/customer.yaml"
+      "uri": "swagger/services/customer.yaml"
     },
     {
       "type": "item",
       "title": "Import",
-      "uri": "swagger/import.yaml"
+      "uri": "swagger/services/import.json"
     },
     {
       "type": "item",
       "title": "Order",
-      "uri": "swagger/order.yaml"
+      "uri": "swagger/services/order.yaml"
     },
     {
       "type": "item",
       "title": "Webhook",
-      "uri": "swagger/webhook.yaml"
+      "uri": "swagger/services/webhook.yaml"
     }
   ]
 }

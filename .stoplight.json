@@ -11,6 +11,10 @@
     "image": {
       "rootDir": "assets",
       "include": ["**"]
+    },
+    "json_schema": {
+      "rootDir": "swagger",
+      "include": ["**.json"]
     }
   }
 }

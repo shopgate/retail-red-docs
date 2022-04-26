@@ -2,7 +2,7 @@
   "formats": {
     "openapi": {
       "rootDir": "swagger",
-      "include": ["**"]
+      "include": ["swagger/**.yaml"]
     },
     "markdown": {
       "rootDir": "markdown",
@@ -14,7 +14,7 @@
     },
     "json_schema": {
       "rootDir": "swagger",
-      "include": ["**"]
+      "include": ["swagger/**.json"]
     }
   }
 }

@@ -6,11 +6,11 @@
     },
     "markdown": {
       "rootDir": "markdown",
-      "include": ["**"]
+      "include": ["markdown/**.md"]
     },
     "image": {
       "rootDir": "assets",
-      "include": ["**"]
+      "include": ["assets/**"]
     },
     "json_schema": {
       "rootDir": "swagger",

@@ -302,7 +302,12 @@ paths:
         type: string
         required: true
         enum:
+          - orders
           - averageLineItems
+          - orderSplits
+          - orderShipments
+          - abortedState
+          - productUnavailability
       - $ref: '#/parameters/Resolution'
       - in: query
         name: timezone
@@ -1293,7 +1298,7 @@ paths:
           default: false
         - in: query
           name: fields
-          description: "Available fields: fulfillmentOrderAddress, lineItems"
+          description: "Available fields: fulfillmentOrderAddress, lineItems, fulfillments"
           format: csv
           type: string
         - $ref: '#/parameters/Sort'
@@ -5440,12 +5445,8 @@ definitions:
         items:
           type: object
           properties:
-            category:
+            type:
               type: string
-              enum:
-                - mobile
-                - desktop
-                - engage
             value:
               type: number
         example:

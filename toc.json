@@ -125,11 +125,6 @@
       "type": "item",
       "title": "Webhook",
       "uri": "swagger/services/webhook/swagger.yaml"
-    },
-    {
-      "type": "item",
-      "title": "Merchant",
-      "uri": "swagger/services/merchant/swagger.yaml"
     }
   ]
 }

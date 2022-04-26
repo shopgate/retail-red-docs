@@ -6,7 +6,7 @@
     },
     "markdown": {
       "rootDir": "markdown",
-      "include": ["**.md"]
+      "include": ["**"]
     },
     "image": {
       "rootDir": "assets",

@@ -1919,7 +1919,7 @@ paths:
       summary: Create fulfillments for fulfillment order
       description: |
         ### Creating fulfillments for directShip fulfillmentOrders
-        Creating fulfillments for fulfillmentOrders of type **directShip** requires the following fields, although they are not marked as required by the API documentaion:
+        Creating fulfillments for fulfillmentOrders of type **directShip** requires the following fields, although they are not marked as required by the API documentation:
 
           - serviceLevel
           - carrier
@@ -1938,6 +1938,11 @@ paths:
       tags:
         - FulfillmentOrder
       parameters:
+        - name: createShippingLabels
+          in: query
+          type: boolean
+          default: true
+          description: if set to true, one shipping label per fulfillment package will be created at the configured shipping provider(s)
         - name: body
           in: body
           schema:

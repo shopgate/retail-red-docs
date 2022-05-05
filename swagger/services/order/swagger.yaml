@@ -308,6 +308,10 @@ paths:
           - orderShipments
           - abortedState
           - productUnavailability
+          - locationTypeDistribution
+          - warehouseDistribution
+          - storeDistribution
+          - dropShippingDistribution
       - $ref: '#/parameters/Resolution'
       - in: query
         name: timezone

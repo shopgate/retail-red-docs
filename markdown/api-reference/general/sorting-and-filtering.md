@@ -21,7 +21,7 @@ The sort order parameter is required and has to be set on every request.
 
 ## Filter
 
-All retail.red APIs share the same filter syntax. It is a JSON-based syntax, which is passed via the query parameter `filters`.
+All Shopgate APIs share the same filter syntax. It is a JSON-based syntax, which is passed via the query parameter `filters`.
 
 ### Available Filters
 

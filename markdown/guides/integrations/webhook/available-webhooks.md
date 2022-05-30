@@ -211,7 +211,7 @@ Triggers after a location got updated.
 
 ### orderNotPickedUp
 
-Triggers after a fulfillment order is in ready state for a specific timespan. The timespan can be set by the pickupReminderTriggerAfterSeconds property via the merchant service api or in the retail.red admin Settings > General > Fulfillmennt Handling > Pickup Reminder Time.
+Triggers after a fulfillment order is in ready state for a specific timespan. The timespan can be set by the pickupReminderTriggerAfterSeconds property via the merchant service api or in the Shopgate admin Settings > General > Fulfillmennt Handling > Pickup Reminder Time.
 
 ```json
 {
@@ -295,7 +295,7 @@ Triggers after the status of a salesorder changed.
 
 ### schedulePickTimeReached
 
-Triggers after a fulfillment order is in new state for a specific timespan. The timespan can be set by the scheduledFulfillmentPickTime property via the location service api or in the retail.red admin.
+Triggers after a fulfillment order is in new state for a specific timespan. The timespan can be set by the scheduledFulfillmentPickTime property via the location service api or in the Shopgate admin.
 
 ```json
 { 
@@ -307,7 +307,7 @@ Triggers after a fulfillment order is in new state for a specific timespan. The 
 
 ### schedulePickupReminderTimeReached
 
-Triggers after a fulfillment order is in ready state for a specific timespan. The timespan can be set by the scheduledPickupReminderBeforePickupSeconds property via the merchant service api or in the retail.red admin Settings > General > Fulfillmennt Handling > Scheduled Pickup Reminder Time Before Pickup Time.
+Triggers after a fulfillment order is in ready state for a specific timespan. The timespan can be set by the scheduledPickupReminderBeforePickupSeconds property via the merchant service api or in the Shopgate admin Settings > General > Fulfillmennt Handling > Scheduled Pickup Reminder Time Before Pickup Time.
 
 ```json
 { 

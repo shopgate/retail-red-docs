@@ -3,16 +3,16 @@ info:
   title: Order Service API
   version: '1.0'
   contact:
-    name: retail.red API
+    name: Shopgate API
     url: https://retail.red
     email: mail@retail.red
   description: |
-    retail.red Order API is designed to support all order related functionality including
+    Shopgate Order API is designed to support all order related functionality including
     * Order Submission (Create)
     * Order Modification (Update / Cancellation)
     * Order Fulfillment (Processing Fulfillment Orders)
 
-    This API leverages the standard retail.red REST API authenication method.
+    This API leverages the standard Shopgate REST API authenication method.
 
 host: order.shopgate.services
 basePath: "/v1"
@@ -4945,7 +4945,7 @@ definitions:
       - lb
   CreateDate:
     type: string
-    description: Date of the order when it was created in the retail.red system
+    description: Date of the order when it was created in the Shopgate system
     format: date-time
   SubmitDate:
     type: ["string", "null"]

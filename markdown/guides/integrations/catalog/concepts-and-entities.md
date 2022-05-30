@@ -109,7 +109,7 @@ The configurable/parent product should have the following product option data se
 
 Product Properties have the main purpose to add additional information to a product such as upselling product lists, ties to attributes that are not used as options, and others.
 
-The retail.red system supports different types of properties each with a slightly different struture:
+The Shopgate system supports different types of properties each with a slightly different struture:
 
 - **`simple`**: simple property key value pair like: style -> italic
 
@@ -173,7 +173,7 @@ The rules of the computation are:
 
 ## Unit Price Information
 
-For metric units, the retail.red system is able to show prices per unit like 1,50€/kg. The unit price of a product is the base price per measurement unit. For example for a 600g pack of cereals, the unit price of this product would be the price per 1kg.
+For metric units, the Shopgate system is able to show prices per unit like 1,50€/kg. The unit price of a product is the base price per measurement unit. For example for a 600g pack of cereals, the unit price of this product would be the price per 1kg.
 
 In order to be displayed, all of the related fields on the product data need to be set. If any one of these fields is not set, the unit price will not be displayed for this product.
 There are 4 relevant fields:

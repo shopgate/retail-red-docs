@@ -1,6 +1,6 @@
 # Authentication
 
-All retail.red services use the authentication [OAuth 2](https://oauth.net/2/).
+All Shopgate services use the authentication [OAuth 2](https://oauth.net/2/).
 Before you can use an API, you must fetch a token from the authentication service. This token can be fetched via the Auth Layer Service reachable at `https://auth.shopgate.io`.
 
 ## Requesting a New Token

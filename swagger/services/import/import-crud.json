@@ -442,7 +442,7 @@
   "info": {
     "contact": {
       "email": "mail@retail.red",
-      "name": "retail.red API",
+      "name": "Shopgate API",
       "url": "https://retail.red"
     },
     "description": "Check out the [Catalog Integration Guide > JSON Import](/guides/integrations/catalog-integration/bulk-file-import) or start with [creating an import](/api-reference/import-api/import/createimport).\n",

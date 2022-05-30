@@ -2,7 +2,7 @@
 
 ## Introduction
 
-For bulk updates, all entities that should get updated are collected in one json file per entity type (e.g. one file for products, one for categories etc.). This file is then uploaded using the [retail.red Import Service](/docs/retail-red/YXBpOjM1NjU0NzY0-import) and the Import is triggered.
+For bulk updates, all entities that should get updated are collected in one json file per entity type (e.g. one file for products, one for categories etc.). This file is then uploaded using the [Shopgate Import Service](/docs/retail-red/YXBpOjM1NjU0NzY0-import) and the Import is triggered.
 
 You can also upload multiple files within one bulk import, e.g. one file for products, one for product attributes and one for categories. The Bulk Import Service will take care of the relationships between the different entities and make sure that for example all product attributes have finished importing before starting the product import.
 

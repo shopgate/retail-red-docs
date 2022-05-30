@@ -6,23 +6,23 @@ This document gives you a highlevel overview of the order flow. It describes how
 
 ## Concepts and Entities
 
-Before the Order Flow can be introduced it is important to understand certain entities retail.red uses to describe states and processes within the flow. These are the Order Entities and the Fulfillment Methods.
+Before the Order Flow can be introduced it is important to understand certain entities Shopgate uses to describe states and processes within the flow. These are the Order Entities and the Fulfillment Methods.
 
 ### Fulfillment Methods
 
-Fulfillment methods describe certain ways to handle orders and their fulfillment. Currently retail.red supports three major Fulfillment Methods:
+Fulfillment methods describe certain ways to handle orders and their fulfillment. Currently Shopgate supports three major Fulfillment Methods:
 
 - **BOPIS:** **B**uy **O**nline **P**ick up **I**n **S**tore
 - **ROPIS:** **R**eserve **O**nline **P**ick up **I**n **S**tore
 - **DirectShip:** This method is available in two modes:
   - Handling by merchant
-  - Handling by retail.red including Payment
+  - Handling by Shopgate including Payment
 
 All of these fulfillment types have different flows. For example **ROPIS**/**BOPIS** do not support shipping and **ROPIS** alone does not have payment included in the flow.
 
 ### Order Entities
 
-retail.red has two major entities when it comes to orders which are:
+Shopgate has two major entities when it comes to orders which are:
 
 - the [Sales Order](#sales-order) (SO) and
 - the [Fulfillment Order](#fulfillment-order) (FO).
@@ -42,7 +42,7 @@ The following fast food restaurant example describes how both entities work toge
 
 #### Sales Order
 
-The Sales Order is the customer agreement to buy items. It is what taxing, pricing, payment, ... is handled for. The SO gets created typically by customers transitioning a cart entity into an order on checkout. Creating a Sales Order marks the start of the retail.red order process.
+The Sales Order is the customer agreement to buy items. It is what taxing, pricing, payment, ... is handled for. The SO gets created typically by customers transitioning a cart entity into an order on checkout. Creating a Sales Order marks the start of the Shopgate order process.
 
 The SO is also the customers view onto the order process. It gets updated over the timespan of the complete order process from creation to the complete fulfillment including pickup or delivery.
 
@@ -116,7 +116,7 @@ All of those grouping entities have states that will be impicitly set during sta
 
 ## Order Flow
 
-Generally the basic order flow consists of four stages. In the first stage (1) the customer creates an order in retail.red by turning a cart into the order during checkout. This order is a [Sales Order](#sales-order). The second stage (2) is the internal processing of the order by the retail.red order platform. The order gets split and routed to fitting locations in the third stage (3, fulfillment) as [Fulfillment Order(s)](#fulfillment-order). In the last stage (4) all parts of the order get deliverd or picked up.
+Generally the basic order flow consists of four stages. In the first stage (1) the customer creates an order in Shopgate by turning a cart into the order during checkout. This order is a [Sales Order](#sales-order). The second stage (2) is the internal processing of the order by the Shopgate order platform. The order gets split and routed to fitting locations in the third stage (3, fulfillment) as [Fulfillment Order(s)](#fulfillment-order). In the last stage (4) all parts of the order get deliverd or picked up.
 
 <!--  inline: true -->
 
@@ -161,6 +161,6 @@ For all processes the line items of the FO need to be picked from the inventory.
 
 It is possible to hook into various actions during the order process. This can be done in two ways:
 
-- by calling the retail.red API from an external system or
+- by calling the Shopgate API from an external system or
 
-- by hooking into events emitted by the retail.red order process like `salesOrderAdded`, `fulfillmentOrderUpdated`, and `schedulePickupReminderTimeReached`. For a complete list of supported events see [Webhook Events](../webhook/available-webhooks.md). To learn how to work with the retail.red webhooks see [Webhook Integration Guide](../webhook/overview.md)
+- by hooking into events emitted by the Shopgate order process like `salesOrderAdded`, `fulfillmentOrderUpdated`, and `schedulePickupReminderTimeReached`. For a complete list of supported events see [Webhook Events](../webhook/available-webhooks.md). To learn how to work with the Shopgate webhooks see [Webhook Integration Guide](../webhook/overview.md)

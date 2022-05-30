@@ -2,7 +2,7 @@
 
 ## About this guide
 
-Goal of this guide is to give you an overview of the different components used for sending a notification, and how you can use the retail.red Notification System to send out notifications via an external system.
+Goal of this guide is to give you an overview of the different components used for sending a notification, and how you can use the Shopgate Notification System to send out notifications via an external system.
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ To send a notification to your customers, Push or SMS, you need to create a camp
 
 Optionally you can also first create a template to define the title & message of the notification, and then use this template when creating the campaign. Then you can reuse the template, if you plan on using the same title & message in multiple campaigns.
 
-If the campaign is configured to be sent at a specific date & time, the retail.red system will automatically take care of sending the notification out. You can also set “immediately” as sending time, in that case the notification is sent as soon as possible (max after 10 minutes).
+If the campaign is configured to be sent at a specific date & time, the Shopgate system will automatically take care of sending the notification out. You can also set “immediately” as sending time, in that case the notification is sent as soon as possible (max after 10 minutes).
 
 Event based notifications will be sent automatically when the corresponding event is triggered. If you are using custom events, you need to trigger the custom event via the Notification Event Receiver Service.
 
@@ -34,7 +34,7 @@ As a summary, the following steps have to be done:
 
 ## Creating a template
 
-You can create a template either in the retail.red Admin or via API. If you plan to only send a few different types of notifications out, creating them manually in the Admin might be sufficient. Otherwise this can also be automated.
+You can create a template either in the Shopgate Admin or via API. If you plan to only send a few different types of notifications out, creating them manually in the Admin might be sufficient. Otherwise this can also be automated.
 
 To create a template via the API you can use the route:
 
@@ -45,7 +45,7 @@ For information about using variables and formatting in the message & title, ple
 
 ## Creating a campaign
 
-Same as templates, campaigns can also be created via retail.red Admin or via API.
+Same as templates, campaigns can also be created via Shopgate Admin or via API.
 To create a campaign via the API use the route:
 
 **POST ​/merchants​/{merchantCode}​/campaigns**
@@ -72,7 +72,7 @@ If you used custom variables in the message, these also need to be passed along 
 
 ## Creating a campaign
 
-Same as templates, campaigns can also be created via retail.red Admin or via API.
+Same as templates, campaigns can also be created via Shopgate Admin or via API.
 To create a campaign via the API use the route:
 
 **POST ​/merchants​/{merchantCode}​/campaigns**

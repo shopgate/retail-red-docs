@@ -1,6 +1,6 @@
 # Batch Routes
 
-As a convention the retail.red API uses batch routes for creating entities. The purpose of these routes is to reduce API calls as it is possible to create multiple entities at once.
+As a convention the Shopgate API uses batch routes for creating entities. The purpose of these routes is to reduce API calls as it is possible to create multiple entities at once.
 
 To be able to do this there is a common structure for both request and response bodies.
 

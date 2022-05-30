@@ -14,7 +14,7 @@ This guide covers the webhook feature of retail.red. It should deliver an overvi
 
 ## Introduction
 
-The webhook service can call an external HTTP route upon certain events that occur on the retail.red platform.
+The webhook service can call an external HTTP route upon certain events that occur on the Shopgate platform.
 
 <!--  inline: true -->
 
@@ -26,7 +26,7 @@ Which event should result in an HTTP call to which endpoint is configurable via 
 
 ## Setup a Webhook
 
-The setup of webhooks need to be done via the [retail.red webhook API](/docs/retail-red/YXBpOjM1NjU0NzY2-webhook).
+The setup of webhooks need to be done via the [Shopgate webhook API](/docs/retail-red/YXBpOjM1NjU0NzY2-webhook).
 
 1. [Create Webhook](/docs/retail-red/b3A6MzU2NTUxMjA-create-webhooks) with the relevant events to be sent to a given external endpoint.
 2. [Test the Webhook](/docs/retail-red/b3A6MzU2NTUxMjM-test-webhook) by triggering it manually.
@@ -37,7 +37,7 @@ The setup of webhooks need to be done via the [retail.red webhook API](/docs/ret
 
 ### Identification Token
 
-Every incoming request will contain an identification token (key: `shopgate-token`) in the request headers. This token can be used to verify, that the request originated from the retail.red webhook API. The Webhook service has a route to [get the webhook token](/docs/retail-red/b3A6MzU2NTUxMTg-get-webhook-token). The token is unique for a marchant.
+Every incoming request will contain an identification token (key: `shopgate-token`) in the request headers. This token can be used to verify, that the request originated from the Shopgate webhook API. The Webhook service has a route to [get the webhook token](/docs/retail-red/b3A6MzU2NTUxMTg-get-webhook-token). The token is unique for a marchant.
 
 ### Allow List
 

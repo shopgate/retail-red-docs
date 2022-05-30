@@ -1,14 +1,14 @@
-# Bulk file imports in CSV format via FTP or retail.red Admin
+# Bulk file imports in CSV format via FTP or Shopgate Admin
 
 ## Introduction
 
-This article covers how to upload catalog data as CSV into the retail.red system including the file formats and how to check for errors.
+This article covers how to upload catalog data as CSV into the Shopgate system including the file formats and how to check for errors.
 
 **Note:** As this is a simplified format that does not support all features, it is only recommended for specific use cases or to get a quick start.
 
-There are to way to insert new catalog data into the retail.red system via CSV:
+There are to way to insert new catalog data into the Shopgate system via CSV:
 
-- drag and drop import in the retail.red Admin
+- drag and drop import in the Shopgate Admin
 - ftp import
 
 ### Partial Import
@@ -31,7 +31,7 @@ You can specify the import strategy per file via the dropdown menu `import type`
 
 ## CSV Import Via FTP
 
-Before you're able to upload the CSV files over ftp, you need to get the address as well as the credentials. Both can be found in the retail.red Admin in _Settings_ > _Imports_. Until stated otherwise in the Admin the address is:
+Before you're able to upload the CSV files over ftp, you need to get the address as well as the credentials. Both can be found in the Shopgate Admin in _Settings_ > _Imports_. Until stated otherwise in the Admin the address is:
 
 ```
 Address: ftp.shopgate.io
@@ -152,7 +152,7 @@ The Product CSV provides key information about each product. Each row represents
 | FieldName    | Required | Type        | Default Value | Description                                                                                                                                                                                                                                                      |
 | ------------ | -------- | ----------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ImportType   | Optional | Enum(AC, D) | AC            | See `importType` in [Formatting the CSV Files](#formatting-the-csv-files)<br><br>**Example: AC**                                                                                                                                                                 |
-| ProductCode  | Required | String(255) |               | Primary key or record identifier for a sales item. In many cases product code and SKU are the same for merchants, however they can be different. The product code acts as the primary key in the retail.red system for a sales item.<br><br>**Example: MTH-001** |
+| ProductCode  | Required | String(255) |               | Primary key or record identifier for a sales item. In many cases product code and SKU are the same for merchants, however they can be different. The product code acts as the primary key in the Shopgate system for a sales item.<br><br>**Example: MTH-001** |
 | Sku          | Optional | String(255) |               | Item Stock Keeping Unit Code. If no value is present the record will be defaulted to the ProductCode value<br><br>**Example: 03600029145**                                                                                                                       |
 | LocationCode | Required | String(36)  |               | Indicates the location code for this inventory record. Must match existing setup location code.<br><br>**Example: loc1**                                                                                                                                         |
 | OnHand       | Required | Integer     |               | The numeric on hand count of this item at this location. Must be a whole number<br><br>**Example: 10**                                                                                                                                                           |
@@ -162,7 +162,7 @@ The Product CSV provides key information about each product. Each row represents
 
 ## Download Catalog Data
 
-When you click on a "Download" link under category or products, you will trigger a new export to be created. The export can take several minutes to complete depending on the size of the catalog, however once complete you will receive an email with a link to download the file. This will be in the same file used for uploading CSV into the retail.red platform.
+When you click on a "Download" link under category or products, you will trigger a new export to be created. The export can take several minutes to complete depending on the size of the catalog, however once complete you will receive an email with a link to download the file. This will be in the same file used for uploading CSV into the Shopgate platform.
 
 ## Check Processed Import
 

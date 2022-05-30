@@ -2,7 +2,7 @@
 
 ## About this guide
 
-Goal of this guide is to give you an overview of the catalog structure for retail.red, the different options how catalog data can be imported from an external system into retail.red and how it is kept up-to-date.
+Goal of this guide is to give you an overview of the catalog structure for retail.red, the different options how catalog data can be imported from an external system into Shopgate and how it is kept up-to-date.
 
 ## Overview
 
@@ -14,13 +14,13 @@ The catalog data consists of multiple entities:
 - Inventory (for direct ship fulfillment as well as retail store availability)
 - Catalogs (only relevant in case of multi-store / multi-catalog setups)
 
-For the detailed specification of each entity, please check the [retail.red Catalog API](/docs/retail-red/YXBpOjM1Nzg0Nzgz-catalog).
+For the detailed specification of each entity, please check the [Shopgate Catalog API](/docs/retail-red/YXBpOjM1Nzg0Nzgz-catalog).
 
-The goal of the catalog integration is to transfer the catalog data to retail.red and keep it up to date. There are different options how catalog information can be transferred:
+The goal of the catalog integration is to transfer the catalog data to Shopgate and keep it up to date. There are different options how catalog information can be transferred:
 
-- [Bulk file imports in CSV format](./csv-import.md) via FTP or manual upload in [retail.red Admin](https://next.admin.shopgate.com/)
-- [Bulk file imports in JSON format](./bulk-file-import.md) via [retail.red Import API](/docs/retail-red/YXBpOjM1NjU0NzY0-import)
-- [Near-real-time updates](./near-realtime-import.md) in JSON format via the [retail.red Catalog API](/docs/retail-red/YXBpOjM1NjU0NzYz-catalog)
+- [Bulk file imports in CSV format](./csv-import.md) via FTP or manual upload in [Shopgate Admin](https://next.admin.shopgate.com/)
+- [Bulk file imports in JSON format](./bulk-file-import.md) via [Shopgate Import API](/docs/retail-red/YXBpOjM1NjU0NzY0-import)
+- [Near-real-time updates](./near-realtime-import.md) in JSON format via the [Shopgate Catalog API](/docs/retail-red/YXBpOjM1NjU0NzYz-catalog)
 
 ## Comparison
 
@@ -33,7 +33,7 @@ The CSV Import is the best way to get started. For the best integration experien
 
 <!--
 Start with bulk imports in JSON format, for the initial import and recurring updates. Depending on the number of records per file, bulk imports can take a few minutes to be applied. Bulk imports support full imports as well as partial imports (only importing products that have changed).
-If near-real-time updates are required, you can update specific products directly via the retail.red API, and changes will be applied in a matter of seconds.
+If near-real-time updates are required, you can update specific products directly via the Shopgate API, and changes will be applied in a matter of seconds.
 -->
 
 > **NOTE:** You can always switch between all the options or even mix them without the need of resetting your data.
@@ -56,7 +56,7 @@ If you want to learn more about the entity relationships see [Concepts and Entit
 
 ## Import Strategies
 
-The retail.red platform supports two import strategies for CSV and JSON imports.
+The Shopgate platform supports two import strategies for CSV and JSON imports.
 
 ### Full Import
 

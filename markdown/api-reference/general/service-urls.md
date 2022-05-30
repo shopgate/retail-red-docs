@@ -2,7 +2,7 @@
 
 ## Service Subdomains
 
-Every retail.red service is reachable under its own subdomain, using the following format: `https://{serviceName}.shopgate.io`.
+Every Shopgate service is reachable under its own subdomain, using the following format: `https://{serviceName}.shopgate.io`.
 
 **Examples**
 

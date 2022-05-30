@@ -2,7 +2,7 @@
 
 ## About this guide
 
-Goal of this guide is to give you an overview of the catalog structure for retail.red, the different options how catalog data can be imported from an external system into Shopgate and how it is kept up-to-date.
+Goal of this guide is to give you an overview of the catalog structure for Shopgate, the different options how catalog data can be imported from an external system into Shopgate and how it is kept up-to-date.
 
 ## Overview
 
@@ -60,13 +60,13 @@ The Shopgate platform supports two import strategies for CSV and JSON imports.
 
 ### Full Import
 
-The uploaded file should contain all records for this entity (e.g. all products). New records are automatically created, existing records updated and records that exist at retail.red, but are missing in the uploaded file, will be removed from retail.red.
+The uploaded file should contain all records for this entity (e.g. all products). New records are automatically created, existing records updated and records that exist at Shopgate, but are missing in the uploaded file, will be removed from Shopgate.
 
 > **NOTE:** One special case is the full import for Inventory. Before uploading the file, the locations this file applies to can be specified. This way, inventory records of other locations remain untouched. This can be helpful when different locations or location groups use different ways to manage their inventory.
 
 ### Partial Import
 
-New records from the file will be created and existing records updated, but if records are missing from the file they will not be deleted from retail.red. To delete records via a partial import, an explicit entry has to be added to the file with the field importType and value “D”.
+New records from the file will be created and existing records updated, but if records are missing from the file they will not be deleted from Shopgate. To delete records via a partial import, an explicit entry has to be added to the file with the field importType and value “D”.
 Example to delete the product 123:
 
 - `JSON`: {“productCode”:”123”, “importType”:”D”}

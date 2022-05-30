@@ -2,7 +2,7 @@
 
 ## On these pages you will find technical documentation of our APIs and a lot of tutorials and guidance related to them.
 
-The following guide will help you getting started with retail.red:
+The following guide will help you getting started with Shopgate:
 
 - [Catalog Integration](./guides/integrations/catalog/general-integration-info.md)
 

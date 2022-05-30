@@ -13,7 +13,7 @@ There are to way to insert new catalog data into the Shopgate system via CSV:
 
 ### Partial Import
 
-All the imports done as CSV Uploads are partial imports. This means the set of entries in the CSV Files are treated as an update subset of the whole data at retail.red. This means you need to specify which entities in retail red should be deleted and which entities should get added or updated.
+All the imports done as CSV Uploads are partial imports. This means the set of entries in the CSV Files are treated as an update subset of the whole data at Shopgate. This means you need to specify which entities in retail red should be deleted and which entities should get added or updated.
 
 JSON imports also support full import: you provide the full list of entities and the import process figures out which to delete.
 

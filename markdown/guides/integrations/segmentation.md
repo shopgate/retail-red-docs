@@ -2,7 +2,7 @@
 
 ## About this guide
 
-Goal of this guide is to explain how you can use the Shopgate Segmentation API to synchronize segments from any other external system over to retail.red. So that in the end you have the same segments available in Shopgate as in your other system, and can use these segments to send notifications, configure promotions etc.
+Goal of this guide is to explain how you can use the Shopgate Segmentation API to synchronize segments from any other external system over to Shopgate. So that in the end you have the same segments available in Shopgate as in your other system, and can use these segments to send notifications, configure promotions etc.
 
 ## Prerequisites
 
@@ -28,7 +28,7 @@ You could already pass the members when the segment is created, but for this gui
 
 ## Adding & removing members to a segment
 
-In order to add a new member to a segment, you need to know the ID of the customer at retail.red. If you do not know this ID, you can retrieve it via the Shopgate Customer Service.
+In order to add a new member to a segment, you need to know the ID of the customer at Shopgate. If you do not know this ID, you can retrieve it via the Shopgate Customer Service.
 Call the customer service with the route:
 
 **GET /merchants/{merchantCode}/customers**

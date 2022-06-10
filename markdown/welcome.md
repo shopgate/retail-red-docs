@@ -15,4 +15,4 @@ The following guide will help you getting started with Shopgate:
 
 These documents are constantly improved and updated.
 
-If you find an error or omission in any of the documents / guides, we would be very grateful if you let us know. You can reach out to us at [mail@retail.red](mailto:mail@retail.red) or via the contact form. Thank you!
+If you find an error or omission in any of the documents / guides, we would be very grateful if you let us know. You can reach out to us at [support@shopgate.com](mailto:support@shopgate.com) or via the contact form. Thank you!

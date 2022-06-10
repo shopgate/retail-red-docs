@@ -5,7 +5,7 @@ info:
   contact:
     name: Shopgate API
     url: https://retail.red
-    email: mail@retail.red
+    email: support@shopgate.com
   description: |
     Check out the [Webhook Integration Guide](/guides/integrations/webhook-integration/overview) or start with [creating a webhook](/api-reference/webhook-api/webhooks/createwebhooks).
 host: webhook.shopgate.io

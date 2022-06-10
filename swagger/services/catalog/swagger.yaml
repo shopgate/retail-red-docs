@@ -5,7 +5,7 @@ info:
   contact:
     name: Shopgate API
     url: https://retail.red
-    email: mail@retail.red
+    email: support@shopgate.com
   description: |
     Check out the [Catalog Integration Guide](/docs/retail-red/ZG9jOjM1NjU0Nzcw-integration-overview) or start with [creating a product](/docs/retail-red/b3A6MzU2NTUwNDQ-create-products).
 host: catalog.shopgate.io

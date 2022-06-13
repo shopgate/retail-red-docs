@@ -293,6 +293,34 @@ Triggers after the status of a salesorder changed.
 }
 ```
 
+### returnOrderAdded
+
+Triggers after a return order was added.
+
+```json
+{
+  "returnOrderNumber": "R0001",
+  "salesOrderNumber": "0001",
+  "customerId": "7b196c58-a689-49fe-b056-91dd902694d2",
+  "user": "6" //userId
+}
+```
+
+### returnOrderStatusUpdated
+
+Triggers after the status of a return order changed.
+
+```json
+{
+  "customerId": "7b196c58-a689-49fe-b056-91dd902694d2",
+  "returnOrderNumber": "R0001",
+  "salesOrderNumber": "0001",
+  "oldStatus": "new",
+  "newStatus": "accepted",
+  "user": "6" //userId
+}
+```
+
 ### schedulePickTimeReached
 
 Triggers after a fulfillment order is in new state for a specific timespan. The timespan can be set by the scheduledFulfillmentPickTime property via the location service api or in the retail.red admin.

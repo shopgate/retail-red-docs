@@ -21,6 +21,8 @@
   - [salesOrderAdded](#salesorderadded)
   - [salesOrderFulfillmentAdded](#salesorderfulfillmentadded)
   - [salesOrderStatusUpdated](#salesorderstatusupdated)
+  - [returnOrderAdded](#returnOrderAdded)
+  - [returnOrderStatusUpdated](#returnOrderStatusUpdated)
   - [schedulePickTimeReached](#schedulepicktimereached)
   - [schedulePickupReminderTimeReached](#schedulepickupremindertimereached)
 

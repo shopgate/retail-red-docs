@@ -4,7 +4,7 @@ info:
   version: '1.0'
   contact:
     name: Shopgate API
-    url: https://retail.red
+    url: https://shopgate.com
     email: support@shopgate.com
   description: |
     Check out the [Webhook Integration Guide](/guides/integrations/webhook-integration/overview) or start with [creating a webhook](/api-reference/webhook-api/webhooks/createwebhooks).
@@ -219,6 +219,8 @@ parameters:
         <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#salesorderadded\">salesOrderAdded</a></li>
         <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#salesorderfulfillmentadded\">salesOrderFulfillmentAdded</a></li>
         <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#salesorderstatusupdated\">salesOrderStatusUpdated</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#returnorderadded\">returnOrderAdded</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#returnorderstatusupdated\">returnOrderStatusUpdated</a></li>
         <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#schedulepicktimereached\">schedulePickTimeReached</a></li>
         <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#schedulepickupremindertimereached\">schedulePickupReminderTimeReached</a></li>
       </ul>"

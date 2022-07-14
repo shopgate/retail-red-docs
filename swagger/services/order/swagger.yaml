@@ -4,7 +4,7 @@ info:
   version: '1.0'
   contact:
     name: Shopgate API
-    url: https://retail.red
+    url: https://shopgate.com
     email: support@shopgate.com
   description: |
     Shopgate Order API is designed to support all order related functionality including
@@ -312,6 +312,8 @@ paths:
           - warehouseDistribution
           - storeDistribution
           - dropShippingDistribution
+          - averageTimeUntilFosReady
+          - averageTimeUntilSosFulfilled
       - $ref: '#/parameters/Resolution'
       - in: query
         name: timezone
@@ -372,14 +374,14 @@ paths:
         - in: query
           name: filters
           type: string
-          description: "Filter string. Supported filters: orderNumber, externalCode, name, customerId, status"
+          description: "Filter string. Supported filters: id, orderNumber, externalCode, name, customerId, contactType, status, date, updateDate, fulfillDate, completeDate, fulfillmentStatus"
         - in: query
           name: fields
           description: "Available fields: lineItems"
           format: csv
           type: string
         - name: includeInternalIds
-          description: The entity gets extended with the internal ID of retail.red, this query cannot be used by external clients.
+          description: The entity gets extended with the internal ID of Shopgate, this query cannot be used by external clients.
           in: query
           type: boolean
           default: false
@@ -475,6 +477,7 @@ paths:
                   total: 70.98
                   date: '2021-12-16T16:05:21.342Z'
                   submitDate: '2019-09-02T09:02:57.733Z'
+                  fulfillDate: '2019-09-03T15:02:32.733Z'
                   completeDate: '2019-09-03T15:02:57.733Z'
                   sourceIp: 85.45.62.2
                   userAgent: 'Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0'
@@ -647,7 +650,7 @@ paths:
       - $ref: '#/parameters/MerchantCode'
       - $ref: '#/parameters/OrderNumber'
       - name: includeInternalIds
-        description: The entity gets extended with the internal ID of retail.red, this query cannot be used by external clients.
+        description: The entity gets extended with the internal ID of Shopgate, this query cannot be used by external clients.
         in: query
         type: boolean
         default: false
@@ -749,6 +752,7 @@ paths:
                 total: 59.39
                 date: '2021-12-16T16:17:47.929Z'
                 submitDate: '2019-09-02T09:02:57.733Z'
+                fulfillDate: '2019-09-03T15:02:32.733Z'
                 completeDate: '2019-09-03T15:02:57.733Z'
                 sourceIp: 85.45.62.2
                 userAgent: 'Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0'
@@ -761,6 +765,7 @@ paths:
                   channel: push
                   distributionIndex: 0
                 lineItemCount: 1
+                returnStatus: partialReturn
                 paymentTransactions:
                   - id: edadf6a6-f536-489f-92b8-c15fc1edc19b
                     externalCode: pi_GTS8a787uuRMaC86GBxpDABYn
@@ -872,6 +877,7 @@ paths:
                     price: 79.99
                     salePrice: 65.99
                     substitutionAllowed: true
+                    returnQuantity: 1
                     fulfillmentSlot:
                       id: 5_2019-09-03
                       date: '2019-09-03'
@@ -1006,6 +1012,7 @@ paths:
             $ref: '#/definitions/UpdateSalesOrder'
           x-examples:
             updateSalesOrder:
+              externalCode: myExternalCode1
               notes: Some note
               specialInstructions: House behind the dumpster
               data:
@@ -1296,7 +1303,7 @@ paths:
           type: string
           description: "Filter string. Available filter: locationCode, status, orderNumber, externalCode, name, billingName, customerId, salesOrderNumber, completeDate, readyDate, pickupReminderApplicableAt, holdUntil, plannedFulfillmentDate, pickupReminderApplicableAt, type, pickingBatchId"
         - name: includeInternalIds
-          description: The entity gets extended with the internal ID of retail.red, this query cannot be used by external clients.
+          description: The entity gets extended with the internal ID of Shopgate, this query cannot be used by external clients.
           in: query
           type: boolean
           default: false
@@ -1649,7 +1656,7 @@ paths:
       - $ref: '#/parameters/MerchantCode'
       - $ref: '#/parameters/OrderNumber'
       - name: includeInternalIds
-        description: The entity gets extended with the internal ID of retail.red, this query cannot be used by external clients.
+        description: The entity gets extended with the internal ID of Shopgate, this query cannot be used by external clients.
         in: query
         type: boolean
         default: false
@@ -1877,7 +1884,7 @@ paths:
                 id: 5_2019-09-03
       responses:
         '204':
-          description: 'Status successfully updated'
+          description: 'Fulfillment order updated'
         '404':
           description: Order not found
         default:
@@ -2662,6 +2669,807 @@ paths:
         404:
           description: Merchant, Shop or Cart not found
 
+  /merchants/{merchantCode}/returnReasons:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+    get:
+      x-internal: true
+      operationId: getReturnReasons
+      summary: Get return reasons
+      description: Get return reasons
+      tags:
+        - ReturnReasons
+      parameters:
+        - in: query
+          name: locale
+          type: string
+          default: en-us
+          description: "Locale for return reason name. Default: en-us."
+      responses:
+        '200':
+          description: 'Return return reasons'
+          schema:
+            type: object
+            properties:
+              returnReasons:
+                type: array
+                items:
+                  $ref: '#/definitions/ReturnReason'
+          examples:
+            getReturnReasons:
+              returnReasons:
+                - code: damaged
+                  status: active
+                  sequenceId: 1
+                  name: damaged
+    post:
+      x-internal: true
+      operationId: createReturnReasons
+      summary: Create return reasons
+      description: Create return reasons
+      tags:
+        - ReturnReasons
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - returnReasons
+            properties:
+              returnReasons:
+                type: array
+                minItems: 1
+                items:
+                  $ref: '#/definitions/CreateReturnReason'
+          x-examples:
+            createReturnReasons:
+              returnReasons:
+                - code: damaged
+                  status: active
+                  sequenceId: 1
+                  name: damaged
+      responses:
+        '201':
+          description: ''
+          schema:
+            allOf:
+              - $ref: '#/definitions/BatchErrors'
+        default:
+          description: Unexpected error
+          schema:
+              $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/returnReasons/{returnReasonCode}:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/ReturnReasonCode'
+    post:
+      x-internal: true
+      operationId: updateReturnReason
+      summary: Update return reason
+      description: Update return reason
+      tags:
+        - ReturnReasons
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              status:
+                type: string
+                enum:
+                  - active
+                  - inactive
+              name:
+                $ref: '#/definitions/LocalizationShort'
+              sequenceId:
+                type: number
+          x-examples:
+            updateReturnReason:
+                status: inactive
+                name:
+                  en-us: 'damaged'
+                  de-de: 'beschädigt'
+      responses:
+        '204':
+          description: Return reason updated
+        '404':
+          description: Merchant or return reason not found
+        '409':
+          description: Conflict Error
+    delete:
+      x-internal: true
+      description: Delete return reason
+      operationId: deleteReturnReason
+      summary: Delete return reason
+      tags:
+        - ReturnReasons
+      responses:
+        '200':
+          description: Return reason removed
+        '404':
+          description: Merchant or return reason not found
+
+  /merchants/{merchantCode}/productConditions:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+    get:
+      x-internal: true
+      operationId: getProductConditions
+      summary: Get product conditions
+      description: Get product conditions
+      tags:
+        - ProductConditions
+      parameters:
+        - in: query
+          name: locale
+          type: string
+          default: en-us
+          description: "Locale for product condition name. Default: en-us."
+      responses:
+        '200':
+          description: Return product conditions
+          schema:
+            type: object
+            properties:
+              productConditions:
+                type: array
+                items:
+                  $ref: '#/definitions/ProductCondition'
+          examples:
+            getProductConditions:
+              productConditions:
+                - code: poor
+                  status: active
+                  sequenceId: 1
+                  name: poor
+    post:
+      x-internal: true
+      operationId: createProductConditions
+      summary: Create product conditions
+      description: Create product conditions
+      tags:
+        - ProductConditions
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - productConditions
+            properties:
+              productConditions:
+                type: array
+                minItems: 1
+                items:
+                  $ref: '#/definitions/CreateProductCondition'
+          x-examples:
+            createProductConditions:
+              productConditions:
+                - code: poor
+                  status: active
+                  sequenceId: 1
+                  name:
+                    en-us: 'poor'
+                    de-de: 'schlecht'
+      responses:
+        '201':
+          description: ''
+          schema:
+            allOf:
+              - $ref: '#/definitions/BatchErrors'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/productConditions/{productConditionCode}:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/ConditionCode'
+    post:
+      x-internal: true
+      operationId: updateProductCondition
+      summary: Update product condition
+      description: Update product condition
+      tags:
+        - ProductConditions
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              status:
+                type: string
+                enum:
+                  - active
+                  - inactive
+              name:
+                $ref: '#/definitions/LocalizationShort'
+              sequenceId:
+                type: number
+          x-examples:
+            updateProductCondition:
+              status: active
+              sequenceId: 2
+              name:
+                en-us: 'poor'
+                de-de: 'schlecht'
+      responses:
+        '204':
+          description: Product condition updated
+        '404':
+          description: Merchant or product condition not found
+        '409':
+          description: Conflict Error
+    delete:
+      x-internal: true
+      operationId: deleteProductCondition
+      summary: Delete product condition
+      description: Delete product condition
+      tags:
+        - ProductConditions
+      responses:
+        '200':
+          description: Product condition removed
+        '404':
+          description: Merchant or product condition not found
+
+  /merchants/{merchantCode}/returnOrders:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+    get:
+      operationId: getReturnOrders
+      summary: Get return orders
+      description: Get return orders
+      tags:
+        - ReturnOrder
+      parameters:
+        - in: query
+          name: filters
+          type: string
+          description: "Filter string. Available filters: locationCode, status, orderNumber, externalCode, name, customerId, salesOrderNumber"
+        - in: query
+          name: fields
+          description: "Available fields: lineItems"
+          format: csv
+          type: string
+        - $ref: '#/parameters/Sort'
+        - $ref: '#/parameters/limit'
+        - $ref: '#/parameters/offset'
+        - name: getOriginalImageUrls
+          in: query
+          type: boolean
+          description: Request original image URLs for LineItem product images.
+          default: false
+      responses:
+        '200':
+          description: ''
+          examples:
+            getReturnOrders:
+              returnOrders:
+                - orderNumber: R1256
+                  externalCode: '000000274'
+                  salesOrderNumber: '1256'
+                  type: return
+                  customerId: 55c98b8e-1100-497c-8df6-4b4f0353ab2a
+                  externalCustomerNumber: C1756793
+                  status: new
+                  expedited: true
+                  localeCode: 'de-de'
+                  currencyCode: EUR
+                  notes: 'Some note'
+                  specialInstructions: 'House behind the dumpster'
+                  data: {}
+                  primaryBillToAddressSequenceIndex: 0
+                  primaryShipToAddressSequenceIndex: 0
+                  addressSequences:
+                    - type: shipping
+                      orderIndex: 0
+                      customerContactId: '0b475af4-7ed9-4065-b4bb-7d76c537d820'
+                      firstName: Max
+                      middleName: René
+                      lastName: Muster
+                      company: 'Shopgate GmbH'
+                      address1: 'Schloßstr. 10'
+                      address2: 'Haus B'
+                      address3: 'erste Etage'
+                      address4: null
+                      city: Butzbach
+                      region: HE
+                      postalCode: 35510
+                      country: DE
+                      phone: '+49 12345 6789 001'
+                      fax: '+49 12345 6789 002'
+                      mobile: '+49 12345 6789 003'
+                      emailAddress: 'max.muster@shopgate.com'
+                  subTotal: -65.99
+                  discountAmount: 0
+                  promoAmount: 6.6
+                  taxAmount: 0
+                  tax2Amount: 0
+                  shippingSubTotal: -4.99
+                  shippingDiscountAmount: 0
+                  shippingPromoAmount: 0
+                  shippingTotal: 0
+                  taxExempt: false
+                  taxSummary:
+                    - code: default_19
+                      name: 19%
+                      amount: 12.54
+                  total: -65.99
+                  date: '2019-10-05T09:02:57.733Z'
+                  submitDate: '2019-09-02T09:02:57.733Z'
+                  completeDate: '2019-09-03T15:02:57.733Z'
+                  dropOffType: inPerson
+                  dropOffLocationCode: DERetail001
+                  os: android
+                  imported: false
+                  paymentTransactions:
+                    - id: '27cd64e8-02b0-4959-aada-57d384e5142e'
+                      externalCode: 're_2KqaVM7uuRMaCx6G1XGapN8F'
+                      sourcePaymentTransaction: 'edadf6a6-f536-489f-92b8-c15fc1edc19b'
+                      status: success
+                      type: refund
+                      paymentMethod:
+                        code: stripe
+                        type: cc
+                        provider: stripe
+                      refundAmount: 64.38
+                      paymentError:
+                        message: 'Your card has insufficient funds'
+                        code: 'card_declined'
+                      paymentInfo:
+                        type: cc
+                        card:
+                          type: visa
+                          last4: 4242
+                  lineItems:
+                    - code: 'R386'
+                      salesOrderLineItemCode: '386'
+                      status: open
+                      quantity: 1
+                      returnReasonCode: itemDamaged
+                      conditionCode: good
+                      product:
+                        code: '24-MB02'
+                        name: Fusion backpack
+                        image: 'https://myawesomeshop.com/images/img1.jpg'
+                        price: 79.99
+                        salePrice: 65.99
+                        currencyCode: EUR
+                        identifiers:
+                          mfgPartNum: '100-440-0.750-3434-A'
+                          upc: '72527273070'
+                          ean: '401234567890'
+                          isbn: '978-3-16-148410-0'
+                          sku: 'UGG-BB-PUR-06'
+                          distiPartNum: '235454356363'
+                        options:
+                          - code: color
+                            name: Color
+                            value:
+                              code: red
+                              name: Red
+                      currencyCode: EUR
+                      price: -79.99
+                      shippingAmount: 0
+                      taxAmount: 0
+                      tax2Amount: 0
+                      taxExempt: false
+                      unitPromoAmount: 0
+                      unitDiscountAmount: 0
+                      discountAmount: 0
+                      promoAmount: 0
+                      overrideAmount: 0
+                      extendedPrice: -65.99
+                      note: "Some note"
+              meta:
+                pagination:
+                  limit: 100
+                  offset: 0
+                  totalItemCount: 1
+          schema:
+            type: object
+            properties:
+              returnOrders:
+                type: array
+                items:
+                  $ref: '#/definitions/ReturnOrder'
+              meta:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/definitions/Pagination'
+        '404':
+          description: Merchant not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      operationId: createReturnOrders
+      summary: Create return orders
+      description: Create return orders
+      tags:
+        - ReturnOrder
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            additionalProperties: false
+            required:
+              - returnOrders
+            properties:
+              returnOrders:
+                type: array
+                minItems: 1
+                items:
+                  $ref: '#/definitions/PostReturnOrder'
+          x-examples:
+            createReturnOrders:
+              returnOrders:
+                - externalCode: '000000274'
+                  salesOrderNumber: '1256'
+                  type: return
+                  customerId: 55c98b8e-1100-497c-8df6-4b4f0353ab2a
+                  externalCustomerNumber: C1756793
+                  status: new
+                  expedited: true
+                  localeCode: 'de-de'
+                  currencyCode: EUR
+                  notes: 'Some note'
+                  specialInstructions: 'House behind the dumpster'
+                  data: {}
+                  primaryBillToAddressSequenceIndex: 0
+                  primaryShipToAddressSequenceIndex: 0
+                  addressSequences:
+                    - type: shipping
+                      customerContactId: '0b475af4-7ed9-4065-b4bb-7d76c537d820'
+                      firstName: Max
+                      middleName: René
+                      lastName: Muster
+                      company: 'Shopgate GmbH'
+                      address1: 'Schloßstr. 10'
+                      address2: 'Haus B'
+                      address3: 'erste Etage'
+                      address4: null
+                      city: Butzbach
+                      region: HE
+                      postalCode: 35510
+                      country: DE
+                      phone: '+49 12345 6789 001'
+                      fax: '+49 12345 6789 002'
+                      mobile: '+49 12345 6789 003'
+                      emailAddress: 'max.muster@shopgate.com'
+                  subTotal: -65.99
+                  discountAmount: 0
+                  promoAmount: 6.6
+                  taxAmount: 0
+                  tax2Amount: 0
+                  shippingSubTotal: -4.99
+                  shippingDiscountAmount: 0
+                  shippingPromoAmount: 0
+                  shippingTotal: 0
+                  taxExempt: false
+                  taxSummary:
+                    - code: default_19
+                      name: 19%
+                      amount: 12.54
+                  total: -65.99
+                  date: '2019-10-05T09:02:57.733Z'
+                  submitDate: '2019-09-02T09:02:57.733Z'
+                  completeDate: '2019-09-03T15:02:57.733Z'
+                  dropOffType: inPerson
+                  dropOffLocationCode: DERetail001
+                  os: android
+                  imported: false
+                  lineItems:
+                    - code: 'R386'
+                      salesOrderLineItemCode: '386'
+                      status: open
+                      quantity: 1
+                      returnReasonCode: itemDamaged
+                      conditionCode: good
+                      product:
+                        code: '24-MB02'
+                        name: Fusion backpack
+                        image: 'https://myawesomeshop.com/images/img1.jpg'
+                        price: 79.99
+                        salePrice: 65.99
+                        currencyCode: EUR
+                        identifiers:
+                          mfgPartNum: '100-440-0.750-3434-A'
+                          upc: '72527273070'
+                          ean: '401234567890'
+                          isbn: '978-3-16-148410-0'
+                          sku: 'UGG-BB-PUR-06'
+                          distiPartNum: '235454356363'
+                        options:
+                          - code: color
+                            name: Color
+                            value:
+                              code: red
+                              name: Red
+                      currencyCode: EUR
+                      price: -79.99
+                      shippingAmount: 0
+                      taxAmount: 0
+                      tax2Amount: 0
+                      taxExempt: false
+                      unitPromoAmount: 0
+                      unitDiscountAmount: 0
+                      discountAmount: 0
+                      promoAmount: 0
+                      overrideAmount: 0
+                      extendedPrice: -65.99
+                      note: "Some note"
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+            allOf:
+              - $ref: '#/definitions/BatchErrors'
+            properties:
+              ids:
+                type: array
+                items:
+                  type: string
+        '404':
+          description: Order not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/returnOrders/{orderNumber}:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/OrderNumber'
+      - name: getOriginalImageUrls
+        in: query
+        type: boolean
+        description: Request original image URLs for LineItem product images.
+        default: false
+    get:
+      operationId: getReturnOrder
+      summary: Get return order
+      description: Get return order
+      tags:
+        - ReturnOrder
+      responses:
+        '200':
+          description: ''
+          examples:
+            getReturnOrder:
+              returnOrder:
+                orderNumber: R1256
+                externalCode: '000000274'
+                salesOrderNumber: '1256'
+                type: return
+                customerId: 55c98b8e-1100-497c-8df6-4b4f0353ab2a
+                externalCustomerNumber: C1756793
+                status: new
+                expedited: true
+                localeCode: 'de-de'
+                currencyCode: EUR
+                notes: 'Some note'
+                specialInstructions: 'House behind the dumpster'
+                data: {}
+                primaryBillToAddressSequenceIndex: 0
+                primaryShipToAddressSequenceIndex: 0
+                addressSequences:
+                  - type: shipping
+                    customerContactId: '0b475af4-7ed9-4065-b4bb-7d76c537d820'
+                    firstName: Max
+                    middleName: René
+                    lastName: Muster
+                    company: 'Shopgate GmbH'
+                    address1: 'Schloßstr. 10'
+                    address2: 'Haus B'
+                    address3: 'erste Etage'
+                    address4: null
+                    city: Butzbach
+                    region: HE
+                    postalCode: 35510
+                    country: DE
+                    phone: '+49 12345 6789 001'
+                    fax: '+49 12345 6789 002'
+                    mobile: '+49 12345 6789 003'
+                    emailAddress: 'max.muster@shopgate.com'
+                subTotal: -65.99
+                discountAmount: 0
+                promoAmount: 6.6
+                taxAmount: 0
+                tax2Amount: 0
+                shippingSubTotal: -4.99
+                shippingDiscountAmount: 0
+                shippingPromoAmount: 0
+                shippingTotal: 0
+                taxExempt: false
+                taxSummary:
+                  - code: default_19
+                    name: 19%
+                    amount: 12.54
+                total: -65.99
+                date: '2019-10-05T09:02:57.733Z'
+                submitDate: '2019-09-02T09:02:57.733Z'
+                completeDate: '2019-09-03T15:02:57.733Z'
+                dropOffType: inPerson
+                dropOffLocationCode: DERetail001
+                os: android
+                imported: false
+                paymentTransactions:
+                  - id: '27cd64e8-02b0-4959-aada-57d384e5142e'
+                    externalCode: 're_2KqaVM7uuRMaCx6G1XGapN8F'
+                    sourcePaymentTransaction: 'edadf6a6-f536-489f-92b8-c15fc1edc19b'
+                    status: success
+                    type: refund
+                    paymentMethod:
+                      code: stripe
+                      type: cc
+                      provider: stripe
+                    refundAmount: 64.38
+                    paymentError:
+                      message: 'Your card has insufficient funds'
+                      code: 'card_declined'
+                    paymentInfo:
+                      type: cc
+                      card:
+                        type: visa
+                        last4: 4242
+                lineItems:
+                  - code: 'R386'
+                    salesOrderLineItemCode: '386'
+                    status: open
+                    quantity: 1
+                    returnReasonCode: itemDamaged
+                    conditionCode: good
+                    product:
+                      code: '24-MB02'
+                      name: Fusion backpack
+                      image: 'https://myawesomeshop.com/images/img1.jpg'
+                      price: 79.99
+                      salePrice: 65.99
+                      currencyCode: EUR
+                      identifiers:
+                        mfgPartNum: '100-440-0.750-3434-A'
+                        upc: '72527273070'
+                        ean: '401234567890'
+                        isbn: '978-3-16-148410-0'
+                        sku: 'UGG-BB-PUR-06'
+                        distiPartNum: '235454356363'
+                      options:
+                        - code: color
+                          name: Color
+                          value:
+                            code: red
+                            name: Red
+                    currencyCode: EUR
+                    price: -79.99
+                    shippingAmount: 0
+                    taxAmount: 0
+                    tax2Amount: 0
+                    taxExempt: false
+                    unitPromoAmount: 0
+                    unitDiscountAmount: 0
+                    discountAmount: 0
+                    promoAmount: 0
+                    overrideAmount: 0
+                    extendedPrice: -65.99
+                    note: "Some note"
+          schema:
+            type: object
+            properties:
+              returnOrder:
+                $ref: '#/definitions/ReturnOrder'
+        '404':
+          description: Return order not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      operationId: updateReturnOrder
+      summary: Update return order
+      description: Update return order
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateReturnOrder'
+      tags:
+        - ReturnOrder
+      x-examples:
+        updateReturnOrder:
+          status: open
+          lineItems:
+            - code: R386-1
+              status: open
+      responses:
+        '204':
+          description: 'Return order updated'
+        '400':
+          description: 'Update not valid'
+        '404':
+          description: Return order not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /merchants/{merchantCode}/analytics/returnInStore/{reportType}:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - in: path
+        name: reportType
+        type: string
+        required: true
+        enum:
+          - returns
+          - averageLineItems
+          - returnReasonsDistribution
+          - returnConditionsDistribution
+          - returnChannel
+      - $ref: '#/parameters/Resolution'
+      - in: query
+        name: timezone
+        type: string
+        description: Timezone of the reportings in the format of the IANA timezone. See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more informations
+      - in: query
+        name: filters
+        type: string
+        format: json
+        description: |
+          Filter string. Available filters: date.
+          
+          The date filter is mandatory and has to be located under a first-level $and query.
+          
+          Use filter types $lte and $gte to filter for a start or end date respectively.
+          
+          The date can be the date without the timezone like "2020-01-01", in which case the start/end date based on
+          the resolution and timezone passed as query parameters will be used.
+          
+          In the case of a full date-time string like "2020-01-01T00:00:00+01:00" that will override the timezone
+          parameter passed in the query.
+          
+          If only the start date ($gte) was passed, the end date will be set to the end of the start date's day.
+          If only the end date ($lte) was passed, the start date will be set to the beginning of the end date's day.
+          
+          Examples:
+          `{"$and":[{"date":{"$gte":"2021-04-16T00:00:00Z"}}]}` - results in a search starting at 2021-04-16T00:00:01Z
+          and ending 2021-04-16T23:59:59Z.
+          `{"$and":[{"date":{"$lte":"2021-04-16T23:59:59Z"}}]}` - is equivalent to the above search
+    get:
+      operationId: getReturnInStore
+      summary: Get return in store reporting
+      description: Get return in store reporting
+      x-internal: true
+      tags:
+        - Analytics
+      responses:
+        200:
+          description: 'Return in store reporting'
+          schema:
+            type: object
+            properties:
+              reportingData:
+                type: array
+                items:
+                  $ref: '#/definitions/ReportingMetric'
+
 parameters:
   LocationCode:
     name: locationCode
@@ -2742,6 +3550,17 @@ parameters:
     in: query
     type: boolean
     default: true
+  ReturnReasonCode:
+    name: returnReasonCode
+    description: Unique return reason code value.
+    in: path
+    type: string
+    required: true
+  ConditionCode:
+    name: productConditionCode
+    in: path
+    type: string
+    required: true
 
 definitions:
   QuantityChangeReason:
@@ -2910,6 +3729,8 @@ definitions:
         $ref: '#/definitions/CreateDate'
       submitDate:
         $ref: '#/definitions/SubmitDate'
+      fulfillDate:
+        $ref: '#/definitions/FulfillDate'
       completeDate:
         $ref: '#/definitions/CompleteDate'
       sourceIp:
@@ -2943,6 +3764,10 @@ definitions:
               type: number
               minimum: 0
               example: 5
+            returnQuantity:
+              type: number
+              minimum: 0
+              example: 1
             quantityChangeReason:
               $ref: '#/definitions/QuantityChangeReason'
             product:
@@ -2993,6 +3818,11 @@ definitions:
           customer:
             $ref: 'https://s3.eu-central-1.amazonaws.com/shopgatedevcloud-bigapi/swagger-docs/omni/customer-crud.yaml#/definitions/Customer'
             description: Customer of the order. This property only exists if 'customer' is passed in the field query parameter.
+          returnStatus:
+            type: [ "string", "null" ]
+            enum:
+              - partialReturn
+              - returned
           isOrderable:
             type: boolean
             description: Indicates if this order is orderable. Its used for the checkout. This property only exists if 'isOrderable' is passed in the field query parameter.
@@ -3095,6 +3925,8 @@ definitions:
         format: float
       submitDate:
         $ref: '#/definitions/SubmitDate'
+      fulfillDate:
+        $ref: '#/definitions/FulfillDate'
       completeDate:
         $ref: '#/definitions/CompleteDate'
       sourceIp:
@@ -3115,6 +3947,8 @@ definitions:
       type: object
       additionalProperties: false
       properties:
+        externalCode:
+          $ref: '#/definitions/ExternalCode'
         notes:
           $ref: '#/definitions/Notes'
         specialInstructions:
@@ -3512,6 +4346,212 @@ definitions:
         $ref: '#/definitions/CompleteDate'
       fulfillmentOrderAddress:
         $ref: '#/definitions/FulfillmentOrderAddress'
+
+  PostReturnOrder:
+    required:
+      - salesOrderNumber
+      - customerId
+      - lineItems
+    type: object
+    properties:
+      externalCode:
+        $ref: '#/definitions/ExternalCode'
+      salesOrderNumber:
+        type: string
+        example: "1293747"
+      type:
+        $ref: '#/definitions/ReturnOrderType'
+      customerId:
+        type: string
+        example: '55c98b8e-1100-497c-8df6-4b4f0353ab2a'
+        description: 'Customer identifier'
+      externalCustomerNumber:
+        type: ['string', 'null']
+        example: 'C1756793'
+        description: 'A customer number / reference to an external system.'
+      status:
+        $ref: '#/definitions/ReturnOrderStatus'
+      expedited:
+        type: boolean
+      localeCode:
+        $ref: '#/definitions/LocaleCode'
+      currencyCode:
+        $ref: '#/definitions/CurrencyCode'
+      notes:
+        $ref: '#/definitions/Notes'
+      specialInstructions:
+        $ref: '#/definitions/SpecialInstructions'
+      data:
+        type: object
+      primaryBillToAddressSequenceIndex:
+        type: number
+      primaryShipToAddressSequenceIndex:
+        type: number
+      addressSequences:
+        type: array
+        items:
+          $ref: '#/definitions/PostROAddressSequence'
+      subTotal:
+        type: number
+        format: float
+        default: 0
+      discountAmount:
+        $ref: '#/definitions/DiscountAmount'
+      promoAmount:
+        $ref: '#/definitions/PromoAmount'
+      taxAmount:
+        $ref: '#/definitions/TaxAmount'
+      tax2Amount:
+        $ref: '#/definitions/Tax2Amount'
+      shippingSubTotal:
+        type: number
+        format: float
+      shippingDiscountAmount:
+        type: number
+        format: float
+      shippingPromoAmount:
+        type: number
+        format: float
+      shippingTotal:
+        type: number
+        format: float
+      taxExempt:
+        type: boolean
+      taxSummary:
+        $ref: '#/definitions/TaxSummary'
+      total:
+        type: number
+        format: float
+      submitDate:
+        $ref: '#/definitions/SubmitDate'
+      completeDate:
+        $ref: '#/definitions/CompleteDate'
+      dropOffType:
+        $ref: '#/definitions/DropOffType'
+      dropOffLocationCode:
+        type: string
+        description: Location where the order is returned
+        example: DERetail001
+      os:
+        $ref: '#/definitions/OS'
+      imported:
+        $ref: '#/definitions/Imported'
+      lineItems:
+        type: array
+        minItems: 1
+        items:
+          $ref: '#/definitions/PostROLineItem'
+  UpdateReturnOrder:
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/ReturnOrderStatus'
+      lineItems:
+        type: array
+        items:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "R386"
+            status:
+              $ref: '#/definitions/ROLineItemStatus'
+
+  ReturnOrder:
+    type: object
+    properties:
+      orderNumber:
+        type: string
+        example: "R1293747"
+      externalCode:
+        $ref: '#/definitions/ExternalCode'
+      salesOrderNumber:
+        type: string
+        example: "1293747"
+      type:
+        $ref: '#/definitions/ReturnOrderType'
+      customerId:
+        type: string
+        example: '55c98b8e-1100-497c-8df6-4b4f0353ab2a'
+        description: 'Customer identifier'
+      externalCustomerNumber:
+        $ref: '#/definitions/ExternalCustomerNumber'
+      status:
+        $ref: '#/definitions/ReturnOrderStatus'
+      expedited:
+        type: boolean
+      localeCode:
+        $ref: '#/definitions/LocaleCode'
+      currencyCode:
+        $ref: '#/definitions/CurrencyCode'
+      notes:
+        $ref: '#/definitions/Notes'
+      specialInstructions:
+        $ref: '#/definitions/SpecialInstructions'
+      data:
+        type: object
+      primaryBillToAddressSequenceIndex:
+        type: number
+      primaryShipToAddressSequenceIndex:
+        type: number
+      addressSequences:
+        type: array
+        items:
+          $ref: '#/definitions/ROAddressSequence'
+      subTotal:
+        type: number
+        format: float
+      discountAmount:
+        $ref: '#/definitions/DiscountAmount'
+      promoAmount:
+        $ref: '#/definitions/PromoAmount'
+      taxAmount:
+        $ref: '#/definitions/TaxAmount'
+      tax2Amount:
+        $ref: '#/definitions/Tax2Amount'
+      shippingSubTotal:
+        type: number
+        format: float
+      shippingDiscountAmount:
+        type: number
+        format: float
+      shippingPromoAmount:
+        type: number
+        format: float
+      shippingTotal:
+        type: number
+        format: float
+      taxExempt:
+        type: boolean
+      taxSummary:
+        $ref: '#/definitions/TaxSummary'
+      total:
+        type: number
+        format: float
+      date:
+        $ref: '#/definitions/CreateDate'
+      submitDate:
+        $ref: '#/definitions/SubmitDate'
+      completeDate:
+        $ref: '#/definitions/CompleteDate'
+      dropOffType:
+        $ref: '#/definitions/DropOffType'
+      dropOffLocationCode:
+        type: string
+        description: Location where the order is returned
+        example: DERetail001
+      os:
+        $ref: '#/definitions/OS'
+      imported:
+        $ref: '#/definitions/Imported'
+      paymentTransactions:
+        type: array
+        items:
+          $ref: '#/definitions/PaymentTransaction'
+      lineItems:
+        type: array
+        items:
+          $ref: '#/definitions/ROLineItem'
 
   HistoryItem:
     type: object
@@ -4377,6 +5417,9 @@ definitions:
             $ref: '#/definitions/SOLineItemStatus'
           subStatus:
             $ref: '#/definitions/SOLineItemSubStatus'
+          returnQuantity:
+            type: number
+            example: 1
       - $ref: '#/definitions/PostSOLineItem'
 
   PostCoupon:
@@ -4848,6 +5891,83 @@ definitions:
       - packed
       - canceled
 
+  ReturnReason:
+    type: object
+    properties:
+      code:
+        type: string
+        example: damaged
+      status:
+        type: string
+        default: active
+        enum:
+          - active
+          - inactive
+      sequenceId:
+        type: number
+        example: 11
+      name:
+        type: [string, object]
+        $ref: '#/definitions/LocalizationShort'
+
+  CreateReturnReason:
+    type: object
+    properties:
+      code:
+        type: string
+        example: damaged
+      status:
+        type: string
+        default: active
+        enum:
+          - active
+          - inactive
+      sequenceId:
+        type: number
+        example: 11
+      name:
+        type: object
+        $ref: '#/definitions/LocalizationShort'
+
+  ProductCondition:
+    type: object
+    properties:
+      code:
+        type: string
+        example: poor
+      status:
+        type: string
+        default: active
+        enum:
+          - active
+          - inactive
+      sequenceId:
+        type: number
+        example: 11
+      name:
+        type: [ string, object ]
+        $ref: '#/definitions/LocalizationShort'
+
+  CreateProductCondition:
+    type: object
+    additionalProperties: false
+    properties:
+      code:
+        type: string
+        example: poor
+      status:
+        type: string
+        default: active
+        enum:
+          - active
+          - inactive
+      sequenceId:
+        type: number
+        example: 1
+      name:
+        type: object
+        $ref: '#/definitions/LocalizationShort'
+
   ValidationErrors:
     type: object
     properties:
@@ -4967,6 +6087,11 @@ definitions:
     description: Start of the planned fulfillment window
     format: date-time
     example: "2019-09-02T14:03:57.733Z"
+  FulfillDate:
+    type: ["string", "null"]
+    description: Date when the order status was changed to fulfilled
+    format: date-time
+    example: "2019-09-03T15:02:32.733Z"
   CompleteDate:
     type: ["string", "null"]
     description: Date when the order status was changed to completed
@@ -4991,6 +6116,7 @@ definitions:
     type: string
     description: external order id
     example: "000000274"
+    minLength: 1
   ExternalCustomerNumber:
     type: string
     example: 'C1756793'
@@ -5073,6 +6199,7 @@ definitions:
       - desktop
       - mobile
       - checkoutPage
+      - inStoreApp
       - other
   OS:
     type: string
@@ -5224,6 +6351,305 @@ definitions:
         description: Validated according to country code
       emailAddress:
         type: string
+        example: max.muster@shopgate.com
+
+  ReturnOrderType:
+    type: string
+    enum:
+      - return
+  ReturnOrderStatus:
+    type: string
+    default: new
+    enum:
+      - draft
+      - new
+      - inTransit
+      - arrived
+      - inReview
+      - accepted
+      - rejected
+      - canceled
+      - completed
+  DropOffType:
+    type: string
+    enum:
+      - inPerson
+      - inStore
+  ROLineItemStatus:
+    type: string
+    enum:
+      - open
+      - inProgress
+      - rejected
+      - canceled
+      - completed
+    example: inProgress
+  ROLineItem:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Identifier for the line item. Needs to be unique within the return order.
+        example: "R386"
+      salesOrderLineItemCode:
+        type: string
+        description: Reference to the sales order line item being returned.
+        example: "386"
+      status:
+        $ref: '#/definitions/ROLineItemStatus'
+      quantity:
+        type: number
+        minimum: 0
+        example: 5
+      returnReason:
+        type: object
+        properties:
+          code:
+            type: string
+          name:
+            type: string
+      productCondition:
+        type: object
+        properties:
+          code:
+            type: string
+          name:
+            type: string
+      product:
+        $ref: '#/definitions/LineItemProduct'
+      currencyCode:
+        $ref: '#/definitions/CurrencyCode'
+      price:
+        type: number
+        format: float
+      shippingAmount:
+        type: number
+        format: float
+      taxAmount:
+        type: number
+        format: float
+      tax2Amount:
+        type: number
+        format: float
+      taxExempt:
+        type: boolean
+      unitPromoAmount:
+        $ref: '#/definitions/UnitPromoAmount'
+      unitDiscountAmount:
+        $ref: '#/definitions/UnitDiscountAmount'
+      discountAmount:
+        $ref: '#/definitions/DiscountAmount'
+      promoAmount:
+        $ref: '#/definitions/PromoAmount'
+      overrideAmount:
+        type: number
+        format: float
+      extendedPrice:
+        $ref: '#/definitions/ExtendedPrice'
+      note:
+        type: string
+  PostROLineItem:
+    type: object
+    required:
+      - code
+      - salesOrderLineItemCode
+      - status
+      - quantity
+      - returnReason
+      - productCondition
+      - product
+    properties:
+      code:
+        type: string
+        example: "R386"
+      salesOrderLineItemCode:
+        type: string
+        example: "386"
+      status:
+        $ref: '#/definitions/ROLineItemStatus'
+      quantity:
+        type: number
+        example: 5
+      returnReason:
+        type: object
+        properties:
+          code:
+            type: string
+      productCondition:
+        type: object
+        properties:
+          code:
+            type: string
+      product:
+        $ref: '#/definitions/LineItemProduct'
+      currencyCode:
+        $ref: '#/definitions/CurrencyCode'
+      price:
+        type: number
+        format: float
+      shippingAmount:
+        type: number
+        format: float
+      taxAmount:
+        type: number
+        format: float
+      tax2Amount:
+        type: number
+        format: float
+      taxExempt:
+        type: boolean
+      unitPromoAmount:
+        $ref: '#/definitions/UnitPromoAmount'
+      unitDiscountAmount:
+        $ref: '#/definitions/UnitDiscountAmount'
+      discountAmount:
+        $ref: '#/definitions/DiscountAmount'
+      promoAmount:
+        $ref: '#/definitions/PromoAmount'
+      overrideAmount:
+        type: number
+        format: float
+      extendedPrice:
+        $ref: '#/definitions/ExtendedPrice'
+      note:
+        type: string
+  ROAddressSequence:
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - pickup
+          - shipping
+          - billing
+      customerContactId:
+        type: [ "string", "null" ]
+        example: 0b475af4-7ed9-4065-b4bb-7d76c537d820
+      firstName:
+        type: string
+        example: Max
+      middleName:
+        type: string
+        example: René
+      lastName:
+        type: string
+        example: Doe
+      company:
+        type: string
+        example: 'Shopgate GmbH'
+      address1:
+        type: string
+        example: Schloßstr. 10
+      address2:
+        type: string
+      address3:
+        type: string
+      address4:
+        type: string
+      city:
+        type: string
+        example: Butzbach
+      region:
+        type: string
+        example: HE
+      postalCode:
+        type: string
+        example: "35510"
+      country:
+        type: string
+        example: DE
+        description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code
+        # minLength: 2
+        maxLength: 2
+      phone:
+        type: string
+        example: +49 12345 6789 001
+        description: Validated according to country code
+      fax:
+        type: string
+        example: +49 12345 6789 002
+        description: Validated according to country code
+      mobile:
+        type: string
+        example: +49 12345 6789 003
+        description: Validated according to country code
+      emailAddress:
+        type: string
+        format: email
+        example: max.muster@shopgate.com
+  PostROAddressSequence:
+    type: object
+    required:
+      - type
+      - firstName
+      - lastName
+      - emailAddress
+    properties:
+      type:
+        type: string
+        enum:
+          - pickup
+          - shipping
+          - billing
+      customerContactId:
+        type: ["string", "null"]
+        example: 0b475af4-7ed9-4065-b4bb-7d76c537d820
+      firstName:
+        type: string
+        example: Max
+      middleName:
+        type: ["string", "null"]
+        example: René
+      lastName:
+        type: string
+        example: Muster
+      company:
+        type: ["string", "null"]
+        example: 'Shopgate GmbH'
+      address1:
+        type: ["string", "null"]
+        example: Schloßstr. 10
+        description: This field is required if used as shipping address for direct ship
+      address2:
+        type: ["string", "null"]
+        example: Haus B
+      address3:
+        type: ["string", "null"]
+        example: erste Etage
+      address4:
+        type: ["string", "null"]
+        example: null
+      city:
+        type: ["string", "null"]
+        example: Butzbach
+        description: This field is required if used as shipping address for direct ship
+      region:
+        type: ["string", "null"]
+        example: HE
+      postalCode:
+        type: ["string", "null"]
+        example: '"35510"'
+        description: This field is required if used as shipping address for direct ship
+      country:
+        type: ["string", "null"]
+        example: DE
+        description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code. This field is required if used as shipping address for direct ship
+        maxLength: 2
+      phone:
+        type: ["string", "null"]
+        example: +49 12345 6789 001
+        description: Validated according to country code
+      fax:
+        type: ["string", "null"]
+        example: +49 12345 6789 002
+        description: Validated according to country code
+      mobile:
+        type: ["string", "null"]
+        example: +49 12345 6789 003
+        description: Validated according to country code
+      emailAddress:
+        type: string
+        format: email
         example: max.muster@shopgate.com
 
   AppliedPromotions:
@@ -5547,6 +6973,17 @@ definitions:
           name:
             type: string
             example: DHL International
+
+  LocalizationShort:
+    type: object
+    description: Localization object, see [Entity Localization](/docs/retail-red/ZG9jOjM1NjU0NzY4-concepts-and-entities#entity-localization) for further information.
+    additionalProperties:
+      type: string
+      minLength: 1
+      maxLength: 255
+    example:
+      en-us: "string in english"
+      de-de: "Zeichenkette auf Deutsch"
 
 
   Pagination:

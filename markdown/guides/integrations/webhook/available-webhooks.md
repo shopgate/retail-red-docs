@@ -21,6 +21,8 @@
   - [salesOrderAdded](#salesorderadded)
   - [salesOrderFulfillmentAdded](#salesorderfulfillmentadded)
   - [salesOrderStatusUpdated](#salesorderstatusupdated)
+  - [returnOrderAdded](#returnorderadded)
+  - [returnOrderStatusUpdated](#returnorderstatusupdated)
   - [schedulePickTimeReached](#schedulepicktimereached)
   - [schedulePickupReminderTimeReached](#schedulepickupremindertimereached)
 
@@ -286,6 +288,34 @@ Triggers after the status of a salesorder changed.
 {
   "customerId": "7b196c58-a689-49fe-b056-91dd902694d2",
   "salesOrderId": 5,
+  "salesOrderNumber": "0001",
+  "oldStatus": "new",
+  "newStatus": "accepted",
+  "user": "6" //userId
+}
+```
+
+### returnOrderAdded
+
+Triggers after a return order was added.
+
+```json
+{
+  "returnOrderNumber": "R0001",
+  "salesOrderNumber": "0001",
+  "customerId": "7b196c58-a689-49fe-b056-91dd902694d2",
+  "user": "6" //userId
+}
+```
+
+### returnOrderStatusUpdated
+
+Triggers after the status of a return order changed.
+
+```json
+{
+  "customerId": "7b196c58-a689-49fe-b056-91dd902694d2",
+  "returnOrderNumber": "R0001",
   "salesOrderNumber": "0001",
   "oldStatus": "new",
   "newStatus": "accepted",

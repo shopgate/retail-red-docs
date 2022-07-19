@@ -17,7 +17,7 @@ Enter the clientId and clientSecret (provided by Shopgate) in the `Authorization
 The body must contain the email address of the API user in the username and password. Enter the tenantType (always "merchant" for now). Set the merchantCode of the merchant for whom you want to send the request as the `tenantId`.
 
 > **Note**
-> If you don't have a clientId and clientSecret, please contact <mail@retai.red>
+> If you don't have a clientId and clientSecret, please contact <support@shopgate.com>
 
 The body follows the content type: x-www-form-urlencoded.
 

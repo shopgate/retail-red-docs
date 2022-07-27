@@ -304,7 +304,8 @@ Triggers after a return order was added.
   "returnOrderNumber": "R0001",
   "salesOrderNumber": "0001",
   "customerId": "7b196c58-a689-49fe-b056-91dd902694d2",
-  "user": "6" //userId
+  "user": "6", //userId
+  "status": "new"
 }
 ```
 

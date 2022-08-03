@@ -7,7 +7,7 @@ info:
     url: https://shopgate.com
     email: support@shopgate.com
   description: |
-    Check out the [Webhook Integration Guide](/guides/integrations/webhook-integration/overview) or start with [creating a webhook](/api-reference/webhook-api/webhooks/createwebhooks).
+    Check out the [Webhook Integration Guide](/docs/retail-red/655e37195ad76-overview) or start with [creating a webhook](/docs/retail-red/9ac46d85f9739-create-webhooks).
 host: webhook.shopgate.io
 schemes:
   - https

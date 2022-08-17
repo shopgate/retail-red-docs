@@ -24,10 +24,10 @@ The goal of the catalog integration is to transfer the catalog data to Shopgate 
 
 ## Comparison
 
-| CSV Import                                 | JSON Import                                        | Catalog API Integration                          |
-| ------------------------------------------ | -------------------------------------------------- | ------------------------------------------------ |
-| Fast to implement / Setup for a quickstart | Fairly easy to implement but more complex then CSV | Close to realtime updates / synched with the ecp |
-| Easy to use (drag-and-drop or ftp upload)  | Supports partial and full imports                  | Highest effort to implement                      |
+| CSV Import                                        | JSON Import                                        | Catalog API Integration                          |
+| ------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------ |
+| Supports most important - but not all data fields | Supports all data fields                           | Close to realtime updates / synced with the ecp  |
+| Easy to use (drag-and-drop or ftp upload)         |                                                    | Highest effort to implement                      |
 
 The CSV Import is the best way to get started. For the best integration experience, we recommend using the JSON Import and additionally if required the Catalog API Integration.
 

@@ -305,6 +305,8 @@ paths:
           - orders
           - averageLineItems
           - orderSplits
+          - averageFulfillmentOrdersPerOrders
+          - averageOrderShipments
           - orderShipments
           - abortedState
           - productUnavailability
@@ -1017,6 +1019,7 @@ paths:
               specialInstructions: House behind the dumpster
               data:
                 collectedLoyaltyPoints: 10
+              fulfillmentStatus: open
               status: open
               addressSequences:
                 - type: shipping
@@ -1047,6 +1050,37 @@ paths:
                 attributes:
                   - code: tshirtSize
                     value: L
+#              lineItems:
+#                - code: 386
+#                  quantity: 2
+#                  currencyCode: USD
+#                  shippingAmount: 0
+#                  price: 16.80
+#                  extendedPrice: 0
+#                  taxAmount: 3.19
+#                  tax2Amount: 0
+#                  taxExempt: false
+#                  unitPromoAmount: 0
+#                  unitDiscountAmount: 0
+#                  discountAmount: 0
+#                  promoAmount: 19.99
+#                  overrideAmount: 0
+#                  substitutionAllowed: false
+#                  replacedLineItemId: null
+#
+#              subTotal: 16.80
+#              discountAmount: 0
+#              promoAmount: 0
+#              shippingSubTotal: 4.12
+#              shippingDiscountAmount: 0
+#              shippingPromoAmount: 0
+#              shippingTotal: 4.90
+#              taxAmount: 3.19
+#              tax2Amount: 0
+#              taxSummary:
+#                - code: vat_19
+#                  name: Default VAT 19%
+#                  amount: 3.19
 
       responses:
         '204':
@@ -2769,6 +2803,7 @@ paths:
                 $ref: '#/definitions/LocalizationShort'
               sequenceId:
                 type: number
+                minimum: 0
           x-examples:
             updateReturnReason:
                 status: inactive
@@ -3434,20 +3469,20 @@ paths:
         format: json
         description: |
           Filter string. Available filters: date.
-          
+
           The date filter is mandatory and has to be located under a first-level $and query.
-          
+
           Use filter types $lte and $gte to filter for a start or end date respectively.
-          
+
           The date can be the date without the timezone like "2020-01-01", in which case the start/end date based on
           the resolution and timezone passed as query parameters will be used.
-          
+
           In the case of a full date-time string like "2020-01-01T00:00:00+01:00" that will override the timezone
           parameter passed in the query.
-          
+
           If only the start date ($gte) was passed, the end date will be set to the end of the start date's day.
           If only the end date ($lte) was passed, the start date will be set to the beginning of the end date's day.
-          
+
           Examples:
           `{"$and":[{"date":{"$gte":"2021-04-16T00:00:00Z"}}]}` - results in a search starting at 2021-04-16T00:00:01Z
           and ending 2021-04-16T23:59:59Z.
@@ -3854,7 +3889,7 @@ definitions:
       externalCustomerNumber:
         $ref: '#/definitions/ExternalCustomerNumber'
       localeCode:
-        $ref: '#/definitions/LocaleCode'
+        $ref: '#/definitions/LocaleCodeNormalized'
       currencyCode:
         $ref: '#/definitions/CurrencyCode'
       status:
@@ -3951,6 +3986,10 @@ definitions:
           $ref: '#/definitions/ExternalCode'
         notes:
           $ref: '#/definitions/Notes'
+#        lineItems:
+#          type: array
+#          items:
+#            $ref: '#/definitions/UpdateSOLineItem'
         specialInstructions:
           $ref: '#/definitions/SpecialInstructions'
         data:
@@ -4032,6 +4071,34 @@ definitions:
           $ref: '#/definitions/Platform'
         os:
           $ref: '#/definitions/OS'
+#        subTotal:
+#          type: number
+#          format: float
+#        discountAmount:
+#          $ref: '#/definitions/DiscountAmount'
+#        promoAmount:
+#          $ref: '#/definitions/PromoAmount'
+#        shippingSubTotal:
+#          type: number
+#          format: float
+#        shippingDiscountAmount:
+#          type: number
+#          format: float
+#        shippingPromoAmount:
+#          type: number
+#          format: float
+#        shippingTotal:
+#          type: number
+#          format: float
+#        taxAmount:
+#          $ref: '#/definitions/TaxAmount'
+#        tax2Amount:
+#          $ref: '#/definitions/Tax2Amount'
+#        taxSummary:
+#          $ref: '#/definitions/TaxSummary'
+#        total:
+#          type: number
+#          format: float
         customer:
           type: object
           description: Updates the given attribute for the newly created anonymous customer
@@ -4352,6 +4419,7 @@ definitions:
       - salesOrderNumber
       - customerId
       - lineItems
+      - dropOffType
     type: object
     properties:
       externalCode:
@@ -5304,6 +5372,8 @@ definitions:
         example: "1337-hoodie-dark-green"
       quantity:
         type: number
+        format: float
+        minimum: 0
       status:
         $ref: '#/definitions/LineItemStatus'
       currencyCode:
@@ -5420,6 +5490,10 @@ definitions:
           returnQuantity:
             type: number
             example: 1
+          routedQuantity:
+            type: number
+            example: 1
+            description: Sum of this line item in fulfillment orders.
       - $ref: '#/definitions/PostSOLineItem'
 
   PostCoupon:
@@ -5507,6 +5581,84 @@ definitions:
         example: "386"
       quantity:
         type: number
+        format: float
+        minimum: 0
+        example: 1
+      fulfillmentMethod:
+        $ref: '#/definitions/FulfillmentMethod'
+      fulfillmentLocationCode:
+        type: ["string", "null"]
+        example: DERetail001
+      shipToAddressSequenceIndex:
+        description: Index of the address in the address sequence array where it should be shipped to
+        type: integer
+      product:
+        $ref: '#/definitions/LineItemProduct'
+      currencyCode:
+        $ref: '#/definitions/CurrencyCode'
+      shippingAmount:
+        type: number
+        format: float
+      taxAmount:
+        $ref: '#/definitions/TaxAmount'
+      tax2Amount:
+        $ref: '#/definitions/Tax2Amount'
+      taxExempt:
+        type: boolean
+      unitPromoAmount:
+        $ref: '#/definitions/UnitPromoAmount'
+      unitDiscountAmount:
+        $ref: '#/definitions/UnitDiscountAmount'
+      discountAmount:
+        $ref: '#/definitions/DiscountAmount'
+      promoAmount:
+        $ref: '#/definitions/PromoAmount'
+      overrideAmount:
+        type: number
+        format: float
+      extendedPrice:
+        $ref: '#/definitions/ExtendedPrice'
+      price:
+        type: number
+        description: Price of the line item
+        format: float
+      substitutionAllowed:
+        type: boolean
+        default: true
+        description: Determines if a substitution is allowed for this line item.
+      fulfillmentSlot:
+        $ref: '#/definitions/FulfillmentSlot'
+        example:
+          id: "5_2019-09-03"
+          date: "2019-09-03"
+          weekday: fri
+          from: 08:00
+          to: 08:59
+          status: active
+          orderCount: 10
+      appliedPromotions:
+        $ref: '#/definitions/AppliedPromotions'
+      # replacedLineItemId:
+      #   type: ["number", "null"]
+
+  UpdateSOLineItem:
+    type: object
+    additionalProperties: false
+    required:
+      - code
+    properties:
+      code:
+        type: string
+        description: Identifier for the line item. Needs to be unique within the sales order.
+        example: "386"
+      status:
+        $ref: '#/definitions/SOLineItemStatus'
+      subStatus:
+        $ref: '#/definitions/SOLineItemSubStatus'
+      quantity:
+        type: number
+        format: float
+        minimum: 0
         example: 1
       routedQuantity:
         type: number
@@ -5566,8 +5718,11 @@ definitions:
           orderCount: 10
       appliedPromotions:
         $ref: '#/definitions/AppliedPromotions'
-      # replacedLineItemId:
-      #   type: ["number", "null"]
+      replacedLineItemId:
+        type: ["number", "null"]
+      quantityChangeReason:
+        $ref: '#/definitions/QuantityChangeReason'
+
   LineItemProduct:
     type: object
     required:
@@ -5905,6 +6060,7 @@ definitions:
           - inactive
       sequenceId:
         type: number
+        minimum: 0
         example: 11
       name:
         type: [string, object]
@@ -5924,6 +6080,7 @@ definitions:
           - inactive
       sequenceId:
         type: number
+        minimum: 0
         example: 11
       name:
         type: object
@@ -5943,6 +6100,7 @@ definitions:
           - inactive
       sequenceId:
         type: number
+        minimum: 0
         example: 11
       name:
         type: [ string, object ]
@@ -5963,6 +6121,7 @@ definitions:
           - inactive
       sequenceId:
         type: number
+        minimum: 0
         example: 1
       name:
         type: object
@@ -6176,7 +6335,11 @@ definitions:
     type: string
     minLength: 2
     maxLength: 5
+  LocaleCodeNormalized:
+    type: string
+    pattern: ^[a-z]{2}[-_][a-zA-Z]{2}$
     example: 'de-de'
+    description: 5-character locale code - normalized to lowercase with dash separator. e.g. 'en-us'.
   SourceIP:
     type: string
     description: IP address from the client where the order was placed. It can be a IPv4 or IPv6 address
@@ -6374,7 +6537,7 @@ definitions:
     type: string
     enum:
       - inPerson
-      - inStore
+      - shipped
   ROLineItemStatus:
     type: string
     enum:
@@ -6873,7 +7036,7 @@ definitions:
         type: string
         example: "2020-02-11"
       value:
-        type: number
+        type: ["number", "object"]
         example: 10.7
       breakdowns:
         type: array
@@ -6976,7 +7139,9 @@ definitions:
 
   LocalizationShort:
     type: object
-    description: Localization object, see [Entity Localization](/docs/retail-red/ZG9jOjM1NjU0NzY4-concepts-and-entities#entity-localization) for further information.
+    description: |
+      Localization object, see [Entity Localization](/docs/retail-red/ZG9jOjM1NjU0NzY4-concepts-and-entities#entity-localization) for further information.
+      5-character locale code - normalized to lowercase with dash separator. e.g. 'en-us'.
     additionalProperties:
       type: string
       minLength: 1
@@ -6984,7 +7149,6 @@ definitions:
     example:
       en-us: "string in english"
       de-de: "Zeichenkette auf Deutsch"
-
 
   Pagination:
     type: object

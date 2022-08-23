@@ -1,7 +1,6 @@
 # Available Events
 
 ## Content
-
 - [About this Document](#about-this-document)
 - [Events](#events)
   - [cartReminderTimeReached](#cartremindertimereached)

@@ -1,38 +1,44 @@
 <!-- 
-Ship from store concept
-    Routing & Fulfillment (can be used separately)
-    Flows (big overview diagram, where later we will dig into detail)
-    Different locations that can fulfill
-        Warehouses (no fulfillment via app probably)
-        Stores
-        Dropshippers (no fulfillment via app probably)
-    Get Inventory & product data into shopgate
-    Configure Locations & Routes (see support portal)
-    Use aggregated inventory in ECP
-        Either do themselves, or get aggregated from shopgate
-    Import new orders to shopgate & how to handle order update in ECP/OMS
-        Import new orders from ECP / OMS to order API
-        What to do if an order is edited in ECP/OMS?
-            Shipping address changed? 
-            Line items added/removed?
-            Status updates (FO Status/SO Status?)
-    Sync order updates / routing results back (e.g. when order is shipped)
-        Fulfillment done via retail.red or only routing?
-        Both ways:
-            FO status changed in shopgate (e.g. store associate marked order as “shipped”,
-            FO status changed in external system (e.g. warehouse management system of dropshipper marked order as shipped)
-    Special flows
-        Editing order (in shopgate / in external system)
-        Canceling order (in shopgate / in external system)
-        Backorders / Preorders
+ 
+[ ] Ship from store concept
+[x]     Routing & Fulfillment (can be used separately)
+[ ]     Flows (big overview diagram, where later we will dig into detail)
+[x]     Different locations that can fulfill
+[x]         Warehouses (no fulfillment via app probably)
+[x]         Stores
+[x]         Dropshippers (no fulfillment via app probably)
+[ ]     Get Inventory & product data into shopgate
+[ ]     Configure Locations & Routes (see support portal)
+[ ]     Use cumulated inventory in ECP
+[ ]         Either do themselves, or get aggregated from shopgate
+[ ]     Import new orders to shopgate & how to handle order update in ECP/OMS
+[ ]         Import new orders from ECP / OMS to order API
+[ ]         What to do if an order is edited in ECP/OMS?
+[ ]             Shipping address changed? 
+[ ]             Line items added/removed?
+[ ]             Status updates (FO Status/SO Status?)
+[ ]     Sync order updates / routing results back (e.g. when order is shipped)
+[ ]         Fulfillment done via retail.red or only routing?
+[ ]         Both ways:
+[ ]             FO status changed in shopgate (e.g. store associate marked order as “shipped”,
+[ ]             FO status changed in external system (e.g. warehouse management system of dropshipper marked order as shipped)
+[ ]     Special flows
+[ ]         Editing order (in shopgate / in external system)
+[ ]         Canceling order (in shopgate / in external system)
+[ ]         Backorders / Preorders
+
 -->
 
 # Overview
 
 ## Content
 
-1. [About this Guide](#about-this-guide)
-2. [Key Features](#key-features)
+- [About this Guide](#about-this-guide)
+- [Key Features](#key-features)
+  - [Routing](#routing)
+  - [Fulfillment](#fulfillment)
+- [How to get data into the Shopgate platform](#how-to-get-data-into-the-shopgate-platform)
+- [Syncing between your Platform and Shopgate](#syncing-between-your-platform-and-shopgate)
 
 ## About this Guide
 
@@ -42,11 +48,11 @@ The following guide should show you what Ship-From-Store is, how it works, and w
 
 The key features of Ship-From-Store are Order Routing and the Fulfillment Process. In the upcoming text they will be referenced in their short forms as routing and fulfillment.
 
-<!-- TODO benefits ? -->
+Utilizing these features you are able automatically route/split orders to different locations using a customizable ruleset as well as fulfilling the orders on site from picking to shipping.
 
 ### Routing
 
-The routing describes the creation of fulfillment orders<!-- TODO link FO --> at locations that fit certain criteria like, closest to the customer, or location that have the most stock or other rule sets that you can freely configure within the Shopgate system. Not only that - the routing engine is able to split one sales order<!-- TODO link SO --> into multiple fulfillment orders it sees best fit. Of course this is also configurable. In case a fulfillment order can't get handled on it's assigned location, the routing engine can reroute the fulfillment order to another location that fits best.
+The Order Routing describes the creation of fulfillment orders<!-- TODO link FO --> at locations that fit certain criteria like: closest to the customer, or location that have the most stock or other rule sets that you can freely configure within the Shopgate system. Not only that - the routing engine is able to split one sales order<!-- TODO link SO --> into multiple fulfillment orders it sees as best fit. Of course this is also configurable. In case a fulfillment order can't get handled on it's assigned location, the Order Routing can reroute the fulfillment order to another location that fits.
 
 <!-- TODO order splitting by fulfillment method or next best fit when it can't get routed to a single location -->
 
@@ -63,18 +69,18 @@ The fulfillment describes the process of handling fulfillment orders at a locati
   - creating shipments by using for example our build-in shipping providers
 - shipping the fulfillment orders
 
-Within this process it is possible to make adjustments to both sales order and fulfillment order. To handle the process you can either use our In-StoreApp, the Shopgate Admin <!-- TODO: link admin --> or implement the transitions in your system via the Shopgate API <!-- TODO link api docs order svc -->.
+Handling this process can be done by using the Shopgate Admin or In-StoreApp. By performing status transitions on the fulfillment order like 'packed' -> 'shipped' the system can trigger events, which can both trigger a notification to the customer or a webhook call to your platform. 
 
-Fulfillments can be processed on various types of locations like warehouses, dropshippers and stores.
+The Fulfillment can be processed on various types of locations like warehouses, dropshippers or stores. While warehouses and dropshippers may not use Shopgates In-StoreApp or the Admin, fulfillment- and sales order updates can still be passed via our API to enable either webhook calls or customer notifications.
 
 ## How to get data into the Shopgate platform
 
 <!-- Max example -->
+Sales Orders
+Fulfillment Orders
 Locations
 Products
 Inventories // Cumulated Inventory
-Sales Orders
-Fulfillment Orders
 Configured Routes
 
 <!-- Min example -->
@@ -85,3 +91,22 @@ Fulfillment Orders
 
 <!-- Depends on integration / how deep -->
 <!-- Scenario -->
+
+## Using cumulated inventory
+
+### The three levels of inventory
+
+**Inventory, Reservations and General Reservations**
+
+A Inventory record is defined as a on-hand quantity of a product with as special sku in a single location in a single bin location in a single bin. It is possible to define a safety stock quantity for this record. Obviously as there is the concept of bins/bin locations so there can be multiple inventory records per location each with a unique bin/bin location combination. With this kind of granularity you can keep track where your product is (also distinguishable by sku) if you need to. Of course it is also possible to not use sku / bin / bin location information.
+
+<!-- TODO: show and explain inventory model -->
+
+In addition to the inventory, we also have the concept of reservations. Reservations can be done on distinct inventory rows. These reservations are attached to Sales Orders and Fulfillment Orders. When requesting inventory, the reserved amount will decrease the shown inventory amount.
+
+<!-- TODO: show and explain inventory reservation model -->
+
+**Product Location Inventory**
+
+Cumulated Inventory and Cumulated Inventory Reservations
+

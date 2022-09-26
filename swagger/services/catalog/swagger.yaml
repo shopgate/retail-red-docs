@@ -2502,6 +2502,10 @@ paths:
                   binLocation: 1203-4
                   locationCode: DERetail1
                   productCode: jeans-1
+                  inventoryTreatmentSetting:
+                    code: its1
+                    name: testName
+                    isPurchasable: true
                   sku: 54nf444
         400:
           description: Validation error
@@ -2540,6 +2544,8 @@ paths:
                   binLocation: 1203-4
                   externalUpdateDate: '2018-12-15T00:00:23.114Z'
                   locationCode: DERetail1
+                  inventoryTreatmentSetting:
+                    code: its1
                   onHand: 4
                   productCode: jeans-1
                   safetyStock: 1
@@ -2592,6 +2598,8 @@ paths:
                       example: productCode1
                     locationCode:
                       $ref: '#/definitions/LocationCode'
+                    inventoryTreatmentSetting:
+                      $ref: '#/definitions/InventoryTreatmentSettingUpdate'
                     sku:
                       type:
                         - "null"
@@ -2619,6 +2627,8 @@ paths:
                 onHand: 10
                 operationType: increment
                 productCode: jeans-1
+                inventoryTreatmentSetting:
+                  code: its1
                 sku: SKU-1
       responses:
         200:
@@ -2733,6 +2743,10 @@ paths:
               inventories:
                 - productCode: jeans1
                   locationCode: loc1
+                  inventoryTreatmentSetting:
+                    code: its1
+                    name: testName
+                    isPurchasable: false
                   onHand: 300
                   onReserve: 50
                   available: 250
@@ -3214,6 +3228,8 @@ paths:
                       type: string
                       description: code of the location
                       example: LOCATION123
+                    inventoryTreatmentSetting:
+                      $ref: '#/definitions/InventoryTreatmentSetting'
                     isAvailable:
                       type: boolean
                       description: This field indicates if a product is available or not. It combines all information of the inventory managment and the flags on the product
@@ -3231,6 +3247,10 @@ paths:
               productInventories:
                 - productCode: jeans-1
                   locationCode: LOCATION123
+                  inventoryTreatmentSetting:
+                    code: its1
+                    name: testName
+                    isPurchasable: true
                   isAvailable: true
                   available: 10
                   visible: 5
@@ -3378,7 +3398,7 @@ paths:
                             $ref: '#/definitions/Code'
                           quantity:
                             type: number
-                            minimum: 1
+                            minimum: 0
                             example: 10
         400:
           description: Validation error
@@ -3426,7 +3446,7 @@ paths:
                             $ref: '#/definitions/Code'
                           quantity:
                             type: number
-                            minimum: 1
+                            minimum: 0
                             example: 10
       responses:
         200:
@@ -3478,7 +3498,7 @@ paths:
                       $ref: '#/definitions/Code'
                     quantity:
                       type: number
-                      minimum: 1
+                      minimum: 0
                       example: 10
       responses:
         200:
@@ -3716,6 +3736,119 @@ paths:
           description: Merchant not found
           schema:
             $ref: '#/definitions/NotFoundError'
+  /merchants/{merchantCode}/inventoryTreatmentSettings:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+    get:
+      operationId: getInventoryTreatmentSettings
+      summary: Get inventory treatment settings
+      description: Get inventory treatment settings
+      tags:
+        - InventoryTreatmentSettings
+      responses:
+        '200':
+          description: Return inventory treatment settings
+          schema:
+            type: object
+            properties:
+              inventoryTreatmentSettings:
+                type: array
+                items:
+                  $ref: '#/definitions/InventoryTreatmentSetting'
+          examples:
+            getInventoryTreatmentSettings:
+              inventoryTreatmentSettings:
+                - code: its1
+                  name: 'not localized name of the inventory treatment settings'
+                  isPurchasable: false
+                  sequenceId: 1
+    post:
+      operationId: createInventoryTreatmentSettings
+      summary: Create inventory treatment settings
+      description: Create inventory treatment settings
+      tags:
+        - InventoryTreatmentSettings
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - inventoryTreatmentSettings
+            properties:
+              inventoryTreatmentSettings:
+                type: array
+                minItems: 1
+                items:
+                  $ref: '#/definitions/InventoryTreatmentSettingCreate'
+          x-examples:
+            createInventoryTreatmentSettings:
+              inventoryTreatmentSettings:
+                - code: its1
+                  name: 'not localized name of the inventory treatment settings'
+                  isPurchasable: false
+                  sequenceId: 10
+      responses:
+        '201':
+          description: ''
+          schema:
+            type: object
+            allOf:
+              - $ref: '#/definitions/BatchErrors'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /merchants/{merchantCode}/inventoryTreatmentSettings/{inventoryTreatmentSettingCode}:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - $ref: '#/parameters/InventoryTreatmentSettingCode'
+    post:
+      operationId: updateInventoryTreatmentSetting
+      summary: Update inventory treatment setting
+      description: Update inventory treatment setting
+      tags:
+        - InventoryTreatmentSettings
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              name:
+                type: string
+              isPurchasable:
+                type: boolean
+              sequenceId:
+                type: integer
+                minimum: 0
+          x-example:
+            updateInventoryTreatmentSetting:
+              name: 'new setting name'
+              isPurchasable: true
+              sequenceId: 1
+      responses:
+        '204':
+          description: 'Inventory treatment setting updated'
+        '404':
+          description: 'Merchant or inventory treatment setting not found'
+        '409':
+          description: Conflict Error
+    delete:
+      operationId: deleteInventoryTreatmentSetting
+      summary: Delete inventory treatment setting
+      description: Delete inventory treatment setting
+      tags:
+        - InventoryTreatmentSettings
+      responses:
+        '200':
+          description: 'Inventory treatment setting deleted'
+        '404':
+          description: 'Merchant or inventory treatment setting not found'
+
 parameters:
   CatalogCodeInPath:
     in: path
@@ -4014,6 +4147,13 @@ parameters:
     required: true
     minLength: 36
     maxLength: 36
+  InventoryTreatmentSettingCode:
+    name: inventoryTreatmentSettingCode
+    in: path
+    type: string
+    required: true
+    maxLength: 255
+
 definitions:
   Attribute:
     type: object
@@ -4569,6 +4709,8 @@ definitions:
         example: active
       externalUpdateDate:
         $ref: '#/definitions/ExternalUpdateDate'
+      inventoryTreatmentSetting:
+        $ref: '#/definitions/InventoryTreatmentSetting'
   InventoryPost:
     type: object
     required:
@@ -4580,6 +4722,8 @@ definitions:
         $ref: '#/definitions/Code'
       locationCode:
         $ref: '#/definitions/LocationCode'
+      inventoryTreatmentSetting:
+        $ref: '#/definitions/InventoryTreatmentSettingUpdate'
       sku:
         type:
           - "null"
@@ -4639,6 +4783,52 @@ definitions:
       - preOrder
       - hideInStorefront
     example: showOutOfStock
+  InventoryTreatmentSettingCreate:
+    type: object
+    required:
+      - code
+      - name
+      - isPurchasable
+      - sequenceId
+    properties:
+      code:
+        type: string
+        example: its1
+      name:
+        type: string
+        example: setting name
+      isPurchasable:
+        type: boolean
+      sequenceId:
+        type: integer
+        minimum: 0
+  InventoryTreatmentSetting:
+    type: [object, 'null']
+    required:
+      - code
+      - name
+      - isPurchasable
+    properties:
+      code:
+        type: string
+        example: its1
+      name:
+        type: string
+        example: setting name
+      isPurchasable:
+        type: boolean
+      sequenceId:
+        type: integer
+        minimum: 0
+  InventoryTreatmentSettingUpdate:
+    type: [object, 'null']
+    required:
+      - code
+    additionalProperties: false
+    properties:
+      code:
+        type: [string, 'null']
+        example: its1
   IsInventoryManaged:
     type: boolean
     example: true
@@ -4740,6 +4930,8 @@ definitions:
       inventoryVisible:
         type: number
         example: 200
+      inventoryTreatmentSetting:
+        $ref: '#/definitions/InventoryTreatmentSetting'
   LocationInventoryExtended:
     type: object
     properties:
@@ -4747,6 +4939,8 @@ definitions:
         $ref: '#/definitions/Code'
       locationCode:
         $ref: '#/definitions/Code'
+      inventoryTreatmentSetting:
+        $ref: '#/definitions/InventoryTreatmentSetting'
       onHand:
         type: number
         example: 300
@@ -6111,6 +6305,30 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/ValidationErrorResult'
+  BatchError:
+    type: object
+    properties:
+      entityIndex:
+        type: number
+      entity:
+        type: string
+      entityId:
+        type: string
+      code:
+        type: number
+      reason:
+        type: string
+      subentityPath:
+        type: array
+        items:
+          type: [ "string", "null", "number" ]
+  BatchErrors:
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/BatchError'
   NotFoundError:
     type: object
     required:

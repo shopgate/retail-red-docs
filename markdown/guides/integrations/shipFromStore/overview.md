@@ -1,6 +1,6 @@
 <!-- 
  
-[ ] Ship from store concept
+[ ] Ship-From-Store concept
 [x]     Routing & Fulfillment (can be used separately)
 [ ]     Flows (big overview diagram, where later we will dig into detail)
 [x]     Different locations that can fulfill
@@ -33,12 +33,18 @@
 
 ## Content
 
-- [About this Guide](#about-this-guide)
-- [Key Features](#key-features)
-  - [Routing](#routing)
-  - [Fulfillment](#fulfillment)
-- [How to get data into the Shopgate platform](#how-to-get-data-into-the-shopgate-platform)
-- [Syncing between your Platform and Shopgate](#syncing-between-your-platform-and-shopgate)
+- [Overview](#overview)
+  - [Content](#content)
+  - [About this Guide](#about-this-guide)
+  - [Key Features](#key-features)
+    - [Routing](#routing)
+    - [Fulfillment](#fulfillment)
+    - [Different Ways Of Implementing Ship-From-Store](#different-ways-of-implementing-ship-from-store)
+  - [Entities Needed For The Ship-From-Store Implementation](#entities-needed-for-the-ship-from-store-implementation)
+  - [How to get data into the Shopgate platform](#how-to-get-data-into-the-shopgate-platform)
+  - [Syncing between your Platform and Shopgate](#syncing-between-your-platform-and-shopgate)
+  - [Using cumulated inventory](#using-cumulated-inventory)
+    - [The three levels of inventory](#the-three-levels-of-inventory)
 
 ## About this Guide
 
@@ -73,19 +79,29 @@ Handling this process can be done by using the Shopgate Admin or In-StoreApp. By
 
 The Fulfillment can be processed on various types of locations like warehouses, dropshippers or stores. While warehouses and dropshippers may not use Shopgates In-StoreApp or the Admin, fulfillment- and sales order updates can still be passed via our API to enable either webhook calls or customer notifications.
 
+### Different Ways Of Implementing Ship-From-Store
+
+<!-- Complete Implementation: We get the orders, we do the routing, we manage the fulfillment -->
+<!-- Routing Implementation: We get the orders, we do the routing, you manage the fulfillment -->
+<!-- Fulfillment Implementation: We get the Fulfillment Orders on the Location and manage the fulfillment without routing -->
+
+## Entities Needed For The Ship-From-Store Implementation
+
+Sales Orders
+Locations
+Products
+Inventories / LocationInventory / Cumulated Inventory
+Reservations / Cumulated Inventory Reservations
+Routes
+
 ## How to get data into the Shopgate platform
 
 <!-- Max example -->
 Sales Orders
-Fulfillment Orders
 Locations
 Products
-Inventories // Cumulated Inventory
+Inventories
 Configured Routes
-
-<!-- Min example -->
-Sales Orders
-Fulfillment Orders
 
 ## Syncing between your Platform and Shopgate
 
@@ -98,7 +114,7 @@ Fulfillment Orders
 
 **Inventory, Reservations and General Reservations**
 
-A Inventory record is defined as a on-hand quantity of a product with as special sku in a single location in a single bin location in a single bin. It is possible to define a safety stock quantity for this record. Obviously as there is the concept of bins/bin locations so there can be multiple inventory records per location each with a unique bin/bin location combination. With this kind of granularity you can keep track where your product is (also distinguishable by sku) if you need to. Of course it is also possible to not use sku / bin / bin location information.
+A Inventory record is defined as a on-hand quantity of a product with as special sku in a single location in a single bin location in a single bin. It is possible to define a safety stock quantity for this record. Obviously as there is the concept of sku, bins/bin locations so there can be multiple inventory records per location each with a unique sku / bin /bin location combination. With this kind of granularity you can keep track where your products are if you need to. Of course it is also possible to not use sku / bin / bin location granularity.
 
 <!-- TODO: show and explain inventory model -->
 
@@ -108,5 +124,5 @@ In addition to the inventory, we also have the concept of reservations. Reservat
 
 **Product Location Inventory**
 
-Cumulated Inventory and Cumulated Inventory Reservations
+**Cumulated Inventory and Cumulated Inventory Reservations**
 

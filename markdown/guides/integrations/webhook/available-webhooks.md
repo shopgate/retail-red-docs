@@ -21,6 +21,7 @@
   - [salesOrderAdded](#salesorderadded)
   - [salesOrderFulfillmentAdded](#salesorderfulfillmentadded)
   - [salesOrderStatusUpdated](#salesorderstatusupdated)
+  - [salesOrderUpdated](#salesorderupdated)
   - [returnOrderAdded](#returnorderadded)
   - [returnOrderStatusUpdated](#returnorderstatusupdated)
   - [schedulePickTimeReached](#schedulepicktimereached)
@@ -291,6 +292,19 @@ Triggers after the status of a salesorder changed.
   "salesOrderNumber": "0001",
   "oldStatus": "new",
   "newStatus": "accepted",
+  "user": "6" //userId
+}
+```
+
+### salesOrderUpdated
+
+Triggers after a salesorder changed.
+
+```json
+{
+  "salesOrderNumber": "0001",
+  "oldProperties": "new",
+  "newProperties": "accepted",
   "user": "6" //userId
 }
 ```

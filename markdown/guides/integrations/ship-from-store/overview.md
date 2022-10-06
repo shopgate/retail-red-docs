@@ -9,8 +9,8 @@
 [x]         Dropshippers (no fulfillment via app probably)
 [ ]     Get Inventory & product data into Shopgate
 [ ]     Configure Locations & Routes (see support portal)
-[ ]     Use cumulated inventory in ECP
-[ ]         Either do themselves, or get aggregated from Shopgate
+[x]     Use cumulated inventory in ECP
+[x]         Either do themselves, or get aggregated from Shopgate
 [ ]     Import new orders to Shopgate & how to handle order update in ECP/OMS
 [ ]         Import new orders from ECP / OMS to order API
 [ ]         What to do if an order is edited in ECP/OMS?
@@ -45,6 +45,7 @@
   - [Syncing between your Platform and Shopgate](#syncing-between-your-platform-and-Shopgate)
   - [Using cumulated inventory](#using-cumulated-inventory)
     - [The three levels of inventory](#the-three-levels-of-inventory)
+    - [Cumulated Inventory and Ship-From-Store](#cumulated-inventory-and-ship-from-store)
 
 ## About this Guide
 
@@ -108,9 +109,11 @@ Configured Routes
 <!-- Depends on integration / how deep -->
 <!-- Scenario -->
 
-## Using cumulated inventory
+## Using Cumulated Inventory
 
-### The three levels of inventory
+This section describes the cumulated inventory and for what it is being used.
+
+### The Three Levels of Inventory
 
 **Inventory, Reservations and General Reservations**
 
@@ -124,5 +127,22 @@ In addition to the inventory, we also have the concept of reservations. Reservat
 
 **Product Location Inventory**
 
+The Product Location Inventory is the inventory of a product per location. It will be computed by summing up all inventories and reservations of a product in one location. Every interaction with regular inventory or reservations will update the Product Location Inventory.
+
+<!-- TODO: link to the get endpoint -->
+
 **Cumulated Inventory and Cumulated Inventory Reservations**
 
+<!-- TODO: link to the inventory modes -->
+
+Cumulated Inventory is the overall inventory / availability of a product over all locations that have directShip / Ship-From-Store available. Based on location settings like the inventory modes 'blind', 'blindWithAssortment', or 'integrated', we can tell the exact inventory counts or whether inventory is available or not. Also cumulated inventory can be reserved via Cumulated Inventory Reservations.
+
+Our exact inventory reservations on the location and sku, bin and binLocation will be done during routing and rerouting. For the complete process of the order flow - from creation to completion - we need the reservation on the Cumulated Inventory because the routing and rerouting is a processes that can happen on different points in time. The Cumulated Inventory Reservations aim to hold the Cumulated Inventory counts accurate over the time of the order process.
+
+### Cumulated Inventory and Ship-From-Store
+
+The Cumulated Inventory can be used on the merchants storefront view (Magento, Shopify, self build, ...) to show the stock or the availability of a product over all location that have Ship-From-Store available. As a merchant you can get the Cumulated Inventory counts for a product via the Shopgate API.
+
+Also some ECP may have their own cumulated inventory. This should be work as well out of the box with our system in case the inventory is properly synched.
+
+<!-- TODO: Cumulated Inventory in a generic Storefront -->

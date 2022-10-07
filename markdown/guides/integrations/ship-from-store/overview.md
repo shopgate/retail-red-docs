@@ -7,8 +7,8 @@
 [x]         Warehouses (no fulfillment via app probably)
 [x]         Stores
 [x]         Dropshippers (no fulfillment via app probably)
-[ ]     Get Inventory & product data into Shopgate
-[ ]     Configure Locations & Routes (see support portal)
+[x]     Get Inventory & product data into Shopgate
+[x]     Configure Locations & Routes (see support portal)
 [x]     Use cumulated inventory in ECP
 [x]         Either do themselves, or get aggregated from Shopgate
 [ ]     Import new orders to Shopgate & how to handle order update in ECP/OMS
@@ -49,11 +49,15 @@
     - [Products](#products)
     - [Inventory](#inventory)
     - [Routes](#routes)
-  - [How To Get Data Into The Shopgate Platform](#how-to-get-data-into-the-shopgate-platform)
+  - [Usage of Cumulated Inventory and Ship-From-Store](#usage-of-cumulated-inventory-and-ship-from-store)
+  - [How To Get Basic Data Into The Shopgate Platform](#how-to-get-basic-data-into-the-shopgate-platform)
+    - [Locations](#locations-1)
+    - [Products](#products-1)
+    - [Inventories](#inventories)
   - [Syncing Between Your Platform And Shopgate](#syncing-between-your-platform-and-shopgate)
-  - [Using Cumulated Inventory](#using-cumulated-inventory)
-    - [The Three Levels of Inventory](#the-three-levels-of-inventory)
-    - [Cumulated Inventory and Ship-From-Store](#cumulated-inventory-and-ship-from-store)
+  - [Configurations](#configurations)
+    - [Locations](#locations-2)
+    - [Routes](#routes-1)
 
 ## About this Guide
 
@@ -166,61 +170,70 @@ Our exact inventory reservations on the location and sku, bin and binLocation wi
 
 See [Routing](#routing)
 
-## How To Get Data Into The Shopgate Platform
-
-<!-- Max example -->
-Sales Orders
-
-<!-- 
-API Order
-Our Storefront / Storefront API / Storefront Library
--->
-
-Locations
-
-<!--
-Shopgate Admin
--->
-
-Products
-
-<!--
-Catalog API
-FTP CSV Import
-Custom File Import
-JSON Import
--->
-
-Inventories
-
-<!--
-Catalog API
-FTP CSV Import
-Custom File Import
-JSON Import
--->
-
-Configured Routes
-
-<!--
-Shopgate Admin
--->
-
-## Syncing Between Your Platform And Shopgate
-
-<!-- Depends on integration / how deep -->
-<!-- Scenario -->
-
-## Using Cumulated Inventory
-
-This section describes the cumulated inventory and for what it is being used.
-
-### The Three Levels of Inventory
-
-### Cumulated Inventory and Ship-From-Store
+## Usage of Cumulated Inventory and Ship-From-Store
 
 The Cumulated Inventory can be used on the merchants storefront view (Magento, Shopify, self build, ...) to show the stock or the availability of a product over all location that have Ship-From-Store available. As a merchant you can get the Cumulated Inventory counts for a product via the Shopgate API.
 
 Also some ECP may have their own cumulated inventory. This should be work as well out of the box with our system in case the inventory is properly synched.
 
 <!-- TODO: Cumulated Inventory in a generic Storefront -->
+
+## How To Get Basic Data Into The Shopgate Platform
+
+<!-- 
+TODO: Move this to "Import new orders to Shopgate & how to handle order update in ECP/OMS"
+Sales Orders
+
+API Order
+Our Storefront / Storefront API / Storefront Library
+-->
+
+### Locations
+
+Locations are typically set up once in the [Shopgate Admin](https://next.admin.shopgate.com). Within the admin you can manage your locations like set them active or inactive, enable fulfillment methods like ROPIS or direct ship and so on.
+
+### Products
+
+Products can be imported in multiple ways:
+
+- The [Shopgate Catalog API](/docs/retail-red/YXBpOjM1NjU0NzYz-catalog)
+- The simplified [FTP CSV Product Import](../catalog/csv-import.md#product-csv)
+- The regular [JSON Import](../catalog/bulk-file-import.md)
+
+### Inventories
+
+Like products, inventory can be imported in multiple ways as well:
+
+- The [Shopgate Catalog API](/docs/retail-red/YXBpOjM1NjU0NzYz-catalog)
+- The simplified [FTP CSV Inventory Import](../catalog/csv-import.md#inventory-csv)
+- The regular [JSON Import](../catalog/bulk-file-import.md)
+
+> **Note**: Inventory may need to imported more frequently than other entities in order to keep everything in sync. Please contact our Support to get a suggestion of the rate for your specific case.
+
+## Syncing Between Your Platform And Shopgate
+
+<!-- Depends on integration / how deep -->
+<!-- Scenario -->
+
+## Configurations
+
+### Locations
+
+In order to be able to route to a location you need to enable the `Location Settings` >> `Fulfillment Settings` >> `Direct Ship` on a location (`Settings` >> `Locations`). When this is set, the location is now in a pool of locations that can be selected for routing.
+
+### Routes
+
+You need to create at least one route to make the routing work. To create one navigate to `Settings` >> `Ship-From-Store`. Here you can make some general settings like:
+- the time to accept a fulfillment order on a location, before it gets rerouted
+- the routing strategy
+- the count reroute attempts and more ...
+
+To Add a new route, press the **Add new Route** - button. The easiest route would be a something like, route everything to all orders from  country A to all stores in country A. Of course you can also do more complex routing with conditions like: if the Product has Property A OR Property B AND NOT Property C, route it to locations in State Y.
+
+Shopgate provides a easy to use but powerful rule builder to configure such complex routings.
+
+Multiple routes can apply for an order. Therefore Routes get a priority when they get tested against the order. So if the first one does not fi and not order splitting is possible, the next route will be used.
+
+If no route applied, a Catch-All route can be configured, that for example routes the orders to a default warehouse.
+
+In case there is no catch-all route configured, Orders will be marked as action-required and can be routed manually.

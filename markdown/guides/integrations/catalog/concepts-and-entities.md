@@ -54,7 +54,9 @@ An inventory record always contains the product code and the location code. One 
 
 For in store availability (used for “buy online pickup in store” or “reserve online pickup in store”), the location code of the specific store has to be set.
 
-Direct ship availability is handled the same way. You need to have one location of type “warehouse” and isDefault set to true. This location is then treated as the default warehouse and “direct ship inventory” location. To specify that a product is available in quantity x for direct ship orders, create an inventory record and assign it to this default warehouse location.
+Direct ship availability is handled the same way. You need to have one location of type “warehouse” and isDefault set to true. This location is then treated as the default warehouse and “direct ship inventory” location. To specify that a product is available in quantity x for direct ship orders, create an inventory record and assign it to this default warehouse location. 
+
+> This is true for directShip without Ship-From-Store. To learn about inventory and directShip with Ship-From-Store see the [Ship-From-Store Guide](../ship-from-store/overview.md) 
 
 ## Product Variants and Attributes
 

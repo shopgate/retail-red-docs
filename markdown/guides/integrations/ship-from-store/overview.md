@@ -22,6 +22,9 @@
 [ ]         Both ways:
 [ ]             FO status changed in Shopgate (e.g. store associate marked order as “shipped”,
 [ ]             FO status changed in external system (e.g. warehouse management system of dropshipper marked order as shipped)
+
+---
+
 [ ]     Special flows
 [ ]         Editing order (in Shopgate / in external system)
 [ ]         Canceling order (in Shopgate / in external system)
@@ -41,40 +44,45 @@
     - [Fulfillment](#fulfillment)
     - [Different Ways Of Implementing Ship-From-Store](#different-ways-of-implementing-ship-from-store)
   - [Entities Needed For The Ship-From-Store Implementation](#entities-needed-for-the-ship-from-store-implementation)
-  - [How to get data into the Shopgate platform](#how-to-get-data-into-the-Shopgate-platform)
-  - [Syncing between your Platform and Shopgate](#syncing-between-your-platform-and-Shopgate)
-  - [Using cumulated inventory](#using-cumulated-inventory)
-    - [The three levels of inventory](#the-three-levels-of-inventory)
+    - [Sales Orders / Fulfillment Orders](#sales-orders--fulfillment-orders)
+    - [Locations](#locations)
+    - [Products](#products)
+    - [Inventory](#inventory)
+    - [Routes](#routes)
+  - [How To Get Data Into The Shopgate Platform](#how-to-get-data-into-the-shopgate-platform)
+  - [Syncing Between Your Platform And Shopgate](#syncing-between-your-platform-and-shopgate)
+  - [Using Cumulated Inventory](#using-cumulated-inventory)
+    - [The Three Levels of Inventory](#the-three-levels-of-inventory)
     - [Cumulated Inventory and Ship-From-Store](#cumulated-inventory-and-ship-from-store)
 
 ## About this Guide
 
-The following guide should show you what Ship-From-Store is, how it works, and what you need to set it up within the Shopgate Platform integrated with your system.
+The following guide should show you what Ship-From-Store is, how it works, and what you need to set it up within the Shopgate Platform - integrated with your system.
 
 ## Key Features
 
-The key features of Ship-From-Store are Order Routing and the Fulfillment Process. In the upcoming text they will be referenced in their short forms as routing and fulfillment.
+The key features of Ship-From-Store are **Order Routing** and the **Fulfillment Process**. In the upcoming text they will be referenced in their short forms as routing and fulfillment.
 
 Utilizing these features you are able automatically route/split orders to different locations using a customizable rule set as well as fulfilling the orders on site from picking to shipping.
 
 ### Routing
 
-The Order Routing describes the creation of fulfillment orders<!-- TODO link FO --> at locations that fit certain criteria like: closest to the customer, or location that have the most stock or other rule sets that you can freely configure within the Shopgate system. Not only that - the routing engine is able to split one sales order<!-- TODO link SO --> into multiple fulfillment orders it sees as best fit. Of course this is also configurable. In case a fulfillment order can't get handled on it's assigned location, the Order Routing can reroute the fulfillment order to another location that fits.
+The Order Routing describes the creation of [fulfillment orders](../order/overview.md#fulfillment-order) at locations that fit certain criteria like: closest to the customer, or location that have the most stock or other rule sets that you can freely configure within the Shopgate Admin. Not only that - the routing engine is able to split one [sales order](../order/overview.md#sales-order) into multiple fulfillment orders it sees as best fit. Of course this is also configurable. In case a fulfillment order can't get handled on it's assigned location, the Order Routing can reroute the fulfillment order to another location that fits.
 
-<!-- TODO order splitting by fulfillment method or next best fit when it can't get routed to a single location -->
+In order to be able to decide if an order needs to be routed to a special location or if an order needs to be split to different locations we introduced rule sets called **routes**. You can also set up rules that orders from a certain set of states are only handled by certain locations. You can define how many order splits are allowed and many other conditions and settings via our Admin.
 
-<!-- TODO: explain Routes -->
+There can be multiple routes, each set with a certain priority. If an order does not fit a route, next route will be checked.
 
 ### Fulfillment
 
 The fulfillment describes the process of handling fulfillment orders at a location. The process steps depend on the fulfillment method chosen on the fulfillment order. For example: there will be no packing and shipping on BOPIS or ROPIS orders. The steps of a Ship-From-Store / direct ship fulfillment are:
 
-- accepting the fulfillment order at the location (otherwise after a certain time span it will be rerouted)
-- processing the fulfillment order
-  - picking the items
-  - packing the items (can be multiple packages)
-  - creating shipments by using for example our build-in shipping providers
-- shipping the fulfillment orders
+- Accepting the fulfillment order at the location (otherwise after a certain time span it will be rerouted)
+- Processing the fulfillment order
+  - Picking the items
+  - Packing the items (can be multiple packages)
+  - Creating shipments by using for example our build-in shipping providers
+- Shipping the fulfillment orders
 
 Handling this process can be done by using the Shopgate Admin or In-StoreApp. By performing status transitions on the fulfillment order like 'packed' to 'shipped' the system can trigger events, which can both trigger a notification to the customer or a webhook call to your platform. 
 
@@ -82,38 +90,53 @@ The Fulfillment can be processed on various types of locations like warehouses, 
 
 ### Different Ways Of Implementing Ship-From-Store
 
-<!-- Complete Implementation: We get the orders, we do the routing, we manage the fulfillment -->
-<!-- Routing Implementation: We get the orders, we do the routing, you manage the fulfillment -->
-<!-- Fulfillment Implementation: We get the Fulfillment Orders on the Location and manage the fulfillment without routing -->
+There are three major ways of integrating Ship-From-Store:
+
+- Complete Shopgate Integration: 
+  - Shopgate get the orders, 
+  - Shopgate does the routing and
+  - Shopgate manages the fulfillment
+  - all order status updates will get synched back to merchant
+- Shopgate Routing Integration:
+  - Shopgate gets the orders,
+  - Shopgate does the routing and
+  - Fulfillment gets done by the merchant
+  - Status updates have to be synched from both sides
+- Shopgate Fulfillment Integration:
+  - Shopgate gets the fulfillment orders per location and handles the fulfillment
+  - Order status has to be synched back to the merchant system
 
 ## Entities Needed For The Ship-From-Store Implementation
 
-Sales Orders
-Locations
-Products
-Inventories / LocationInventory / Cumulated Inventory
-Reservations / Cumulated Inventory Reservations
-Routes
+The following section shows the major entities you need to know for getting started with Ship-From-Store.
 
-## How to get data into the Shopgate platform
+### Sales Orders / Fulfillment Orders
 
-<!-- Max example -->
-Sales Orders
-Locations
-Products
-Inventories
-Configured Routes
+Sales Orders are the commitment to purchase certain items by a customer. Fulfillment Orders are a subset of the Sales Order, bound to a location and a request to the shop worker to fulfill a part of the Sales Order. To learn more about these entities see the [order integration guide](../order/overview.md#concepts-and-entities).
 
-## Syncing between your Platform and Shopgate
+### Locations
 
-<!-- Depends on integration / how deep -->
-<!-- Scenario -->
+Locations are physical / abstract entities where a fulfillment can happen like:
 
-## Using Cumulated Inventory
+- **stores**, where a customer also can walk in and purchase items,
+- **warehouses**, that send out packages of items directly to the customers
+- **dropshippers**, that hold stock for you and do their own fulfillment.
 
-This section describes the cumulated inventory and for what it is being used.
+To all these location types can be routed.
 
-### The Three Levels of Inventory
+### Products
+
+A Product a representation of a purchasable item with a price. To learn more about this entity see [Catalog Integration Guide: Product](../catalog/concepts-and-entities.md#product).
+
+Line items of an order object are products of a certain quantity. 
+
+### Inventory
+
+Inventory describe the available stock of a product. The Shopgate Platform holds information of inventory on three different abstraction levels:
+
+- the most granular regular inventory,
+- location inventory and,
+- cumulated inventory.
 
 **Inventory, Reservations and General Reservations**
 
@@ -138,6 +161,61 @@ The Product Location Inventory is the inventory of a product per location. It wi
 Cumulated Inventory is the overall inventory / availability of a product over all locations that have directShip / Ship-From-Store available. Based on location settings like the inventory modes 'blind', 'blindWithAssortment', or 'integrated', we can tell the exact inventory counts or whether inventory is available or not. Also cumulated inventory can be reserved via Cumulated Inventory Reservations.
 
 Our exact inventory reservations on the location and sku, bin and binLocation will be done during routing and rerouting. For the complete process of the order flow - from creation to completion - we need the reservation on the Cumulated Inventory because the routing and rerouting is a processes that can happen on different points in time. The Cumulated Inventory Reservations aim to hold the Cumulated Inventory counts accurate over the time of the order process.
+
+### Routes
+
+See [Routing](#routing)
+
+## How To Get Data Into The Shopgate Platform
+
+<!-- Max example -->
+Sales Orders
+
+<!-- 
+API Order
+Our Storefront / Storefront API / Storefront Library
+-->
+
+Locations
+
+<!--
+Shopgate Admin
+-->
+
+Products
+
+<!--
+Catalog API
+FTP CSV Import
+Custom File Import
+JSON Import
+-->
+
+Inventories
+
+<!--
+Catalog API
+FTP CSV Import
+Custom File Import
+JSON Import
+-->
+
+Configured Routes
+
+<!--
+Shopgate Admin
+-->
+
+## Syncing Between Your Platform And Shopgate
+
+<!-- Depends on integration / how deep -->
+<!-- Scenario -->
+
+## Using Cumulated Inventory
+
+This section describes the cumulated inventory and for what it is being used.
+
+### The Three Levels of Inventory
 
 ### Cumulated Inventory and Ship-From-Store
 

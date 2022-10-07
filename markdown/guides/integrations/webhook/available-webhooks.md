@@ -1,29 +1,31 @@
 # Available Events
 
 ## Content
-- [About this Document](#about-this-document)
-- [Events](#events)
-  - [cartReminderTimeReached](#cartremindertimereached)
-  - [customerDeleted](#customerdeleted)
-  - [fulfillmentOrderAdded](#fulfillmentorderadded)
-  - [fulfillmentOrderStatusUpdated](#fulfillmentorderstatusupdated)
-  - [fulfillmentOrderUpdated](#fulfillmentorderupdated)
-  - [importCompleted](#importcompleted)
-  - [inventoryReservationDeleted](#inventoryreservationdeleted)
-  - [inventoryReservationSettled](#inventoryreservationsettled)
-  - [locationCreated](#locationcreated)
-  - [locationDeleted](#locationdeleted)
-  - [locationUpdated](#locationupdated)
-  - [orderNotPickedUp](#ordernotpickedup)
-  - [productCreated](#productcreated)
-  - [productUpdated](#productupdated)
-  - [salesOrderAdded](#salesorderadded)
-  - [salesOrderFulfillmentAdded](#salesorderfulfillmentadded)
-  - [salesOrderStatusUpdated](#salesorderstatusupdated)
-  - [returnOrderAdded](#returnorderadded)
-  - [returnOrderStatusUpdated](#returnorderstatusupdated)
-  - [schedulePickTimeReached](#schedulepicktimereached)
-  - [schedulePickupReminderTimeReached](#schedulepickupremindertimereached)
+- [Available Events](#available-events)
+  - [Content](#content)
+  - [About this Document](#about-this-document)
+  - [Events](#events)
+    - [cartReminderTimeReached](#cartremindertimereached)
+    - [customerDeleted](#customerdeleted)
+    - [fulfillmentOrderAdded](#fulfillmentorderadded)
+    - [fulfillmentOrderStatusUpdated](#fulfillmentorderstatusupdated)
+    - [fulfillmentOrderUpdated](#fulfillmentorderupdated)
+    - [importCompleted](#importcompleted)
+    - [inventoryReservationDeleted](#inventoryreservationdeleted)
+    - [inventoryReservationSettled](#inventoryreservationsettled)
+    - [locationCreated](#locationcreated)
+    - [locationDeleted](#locationdeleted)
+    - [locationUpdated](#locationupdated)
+    - [orderNotPickedUp](#ordernotpickedup)
+    - [productCreated](#productcreated)
+    - [productUpdated](#productupdated)
+    - [salesOrderAdded](#salesorderadded)
+    - [salesOrderFulfillmentAdded](#salesorderfulfillmentadded)
+    - [salesOrderStatusUpdated](#salesorderstatusupdated)
+    - [returnOrderAdded](#returnorderadded)
+    - [returnOrderStatusUpdated](#returnorderstatusupdated)
+    - [schedulePickTimeReached](#schedulepicktimereached)
+    - [schedulePickupReminderTimeReached](#schedulepickupremindertimereached)
 
 ## About this Document
 
@@ -128,7 +130,7 @@ Triggers on any update of a fulfillment order.
 
 ### importCompleted
 
-Triggers when an import reached its endstate (either succeeded or failed).
+Triggers when an import reached its end state (either succeeded or failed).
 
 ```json
 {

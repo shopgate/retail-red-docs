@@ -2,30 +2,30 @@
 
 ## Content
 
-- [About this Document](#about-this-document)
-- [Events](#events)
-  - [cartReminderTimeReached](#cartremindertimereached)
-  - [customerDeleted](#customerdeleted)
-  - [fulfillmentOrderAdded](#fulfillmentorderadded)
-  - [fulfillmentOrderStatusUpdated](#fulfillmentorderstatusupdated)
-  - [fulfillmentOrderUpdated](#fulfillmentorderupdated)
-  - [importCompleted](#importcompleted)
-  - [inventoryReservationDeleted](#inventoryreservationdeleted)
-  - [inventoryReservationSettled](#inventoryreservationsettled)
-  - [locationCreated](#locationcreated)
-  - [locationDeleted](#locationdeleted)
-  - [locationUpdated](#locationupdated)
-  - [orderNotPickedUp](#ordernotpickedup)
-  - [productCreated](#productcreated)
-  - [productUpdated](#productupdated)
-  - [salesOrderAdded](#salesorderadded)
-  - [salesOrderFulfillmentAdded](#salesorderfulfillmentadded)
-  - [salesOrderStatusUpdated](#salesorderstatusupdated)
-  - [salesOrderUpdated](#salesorderupdated)
-  - [returnOrderAdded](#returnorderadded)
-  - [returnOrderStatusUpdated](#returnorderstatusupdated)
-  - [schedulePickTimeReached](#schedulepicktimereached)
-  - [schedulePickupReminderTimeReached](#schedulepickupremindertimereached)
+  - [About this Document](#about-this-document)
+  - [Events](#events)
+    - [cartReminderTimeReached](#cartremindertimereached)
+    - [customerDeleted](#customerdeleted)
+    - [fulfillmentOrderAdded](#fulfillmentorderadded)
+    - [fulfillmentOrderStatusUpdated](#fulfillmentorderstatusupdated)
+    - [fulfillmentOrderUpdated](#fulfillmentorderupdated)
+    - [importCompleted](#importcompleted)
+    - [inventoryReservationDeleted](#inventoryreservationdeleted)
+    - [inventoryReservationSettled](#inventoryreservationsettled)
+    - [locationCreated](#locationcreated)
+    - [locationDeleted](#locationdeleted)
+    - [locationUpdated](#locationupdated)
+    - [orderNotPickedUp](#ordernotpickedup)
+    - [productCreated](#productcreated)
+    - [productUpdated](#productupdated)
+    - [salesOrderAdded](#salesorderadded)
+    - [salesOrderFulfillmentAdded](#salesorderfulfillmentadded)
+    - [salesOrderStatusUpdated](#salesorderstatusupdated)
+    - [salesOrderUpdated](#salesorderupdated)
+    - [returnOrderAdded](#returnorderadded)
+    - [returnOrderStatusUpdated](#returnorderstatusupdated)
+    - [schedulePickTimeReached](#schedulepicktimereached)
+    - [schedulePickupReminderTimeReached](#schedulepickupremindertimereached)
 
 ## About this Document
 
@@ -303,8 +303,8 @@ Triggers after a salesorder changed.
 ```json
 {
   "salesOrderNumber": "0001",
-  "oldProperties": "new",
-  "newProperties": "accepted",
+  "oldProperties": { "notes": null },
+  "newProperties": { "notes": "The customer asked for a line item decrease." },
   "user": "6" //userId
 }
 ```

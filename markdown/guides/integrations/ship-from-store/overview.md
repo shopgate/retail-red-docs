@@ -52,12 +52,14 @@
   - [Usage of Cumulated Inventory and Ship-From-Store](#usage-of-cumulated-inventory-and-ship-from-store)
   - [How To Get Basic Data Into The Shopgate Platform](#how-to-get-basic-data-into-the-shopgate-platform)
     - [Locations](#locations-1)
-    - [Products](#products-1)
-    - [Inventories](#inventories)
+    - [Products and Inventory](#products-and-inventory)
   - [Syncing Between Your Platform And Shopgate](#syncing-between-your-platform-and-shopgate)
   - [Configurations](#configurations)
     - [Locations](#locations-2)
     - [Routes](#routes-1)
+  - [Integrate Orders with Shopgate](#integrate-orders-with-shopgate)
+    - [Order Updates on Shopgate Side](#order-updates-on-shopgate-side)
+    - [Order Updated on the Merchant Side](#order-updated-on-the-merchant-side)
 
 ## About this Guide
 
@@ -192,21 +194,9 @@ Our Storefront / Storefront API / Storefront Library
 
 Locations are typically set up once in the [Shopgate Admin](https://next.admin.shopgate.com). Within the admin you can manage your locations like set them active or inactive, enable fulfillment methods like ROPIS or direct ship and so on.
 
-### Products
+### Products and Inventory
 
-Products can be imported in multiple ways:
-
-- The [Shopgate Catalog API](/docs/retail-red/YXBpOjM1NjU0NzYz-catalog)
-- The simplified [FTP CSV Product Import](../catalog/csv-import.md#product-csv)
-- The regular [JSON Import](../catalog/bulk-file-import.md)
-
-### Inventories
-
-Like products, inventory can be imported in multiple ways as well:
-
-- The [Shopgate Catalog API](/docs/retail-red/YXBpOjM1NjU0NzYz-catalog)
-- The simplified [FTP CSV Inventory Import](../catalog/csv-import.md#inventory-csv)
-- The regular [JSON Import](../catalog/bulk-file-import.md)
+See [Catalog Integration Guide](../catalog/general-integration-info.md)
 
 > **Note**: Inventory may need to imported more frequently than other entities in order to keep everything in sync. Please contact our Support to get a suggestion of the rate for your specific case.
 
@@ -237,3 +227,29 @@ Multiple routes can apply for an order. Therefore Routes get a priority when the
 If no route applied, a Catch-All route can be configured, that for example routes the orders to a default warehouse.
 
 In case there is no catch-all route configured, Orders will be marked as action-required and can be routed manually.
+
+For more information see Support Portal. <!-- TODO: add link -->
+
+## Integrate Orders with Shopgate
+
+<!--
+  Order API
+-->
+
+### Order Updates on Shopgate Side
+
+<!--
+  Update of States
+  Webhook Service
+  // Pulling Updates (not recommended)
+-->
+
+### Order Updated on the Merchant Side
+<!--
+  Shipping address changed? 
+  Line items added/removed?
+  Status updates (FO Status/SO Status?)
+
+  -> Order API
+  -> Limitations
+-->

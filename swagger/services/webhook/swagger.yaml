@@ -118,6 +118,10 @@ paths:
           description: Merchant or Webhook not found
           schema:
             $ref: "#/definitions/NotFoundError"
+        409:
+          description: Sync event already in use
+          schema:
+            $ref: "#/definitions/ConflictError"
     delete:
       tags:
         - Webhooks
@@ -219,6 +223,7 @@ parameters:
         <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#salesorderadded\">salesOrderAdded</a></li>
         <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#salesorderfulfillmentadded\">salesOrderFulfillmentAdded</a></li>
         <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#salesorderstatusupdated\">salesOrderStatusUpdated</a></li>
+        <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#salesorderupdated\">salesOrderUpdated</a></li>
         <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#returnorderadded\">returnOrderAdded</a></li>
         <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#returnorderstatusupdated\">returnOrderStatusUpdated</a></li>
         <li><a href=\"/docs/retail-red/ZG9jOjM1NjU0Nzcz-available-webhooks#schedulepicktimereached\">schedulePickTimeReached</a></li>
@@ -385,6 +390,18 @@ definitions:
       message:
         type: string
         example: Merchant not found
+  ConflictError:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      code:
+        type: string
+        example: Conflict
+      message:
+        type: string
+        example: Sync event already in use
   ValidationError:
     type: object
     properties:

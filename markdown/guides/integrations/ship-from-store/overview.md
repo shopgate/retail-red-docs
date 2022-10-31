@@ -11,8 +11,8 @@
 [x]     Configure Locations & Routes (see support portal)
 [x]     Use cumulated inventory in ECP
 [x]         Either do themselves, or get aggregated from Shopgate
-[ ]     Import new orders to Shopgate & how to handle order update in ECP/OMS
-[ ]         Import new orders from ECP / OMS to order API
+[x]     Import new orders to Shopgate & how to handle order update in ECP/OMS
+[x]         Import new orders from ECP / OMS to order API
 [ ]         What to do if an order is edited in ECP/OMS?
 [ ]             Shipping address changed? 
 [ ]             Line items added/removed?
@@ -232,9 +232,13 @@ For more information see Support Portal. <!-- TODO: add link -->
 
 ## Integrate Orders with Shopgate
 
-<!--
-  Order API
--->
+Integrating order with the Shopgate System is easy. You just need to send your orders to the Create Order Endpoint <!-- Link --> of the Shopgate API. This will create what is called Sales Order <!-- Link to sales order entity -->. From here on out, Shopgate can take care of Order Routing, which means the system will automatically create Fulfillment Orders <!-- Link to fulfillment order entity --> on the most fitting locations depending on the Routing Rules.
+
+If you have your own routing and just want to use Shopgate's order fulfillment, you can create Fulfillment Order on locations from your system manually by using the Create Fulfillment Order Endpoint <!-- Link -->.
+
+> **Note:** It is not possible to create a Fulfillment Order without a Sales Order!
+
+To get updates on for example state changes of orders you can always register a webhook <!-- Link Webhook description --> to your system. For the example the salesOrderStatusUpdated <!-- Link --> or the fulfillmentOrderStatusUpdated <!-- Link --> would be fitting!
 
 ### Order Updates on Shopgate Side
 

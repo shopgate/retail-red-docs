@@ -99,12 +99,12 @@ The Fulfillment can be processed on various types of locations like warehouses, 
 There are three major ways of integrating Ship-From-Store:
 
 - Complete Shopgate Integration: 
-  - Shopgate get the orders, 
+  - Shopgate get the orders
   - Shopgate does the routing and
   - Shopgate manages the fulfillment
   - all order status updates will get synched back to merchant
 - Shopgate Routing Integration:
-  - Shopgate gets the orders,
+  - Shopgate gets the orders
   - Shopgate does the routing and
   - Fulfillment gets done by the merchant
   - Status updates have to be synched from both sides
@@ -178,7 +178,7 @@ The Cumulated Inventory can be used on the merchants storefront view (Magento, S
 
 Also some ECP may have their own cumulated inventory. This should be work as well out of the box with our system in case the inventory is properly synched.
 
-<!-- TODO: Cumulated Inventory in a generic Storefront -->
+<!-- TODO: Image Cumulated Inventory in a generic Storefront -->
 
 ## How To Get Basic Data Into The Shopgate Platform
 
@@ -242,16 +242,36 @@ To get updates on for example state changes of orders you can always register a 
 
 ### Order Updates on Shopgate Side
 
-<!--
-  Update of States
-  Webhook Service
-  // Pulling Updates (not recommended)
--->
+Orders change their states during fulfillment. In order to sync these changes back to the merchant system, there are two methods to be used:
+- Pulling updates by continuously querying the orders you need updates for, which is not a recommended way. A better way would be to:
+- Use Shopgate Webhooks<!-- Link to the webhooks -->. Every time a Sales Order or Fulfillment Order changes state - let's say the FO changes from `open` to `fulfilled` - a webhook with the info gets send to a predefined endpoint of the merchant system. The structure of the webhook in this case would look like this:
+
+```json
+{
+  "id": "34caaaf2-15b5-4aca-8f71-dfd0b287b116", //request identification
+  "date": "2021-03-02T10:52:20.952Z",
+  "webhookId": "f84ade20-46f3-4a30-b96f-834f7c411b5c", // identification of the webhook at the webhook service
+  "webhookCode": "FOUpdated", // your given name of this webhook
+  "eventCode": "fulfillmentOrderStatusUpdated",
+  "tenantId": "theMerchant#1",
+  "tenantType": "merchant",
+  "payload": {
+    "locationCode": "1",
+    "fulfillmentOrderNumber": "1500-0001",
+    "customerId": "7b196c58-a689-49fe-b056-91dd902694d2",
+    "newStatus": "fulfilled",
+    "oldStatus": "accepted",
+    "user": "6"
+  }
+}
+```
+
+After receiving this webhook, the specific order can be fetched <!-- Link to getOrder endpoint --> in to get all the necessary data for the processing on the merchants side.
 
 ### Order Updated on the Merchant Side
 <!--
   Shipping address changed? 
-  Line items added/removed?
+  Line items (added/)removed?
   Status updates (FO Status/SO Status?)
 
   -> Order API

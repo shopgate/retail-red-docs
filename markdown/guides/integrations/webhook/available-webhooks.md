@@ -1,31 +1,33 @@
 # Available Events
 
 ## Content
-- [Available Events](#available-events)
-  - [Content](#content)
-  - [About this Document](#about-this-document)
-  - [Events](#events)
-    - [cartReminderTimeReached](#cartremindertimereached)
-    - [customerDeleted](#customerdeleted)
-    - [fulfillmentOrderAdded](#fulfillmentorderadded)
-    - [fulfillmentOrderStatusUpdated](#fulfillmentorderstatusupdated)
-    - [fulfillmentOrderUpdated](#fulfillmentorderupdated)
-    - [importCompleted](#importcompleted)
-    - [inventoryReservationDeleted](#inventoryreservationdeleted)
-    - [inventoryReservationSettled](#inventoryreservationsettled)
-    - [locationCreated](#locationcreated)
-    - [locationDeleted](#locationdeleted)
-    - [locationUpdated](#locationupdated)
-    - [orderNotPickedUp](#ordernotpickedup)
-    - [productCreated](#productcreated)
-    - [productUpdated](#productupdated)
-    - [salesOrderAdded](#salesorderadded)
-    - [salesOrderFulfillmentAdded](#salesorderfulfillmentadded)
-    - [salesOrderStatusUpdated](#salesorderstatusupdated)
-    - [returnOrderAdded](#returnorderadded)
-    - [returnOrderStatusUpdated](#returnorderstatusupdated)
-    - [schedulePickTimeReached](#schedulepicktimereached)
-    - [schedulePickupReminderTimeReached](#schedulepickupremindertimereached)
+
+- [About this Document](#about-this-document)
+- [Events](#events)
+  - [cartReminderTimeReached](#cartremindertimereached)
+  - [customerDeleted](#customerdeleted)
+  - [fulfillmentOrderAdded](#fulfillmentorderadded)
+  - [fulfillmentOrderStatusUpdated](#fulfillmentorderstatusupdated)
+  - [fulfillmentOrderUpdated](#fulfillmentorderupdated)
+  - [importCompleted](#importcompleted)
+  - [inventoryReservationCreated](#inventoryreservationcreated)
+  - [inventoryReservationUpdated](#inventoryreservationupdated)
+  - [inventoryReservationDeleted](#inventoryreservationdeleted)
+  - [inventoryReservationSettled](#inventoryreservationsettled)
+  - [locationCreated](#locationcreated)
+  - [locationDeleted](#locationdeleted)
+  - [locationUpdated](#locationupdated)
+  - [orderNotPickedUp](#ordernotpickedup)
+  - [productCreated](#productcreated)
+  - [productUpdated](#productupdated)
+  - [salesOrderAdded](#salesorderadded)
+  - [salesOrderFulfillmentAdded](#salesorderfulfillmentadded)
+  - [salesOrderStatusUpdated](#salesorderstatusupdated)
+  - [salesOrderUpdated](#salesorderupdated)
+  - [returnOrderAdded](#returnorderadded)
+  - [returnOrderStatusUpdated](#returnorderstatusupdated)
+  - [schedulePickTimeReached](#schedulepicktimereached)
+  - [schedulePickupReminderTimeReached](#schedulepickupremindertimereached)
 
 ## About this Document
 
@@ -139,6 +141,53 @@ Triggers when an import reached its end state (either succeeded or failed).
 }
 ```
 
+### inventoryReservationCreated
+
+Triggers after a reservation has been created.
+
+```json
+{
+  "code": "0cb848b4-d239-4223-8b91-1ddbf04f25b6",
+  "locationCode": "1",
+  "salesOrderNumber": "1339",
+  "fulfillmentOrderNumber": null,
+  "salesOrderLineItemCode": "line item 1",
+  "fulfillmentOrderLineItemId": null,
+  "productCode": "test1",
+  "quantity": 1,
+  "bin": "1004",
+  "binLocation": "AA21004",
+  "sku": "sku-1"
+}
+```
+
+### inventoryReservationUpdated
+
+Triggers after a reservation has been updated.
+
+```json
+{
+  "code": "0cb848b4-d239-4223-8b91-1ddbf04f25b6",
+  "salesOrderLineItemCode": "line item 1",
+  "productCode": "test1",
+  "bin": "1004",
+  "binLocation": "AA21004",
+  "sku": "sku-1",
+  "oldProperties": {
+    "fulfillmentOrderNumber": null,
+    "fulfillmentOrderLineItemId": null,
+    "quantity": 1
+  },
+  "newProperties": {
+    "fulfillmentOrderNumber": "1339-0001",
+    "fulfillmentOrderLineItemId": 6126774,
+    "quantity": 3
+  },
+  "locationCode": "1",
+  "salesOrderNumber": "1339",
+}
+```
+
 ### inventoryReservationDeleted
 
 Triggers after a reservation got deleted, most likely after orders got canceled/rejected.
@@ -150,6 +199,7 @@ Triggers after a reservation got deleted, most likely after orders got canceled/
   "salesOrderNumber": "1339",
   "fulfillmentOrderNumber": "1339-0001",
   "salesOrderLineItemCode": "line item 1",
+  "fulfillmentOrderLineItemId": 6126774,
   "productCode": "test1",
   "quantity": 3,
   "bin": "1004",
@@ -169,6 +219,7 @@ Triggers after a fulfillment order changed into fulfilled.
   "salesOrderNumber": "1339",
   "fulfillmentOrderNumber": "1339-0001",
   "salesOrderLineItemCode": "line item 1",
+  "fulfillmentOrderLineItemId": 6126774,
   "productCode": "test1",
   "quantity": 3,
   "bin": "1004",
@@ -292,6 +343,19 @@ Triggers after the status of a salesorder changed.
   "salesOrderNumber": "0001",
   "oldStatus": "new",
   "newStatus": "accepted",
+  "user": "6" //userId
+}
+```
+
+### salesOrderUpdated
+
+Triggers after a salesorder changed.
+
+```json
+{
+  "salesOrderNumber": "0001",
+  "oldProperties": { "notes": null },
+  "newProperties": { "notes": "The customer asked for a line item decrease." },
   "user": "6" //userId
 }
 ```

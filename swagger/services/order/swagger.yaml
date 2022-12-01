@@ -12,7 +12,7 @@ info:
     * Order Modification (Update / Cancellation)
     * Order Fulfillment (Processing Fulfillment Orders)
 
-    This API leverages the standard Shopgate REST API authenication method.
+    This API leverages the standard Shopgate REST API authentication method.
 
 host: order.shopgate.services
 basePath: "/v1"
@@ -398,7 +398,7 @@ paths:
               orders:
                 type: array
                 items:
-                  $ref: '#/definitions/SimpleSalesOrder'
+                  $ref: '#/definitions/SalesOrder'
               meta:
                 $ref: '#/definitions/Pagination'
           examples:
@@ -1050,37 +1050,37 @@ paths:
                 attributes:
                   - code: tshirtSize
                     value: L
-#              lineItems:
-#                - code: 386
-#                  quantity: 2
-#                  currencyCode: USD
-#                  shippingAmount: 0
-#                  price: 16.80
-#                  extendedPrice: 0
-#                  taxAmount: 3.19
-#                  tax2Amount: 0
-#                  taxExempt: false
-#                  unitPromoAmount: 0
-#                  unitDiscountAmount: 0
-#                  discountAmount: 0
-#                  promoAmount: 19.99
-#                  overrideAmount: 0
-#                  substitutionAllowed: false
-#                  replacedLineItemId: null
-#
-#              subTotal: 16.80
-#              discountAmount: 0
-#              promoAmount: 0
-#              shippingSubTotal: 4.12
-#              shippingDiscountAmount: 0
-#              shippingPromoAmount: 0
-#              shippingTotal: 4.90
-#              taxAmount: 3.19
-#              tax2Amount: 0
-#              taxSummary:
-#                - code: vat_19
-#                  name: Default VAT 19%
-#                  amount: 3.19
+              lineItems:
+                - code: 386
+                  quantity: 2
+                  currencyCode: USD
+                  shippingAmount: 0
+                  price: 16.80
+                  extendedPrice: 0
+                  taxAmount: 3.19
+                  tax2Amount: 0
+                  taxExempt: false
+                  unitPromoAmount: 0
+                  unitDiscountAmount: 0
+                  discountAmount: 0
+                  promoAmount: 19.99
+                  overrideAmount: 0
+                  substitutionAllowed: false
+                  replacedLineItemId: null
+
+              subTotal: 16.80
+              discountAmount: 0
+              promoAmount: 0
+              shippingSubTotal: 4.12
+              shippingDiscountAmount: 0
+              shippingPromoAmount: 0
+              shippingTotal: 4.90
+              taxAmount: 3.19
+              tax2Amount: 0
+              taxSummary:
+                - code: vat_19
+                  name: Default VAT 19%
+                  amount: 3.19
 
       responses:
         '204':
@@ -1213,7 +1213,7 @@ paths:
                       example: edadf6a6-f536-489f-92b8-c15fc1edc19b
                     checkoutParams:
                       type: object
-                      description: Params provided by the frontend element of the provider. Can contian sensible data
+                      description: Params provided by the frontend element of the provider. Can contain sensible data
                       example:
                         paymentIntentId: pi_test_23tz4hrdpgjseroh
               sourceIp:
@@ -1343,7 +1343,7 @@ paths:
           default: false
         - in: query
           name: fields
-          description: "Available fields: fulfillmentOrderAddress, lineItems, fulfillments"
+          description: "Available fields: fulfillmentOrderAddress, lineItems, fulfillments, salesOrder"
           format: csv
           type: string
         - $ref: '#/parameters/Sort'
@@ -1395,7 +1395,7 @@ paths:
                     middleName: René
                     lastName: Muster
                     company: 'Shopgate GmbH'
-                    address1: 12 Somestree
+                    address1: 12 Somestreet
                     address2: 'Haus B'
                     address3: 'erste Etage'
                     address4: null
@@ -1408,10 +1408,9 @@ paths:
                     mobile: +49 12345 6789 003
                     emailAddress: max.muster@shopgate.com
               meta:
-                pagination:
-                  limit: 100
-                  offset: 0
-                  totalItemCount: 1
+                limit: 100
+                offset: 0
+                totalItemCount: 1
           schema:
             type: object
             properties:
@@ -1420,10 +1419,7 @@ paths:
                 items:
                   $ref: '#/definitions/SimpleFulfillmentOrder'
               meta:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/definitions/Pagination'
+                $ref: '#/definitions/Pagination'
         '404':
           description: Merchant not found
         default:
@@ -1526,7 +1522,7 @@ paths:
                     middleName: René
                     lastName: Muster
                     company: 'Shopgate GmbH'
-                    address1: 12 Somestree
+                    address1: 12 Somestreet
                     address2: 'Haus B'
                     address3: 'erste Etage'
                     address4: null
@@ -1694,6 +1690,11 @@ paths:
         in: query
         type: boolean
         default: false
+      - name: fields
+        in: query
+        description: "Available fields: salesOrder"
+        format: csv
+        type: string
       - $ref: '#/parameters/OriginalImages'
     get:
       operationId: getFulfillmentOrder
@@ -1740,7 +1741,7 @@ paths:
                   middleName: René
                   lastName: Muster
                   company: 'Shopgate GmbH'
-                  address1: 12 Somestree
+                  address1: 12 Somestreet
                   address2: 'Haus B'
                   address3: 'erste Etage'
                   address4: null
@@ -2571,9 +2572,9 @@ paths:
                 pickedQuantity: 3
       responses:
         '204':
-          description: 'Lineitems updated'
+          description: 'Line items updated'
         '400':
-          description: Increasing the lineitem quantity is not possible
+          description: Increasing the line item quantity is not possible
         '404':
           description: Merchant, Picking Batch or Line items not found
         '409':
@@ -2662,7 +2663,7 @@ paths:
                     - fulfillmentOrder
                 entityId:
                   type: string
-                  description: Id of the affected entity. Only reequired if the event is entityUpdated or entityDeleted
+                  description: Id of the affected entity. Only required if the event is entityUpdated or entityDeleted
                 payload:
                   type: object
             example:
@@ -3109,10 +3110,9 @@ paths:
                       extendedPrice: -65.99
                       note: "Some note"
               meta:
-                pagination:
-                  limit: 100
-                  offset: 0
-                  totalItemCount: 1
+                limit: 100
+                offset: 0
+                totalItemCount: 1
           schema:
             type: object
             properties:
@@ -3121,10 +3121,7 @@ paths:
                 items:
                   $ref: '#/definitions/ReturnOrder'
               meta:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/definitions/Pagination'
+                $ref: '#/definitions/Pagination'
         '404':
           description: Merchant not found
         default:
@@ -3462,7 +3459,7 @@ paths:
       - in: query
         name: timezone
         type: string
-        description: Timezone of the reportings in the format of the IANA timezone. See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more informations
+        description: Timezone of the reportings in the format of the IANA timezone. See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more information.
       - in: query
         name: filters
         type: string
@@ -3542,7 +3539,7 @@ parameters:
     name: timezone
     in: query
     type: string
-    description: Timezone of the reportings in the format of the IANA timezone. See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more informations
+    description: Timezone of the reportings in the format of the IANA timezone. See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more information.
     default: Etc/UTC
   Resolution:
     name: resolution
@@ -3654,7 +3651,7 @@ definitions:
     type: ["string", "null"]
     enum:
       - replaced
-      - substitued
+      - substituted
     example: null
   LineItemStatus:
     type: string
@@ -3742,7 +3739,7 @@ definitions:
       shippingSubTotal:
         type: number
         format: float
-        description: Shipping total without any discounts. Its based on the lineitems in the order
+        description: Shipping total without any discounts. Its based on the line items in the order
       shippingDiscountAmount:
         type: number
         format: float
@@ -3759,7 +3756,7 @@ definitions:
       total:
         type: number
         format: float
-        description: Total sum of the order incluing tax, shipping and discounts
+        description: Total sum of the order including tax, shipping and discounts
       date:
         $ref: '#/definitions/CreateDate'
       submitDate:
@@ -3784,33 +3781,38 @@ definitions:
         $ref: '#/definitions/CampaignAttribution'
       lineItemCount:
         type: number
-      lineItems:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: number
-              description: Line Item id of the item to update. In case of an insert this field is not required
-              example: 10
-            status:
-              $ref: '#/definitions/LineItemStatus'
-            quantity:
-              type: number
-              minimum: 0
-              example: 5
-            returnQuantity:
-              type: number
-              minimum: 0
-              example: 1
-            quantityChangeReason:
-              $ref: '#/definitions/QuantityChangeReason'
-            product:
+  SalesOrder:
+    allOf:
+      - $ref: '#/definitions/SimpleSalesOrder'
+      - type: object
+        properties:
+          lineItems:
+            type: array
+            items:
               type: object
               properties:
-                code:
-                  type: string
-                  example: 24-MB02
+                id:
+                  type: number
+                  description: Line Item id of the item to update. In case of an insert this field is not required
+                  example: 10
+                status:
+                  $ref: '#/definitions/LineItemStatus'
+                quantity:
+                  type: number
+                  minimum: 0
+                  example: 5
+                returnQuantity:
+                  type: number
+                  minimum: 0
+                  example: 1
+                quantityChangeReason:
+                  $ref: '#/definitions/QuantityChangeReason'
+                product:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      example: 24-MB02
   GetSalesOrder:
     allOf:
       - $ref: '#/definitions/SimpleSalesOrder'
@@ -3928,6 +3930,7 @@ definitions:
         $ref: '#/definitions/AppliedPromotions'
       lineItems:
         type: array
+        minItems: 1
         items:
           $ref: '#/definitions/PostSOLineItem'
       subTotal:
@@ -3986,10 +3989,10 @@ definitions:
           $ref: '#/definitions/ExternalCode'
         notes:
           $ref: '#/definitions/Notes'
-#        lineItems:
-#          type: array
-#          items:
-#            $ref: '#/definitions/UpdateSOLineItem'
+        lineItems:
+          type: array
+          items:
+            $ref: '#/definitions/UpdateSOLineItem'
         specialInstructions:
           $ref: '#/definitions/SpecialInstructions'
         data:
@@ -4071,34 +4074,34 @@ definitions:
           $ref: '#/definitions/Platform'
         os:
           $ref: '#/definitions/OS'
-#        subTotal:
-#          type: number
-#          format: float
-#        discountAmount:
-#          $ref: '#/definitions/DiscountAmount'
-#        promoAmount:
-#          $ref: '#/definitions/PromoAmount'
-#        shippingSubTotal:
-#          type: number
-#          format: float
-#        shippingDiscountAmount:
-#          type: number
-#          format: float
-#        shippingPromoAmount:
-#          type: number
-#          format: float
-#        shippingTotal:
-#          type: number
-#          format: float
-#        taxAmount:
-#          $ref: '#/definitions/TaxAmount'
-#        tax2Amount:
-#          $ref: '#/definitions/Tax2Amount'
-#        taxSummary:
-#          $ref: '#/definitions/TaxSummary'
-#        total:
-#          type: number
-#          format: float
+        subTotal:
+          type: number
+          format: float
+        discountAmount:
+          $ref: '#/definitions/DiscountAmount'
+        promoAmount:
+          $ref: '#/definitions/PromoAmount'
+        shippingSubTotal:
+          type: number
+          format: float
+        shippingDiscountAmount:
+          type: number
+          format: float
+        shippingPromoAmount:
+          type: number
+          format: float
+        shippingTotal:
+          type: number
+          format: float
+        taxAmount:
+          $ref: '#/definitions/TaxAmount'
+        tax2Amount:
+          $ref: '#/definitions/Tax2Amount'
+        taxSummary:
+          $ref: '#/definitions/TaxSummary'
+        total:
+          type: number
+          format: float
         customer:
           type: object
           description: Updates the given attribute for the newly created anonymous customer
@@ -4342,6 +4345,8 @@ definitions:
         type: ["string", "null"]
         example: 10-0001
         description: Indicates wether this FO is part of an active picking batch
+      salesOrder:
+        $ref: '#/definitions/SimpleSalesOrder'
   SimpleFulfillmentOrder:
     type: object
     properties:
@@ -4413,6 +4418,16 @@ definitions:
         $ref: '#/definitions/CompleteDate'
       fulfillmentOrderAddress:
         $ref: '#/definitions/FulfillmentOrderAddress'
+      salesOrder:
+        $ref: '#/definitions/SimpleSalesOrder'
+      lineItems:
+        type: array
+        items:
+          $ref: '#/definitions/FOLineItem'
+      fulfillments:
+        type: array
+        items:
+          $ref: '#/definitions/Fulfillment'
 
   PostReturnOrder:
     required:
@@ -6283,7 +6298,7 @@ definitions:
   ExtendedPrice:
     type: number
     format: float
-    description: The extended price is an absolute number indicating the final price of a lineitem including promo, discount, and taxes (if applicable)
+    description: The extended price is an absolute number indicating the final price of a line item including promo, discount, and taxes (if applicable)
   TaxAmount:
     type: number
     format: float
@@ -6346,7 +6361,7 @@ definitions:
     example: 85.45.62.2
   UserAgent:
     type: ["string", "null"]
-    description: The UserAgnt string from headers of the incoming request.
+    description: The UserAgent string from headers of the incoming request.
     example: Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0
   Domain:
     type: ["string", "null"]
@@ -6374,7 +6389,7 @@ definitions:
       - other
   Imported:
     type: boolean
-    description: Indicates if the order has been imported from an external system. Enableing this flag means that there will be no further processes triggered by this order like emitting events, calculating properties like prices, or starting payment transactions.
+    description: Indicates if the order has been imported from an external system. Enabling this flag means that there will be no further processes triggered by this order like emitting events, calculating properties like prices, or starting payment transactions.
     example: false
   CampaignAttribution:
     type:

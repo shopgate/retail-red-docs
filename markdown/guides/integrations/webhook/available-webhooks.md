@@ -95,7 +95,7 @@ Triggers on status transition of a fulfillment order.
 
 ### fulfillmentOrderUpdated
 
-Triggers on any update of a fulfillment order.
+Triggers on any update of a fulfillment order. Includes changes on a lineItem level, for example status and product quantity changes.
 
 ```json
 {

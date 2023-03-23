@@ -899,6 +899,7 @@ paths:
                     startDate: '2020-07-01T00:00:000'
                     endDate: '2020-07-01T00:00:000'
                     target: order
+                    type: "promotion"
                     discount:
                       type: percentage
                       amount: 10
@@ -3427,6 +3428,9 @@ paths:
       x-examples:
         updateReturnOrder:
           status: open
+          dropOffLocationCode: warehouse
+          dropOffType: shipped
+          notes: Here the updated notes
           lineItems:
             - code: R386-1
               status: open
@@ -4525,10 +4529,19 @@ definitions:
         items:
           $ref: '#/definitions/PostROLineItem'
   UpdateReturnOrder:
+    additionalProperties: false
     type: object
     properties:
       status:
         $ref: '#/definitions/ReturnOrderStatus'
+      notes:
+        $ref: '#/definitions/Notes'
+      dropOffType:
+        $ref: '#/definitions/DropOffType'
+      dropOffLocationCode:
+        type: string
+        description: Location where the order is returned
+        example: DERetail001
       lineItems:
         type: array
         items:
@@ -6889,6 +6902,12 @@ definitions:
             - orderShipping
             - productShipping
           default: order
+        type:
+          type: string
+          enum:
+            - coupon
+            - promotion
+          example: coupon
         discount:
           type: object
           required:

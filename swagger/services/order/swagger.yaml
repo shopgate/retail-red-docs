@@ -3602,10 +3602,8 @@ definitions:
   QuantityChangeReason:
     type: string
     description: |
-      ## Reason for a quantity change.
-      Needs to be set if a new quantity is set.
-
-      ## Deprecated reasons:
+      Reason for a quantity change. Needs to be set if a new quantity is set.
+      Deprecated reasons:
         * wrongAttribute
         * wrongProduct
         * changedMind
@@ -6296,8 +6294,8 @@ definitions:
     description: Date when pickup reminder can be sent out.
   Notes:
     type: ["string", "null"]
-    description: Reason of the reject
-    example: Some note
+    description: Customer notes where the shopper can provide special instructions. The notes are shown in the In-Store App & Admin.
+    example: Please wrap each item individually.
     maxLength: 1000
   ExternalCode:
     type: string

@@ -436,6 +436,9 @@ paths:
                       region: HE
                       postalCode: '35510'
                       country: DE
+                      additionalFields:
+                        dhlPostBoxNumber: 12345
+                        dhlPostNumber: 1234567890
                       phone: +49 12345 6789 001
                       fax: +49 12345 6789 002
                       mobile: +49 12345 6789 003
@@ -576,6 +579,9 @@ paths:
                       region: HE
                       postalCode: '35510'
                       country: DE
+                      additionalFields:
+                        dhlPostBoxNumber: 12345
+                        dhlPostNumber: 1234567890
                       phone: +49 12345 6789 001
                       fax: +49 12345 6789 002
                       mobile: +49 12345 6789 003
@@ -593,6 +599,9 @@ paths:
                       region: HE
                       postalCode: '35510'
                       country: DE
+                      additionalFields:
+                        dhlPostBoxNumber: 12345
+                        dhlPostNumber: 1234567890
                       phone: +49 12345 6789 001
                       fax: +49 12345 6789 002
                       mobile: +49 12345 6789 003
@@ -711,6 +720,9 @@ paths:
                     region: HE
                     postalCode: '35510'
                     country: DE
+                    additionalFields:
+                      dhlPostBoxNumber: 12345
+                      dhlPostNumber: 1234567890
                     phone: +49 12345 6789 001
                     fax: +49 12345 6789 002
                     mobile: +49 12345 6789 003
@@ -975,6 +987,9 @@ paths:
                       postalCode: '35510'
                       region: HE
                       country: DE
+                      additionalFields:
+                        dhlPostBoxNumber: 12345
+                        dhlPostNumber: 1234567890
                       phone: +49 12345 6789 001
                       fax: +49 12345 6789 002
                       mobile: +49 12345 6789 003
@@ -1033,6 +1048,9 @@ paths:
                   region: HE
                   postalCode: '35510'
                   country: DE
+                  additionalFields:
+                    dhlPostBoxNumber: 12345
+                    dhlPostNumber: 1234567890
                   mobile: +49 12345 6789 003
                   emailAddress: max.muster@shopgate.com
               paymentTransactions:
@@ -1404,6 +1422,9 @@ paths:
                     region: HE
                     postalCode: '35510'
                     country: DE
+                    additionalFields:
+                      dhlPostBoxNumber: 12345
+                      dhlPostNumber: 1234567890
                     phone: +49 12345 6789 001
                     fax: +49 12345 6789 002
                     mobile: +49 12345 6789 003
@@ -1531,6 +1552,9 @@ paths:
                     region: HE
                     postalCode: '35510'
                     country: DE
+                    additionalFields:
+                      dhlPostBoxNumber: 12345
+                      dhlPostNumber: 1234567890
                     phone: +49 12345 6789 001
                     fax: +49 12345 6789 002
                     mobile: +49 12345 6789 003
@@ -1750,6 +1774,9 @@ paths:
                   region: HE
                   postalCode: '35510'
                   country: DE
+                  additionalFields:
+                    dhlPostBoxNumber: 12345
+                    dhlPostNumber: 1234567890
                   phone: +49 12345 6789 001
                   fax: +49 12345 6789 002
                   mobile: +49 12345 6789 003
@@ -3669,6 +3696,19 @@ definitions:
       - ready
       - hold
       - fulfilled
+  AddressAdditionalFields:
+    type: object
+    properties:
+      dhlPostBoxNumber:
+        type: [string, 'null']
+        minLength: 1
+        maxLength: 5
+        description: number of a postbox
+      dhlPostNumber:
+        type: [string, 'null']
+        minLength: 1
+        maxLength: 10
+        description: number of a post
 
   SimpleSalesOrder:
     type: object
@@ -4820,6 +4860,9 @@ definitions:
         description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code. This field is required if used as shipping address for direct ship
         # minLength: 2
         maxLength: 2
+      additionalFields:
+        type: object
+        $ref: '#/definitions/AddressAdditionalFields'
       phone:
         type: ["string", "null"]
         example: +49 12345 6789 001
@@ -4898,6 +4941,9 @@ definitions:
         description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code
         # minLength: 2
         maxLength: 2
+      additionalFields:
+        type: object
+        $ref: '#/definitions/AddressAdditionalFields'
       phone:
         type: ["string", "null"]
         example: +49 12345 6789 001
@@ -4969,6 +5015,9 @@ definitions:
         description: ISO 3166 ALPHA-2 / ISO 3166-2 Country Code
         # minLength: 2
         maxLength: 2
+      additionalFields:
+        type: object
+        $ref: '#/definitions/AddressAdditionalFields'
       phone:
         type: [ "string", "null" ]
         example: +49 12345 6789 001
@@ -6526,6 +6575,9 @@ definitions:
         type: ["string", "null"]
         example: DE
         description: This field is required if used as shipping address for direct ship
+      additionalFields:
+        type: object
+        $ref: '#/definitions/AddressAdditionalFields'
       phone:
         type: ["string", "null"]
         example: +49 12345 6789 001

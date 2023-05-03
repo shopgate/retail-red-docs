@@ -3272,7 +3272,7 @@ paths:
         - $ref: '#/parameters/PaginationAfter'
         - in: query
           name: filters
-          description: "Filter string. Supported filters: productCode"
+          description: "Filter string. Supported filters: productCode, createDate, updateDate"
           type: string
           format: json
       responses:
@@ -3567,7 +3567,7 @@ paths:
         - Exports
       operationId: setExportSettings
       summary: Set export settings
-      description: This endoint sets exports settings
+      description: This endpoint sets exports settings
       parameters:
         - in: body
           name: body
@@ -5998,6 +5998,7 @@ definitions:
               - productCode
               - ean
               - sku
+              - upc
           productExport:
             $ref: '#/definitions/ExportOutput'
           inventoryExport:
@@ -6058,6 +6059,7 @@ definitions:
               - productCode
               - ean
               - sku
+              - upc
             default: productCode
           productExport:
             $ref: '#/definitions/ExportInput'

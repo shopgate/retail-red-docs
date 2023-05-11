@@ -3272,7 +3272,10 @@ paths:
         - $ref: '#/parameters/PaginationAfter'
         - in: query
           name: filters
-          description: "Filter string. Supported filters: productCode, createDate, updateDate"
+          description: |
+            Filter string. Supported filters are: productCode, createDate, updateDate.
+            Expects the date filters in UTC time. (e.g. 2023-05-11T10:04:12.694Z)
+            Filters on date and product code are mutually exclusive.
           type: string
           format: json
       responses:

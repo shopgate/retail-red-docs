@@ -1,12 +1,12 @@
 swagger: '2.0'
 info:
   title: Omni Customer Service
-  description: Documentaion of the Customer API
+  description: Documentation of the Customer API
   version: '1.0'
   contact:
     name: Shopgate API
-    url: https://retail.red
-    email: support@shopgate.com
+    url: https://shopgate.com
+    email: mail@shopgate.com
 host: customer.shopgate.io
 schemes:
   - https
@@ -16,7 +16,7 @@ produces:
 consumes:
   - application/json
 paths:
-  
+
   /merchants/{merchantCode}/attributes:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -169,7 +169,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  
+
   /merchants/{merchantCode}/attributes/{attributeCode}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -297,7 +297,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  
+
   /merchants/{merchantCode}/attributes/{attributeCode}/values:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -338,7 +338,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  
+
   /merchants/{merchantCode}/attributes/{attributeCode}/values/{attributeValueCode}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -392,7 +392,7 @@ paths:
             $ref: '#/definitions/NotFoundError'
         '409':
           description: Value is used for product option or extra
-  
+
   /merchants/{merchantCode}/customers:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -557,6 +557,9 @@ paths:
                   postalCode: '78732'
                   region: HE
                   country: DE
+                  additionalFields:
+                    dhlPostBoxNumber: 12345
+                    dhlPostNumber: 1234567890
                   phone: +49 12345 6789 001
                   fax: +49 12345 6789 002
                   mobile: +49 12345 6789 003
@@ -603,7 +606,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  
+
   /merchants/{merchantCode}/customers/{customerId}:
     parameters:
       - name: merchantCode
@@ -665,6 +668,9 @@ paths:
                   postalCode: '78732'
                   region: HE
                   country: DE
+                  additionalFields:
+                    dhlPostBoxNumber: 12345
+                    dhlPostNumber: 1234567890
                   phone: +49 12345 6789 001
                   fax: +49 12345 6789 002
                   mobile: +49 12345 6789 003
@@ -737,6 +743,9 @@ paths:
                 postalCode: '78732'
                 region: TX
                 country: US
+                additionalFields:
+                  dhlPostBoxNumber: 12345
+                  dhlPostNumber: 1234567890
                 phone: 000-000-0000
                 fax: 000-000-0000
                 mobile: 000-000-0000
@@ -786,7 +795,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  
+
   /merchants/{merchantCode}/customers/{customerId}/contacts:
     parameters:
       - name: merchantCode
@@ -833,6 +842,9 @@ paths:
                 postalCode: '78732'
                 region: TX
                 country: US
+                additionalFields:
+                  dhlPostBoxNumber: 12345
+                  dhlPostNumber: 1234567890
                 phone: 000-000-0000
                 fax: 000-000-0000
                 mobile: 000-000-0000
@@ -862,7 +874,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  
+
   /merchants/{merchantCode}/customers/{customerId}/contacts/{contactId}:
     parameters:
       - name: merchantCode
@@ -904,6 +916,9 @@ paths:
               postalCode: '78732'
               region: TX
               country: US
+              additionalFields:
+                dhlPostBoxNumber: 12345
+                dhlPostNumber: 1234567890
               phone: 000-000-0000
               fax: 000-000-0000
               mobile: 000-000-0000
@@ -1227,6 +1242,129 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+  /merchants/{merchantCode}/syncwebhooks:
+    get:
+      x-internal: true
+      tags:
+        - SyncWebhooks
+      operationId: getSyncWebhooks
+      summary: Get sync webhooks
+      description: Get sync webhooks
+      parameters:
+        - $ref: '#/parameters/MerchantCode'
+        - in: query
+          name: filters
+          type: string
+          description: Allowed filter is `code`
+      responses:
+        200:
+          description: Returns sync webhooks
+          schema:
+            type: object
+            properties:
+              syncWebhooks:
+                type: array
+                items:
+                  $ref: '#/definitions/SyncWebhookFull'
+          examples:
+            getSyncWebhooks:
+              syncWebhooks:
+                - id: 123e4567-e89b-12d3-a456-426614174000
+                  code: loginSync
+                  name: customer login sync
+                  endpoint: https://your-service.url
+                  status: active
+                  events:
+                    - code: loginSync
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationError'
+        404:
+          description: Merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    post:
+      x-internal: true
+      tags:
+        - SyncWebhooks
+      operationId: createSyncWebhooks
+      summary: Create sync webhooks
+      description: Register new sync webhooks
+      parameters:
+        - $ref: '#/parameters/MerchantCode'
+        - $ref: '#/parameters/SyncWebhookCreate'
+      responses:
+        200:
+          description: Invalid request
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: '#/definitions/ErrorList'
+          examples:
+            createSyncWebhooks:
+              errors:
+                - code: 409
+                  entity: syncWebhook
+                  entityId: loginSync
+                  entityIndex: 0
+                  reason: SyncWebhook with code 'loginSync' already exists
+                  subentityPath: []
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationError'
+        404:
+          description: Merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+
+  /merchants/{merchantCode}/syncwebhooks/{syncWebhookCode}:
+    post:
+      x-internal: true
+      tags:
+        - SyncWebhooks
+      operationId: updateSyncWebhook
+      summary: Update sync webhook
+      description: Update sync webhook
+      parameters:
+        - $ref: '#/parameters/MerchantCode'
+        - $ref: '#/parameters/SyncWebhookCode'
+        - $ref: '#/parameters/SyncWebhookUpdate'
+      responses:
+        204:
+          description: Update successful
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationError'
+        404:
+          description: Merchant or Sync Webhook not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    delete:
+      x-internal: true
+      tags:
+        - SyncWebhooks
+      operationId: deleteSyncWebhook
+      summary: Delete sync webhook
+      description: Delete sync webhook
+      parameters:
+        - $ref: '#/parameters/MerchantCode'
+        - $ref: '#/parameters/SyncWebhookCode'
+      responses:
+        204:
+          description: Delete successful
+        400:
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/ValidationError'
+        404:
+          description: Merchant or Sync Webhook not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+
   /merchants/{merchantCode}/customers/{customerId}/notes:
     parameters:
       - name: merchantCode
@@ -1461,10 +1599,12 @@ paths:
           in: body
           schema:
             type: object
+            additionalProperties: false
             required:
               - wishlists
             properties:
               wishlists:
+                additionalProperties: false
                 type: array
                 items:
                   $ref: '#/definitions/AddWishlist'
@@ -1519,7 +1659,7 @@ paths:
         - name: body
           in: body
           schema:
-            $ref: '#/definitions/Wishlist'
+            $ref: '#/definitions/UpdateWishlist'
       description: Update wishlist. If the items array is passed it will overwrite the current items
       responses:
         204:
@@ -1609,6 +1749,25 @@ paths:
           description: Successfully deleted
         '404':
           description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Update wishlist item
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/UpdateWishlistItem'
+      responses:
+        204:
+          description: Successfully updated
+        '404':
+          description: Merchant, Customer or Product not found
         default:
           description: Unexpected error
           schema:
@@ -1712,7 +1871,7 @@ paths:
         - name: body
           in: body
           schema:
-            $ref: '#/definitions/Wishlist'
+            $ref: '#/definitions/UpdateWishlist'
       description: Update wishlist. If the items array is passed it will overwrite the current items
       responses:
         204:
@@ -1802,6 +1961,25 @@ paths:
           description: Successfully deleted
         '404':
           description: Merchant, customer or wishlist not found
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      x-internal: true
+      tags:
+        - Wishlist
+      description: Update wishlist item
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/UpdateWishlistItem'
+      responses:
+        204:
+          description: Successfully updated
+        '404':
+          description: Merchant, Customer or Product not found
         default:
           description: Unexpected error
           schema:
@@ -2203,7 +2381,7 @@ paths:
               token:
                 type: string
               password:
-                type: string
+                $ref: '#/definitions/ValidatedPassword'
       responses:
         '204':
           description: Password set
@@ -2264,6 +2442,62 @@ parameters:
     in: path
     type: string
     required: true
+# SyncWebhook
+  SyncWebhookCreate:
+    in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - syncWebhooks
+      properties:
+        syncWebhooks:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/definitions/SyncWebhookCreate'
+    x-examples:
+      createSyncWebhooks:
+        syncWebhooks:
+          - code: loginSync
+            name: loginSync
+            endpoint: https://your-service.url
+            status: active
+            events:
+              - code: loginSync
+  SyncWebhookUpdate:
+    in: body
+    name: body
+    required: true
+    schema:
+      $ref: '#/definitions/SyncWebhookUpdate'
+    x-examples:
+      updateSyncWebhook:
+        name: loginSync
+        endpoint: https://your-service.url
+        status: active
+        events:
+          - code: loginSync
+  SyncWebhook:
+    in: body
+    name: body
+    required: true
+    schema:
+      $ref: '#/definitions/SyncWebhookFull'
+  EventCode:
+    name: eventCode
+    in: path
+    type: string
+    required: true
+    maxLength: 255
+  SyncWebhookCode:
+    name: syncWebhookCode
+    in: path
+    type: string
+    required: true
+    maxLength: 255
+
 definitions:
   SegmentMember:
     type: object
@@ -2400,6 +2634,7 @@ definitions:
       - boolean
       - date
       - collectionOfValues
+      - callingNumber
   AttributeValueName:
     description: Name of the attribute value which will be shown to the customer. It's saved in the language of the passed locale.
     type: string
@@ -2409,7 +2644,7 @@ definitions:
     type: string
     example: black
   AttributeValueSequenceId:
-    description: Sequence id of the order of the values. The lowest number is at the top and the highest number is at the botton.
+    description: Sequence id of the order of the values. The lowest number is at the top and the highest number is at the bottom.
     type: number
     example: 0
   AddAttribute:
@@ -2829,9 +3064,12 @@ definitions:
       - active
       - inactive
       - deleted
+  ValidatedPassword:
+    type: string
+    example: superSecurePassword
+    minLength: 8
   Password:
     type: string
-    minLength: 8
     example: superSecurePassword
   ContactFull:
     type: object
@@ -2883,6 +3121,9 @@ definitions:
       country:
         type: string
         example: US
+      additionalFields:
+        type: object
+        $ref: '#/definitions/ContactAdditionalFields'
       phone:
         type: ["string", "null"]
         example: 000-000-0000
@@ -2956,6 +3197,9 @@ definitions:
       country:
         type: string
         example: US
+      additionalFields:
+        type: object
+        $ref: '#/definitions/ContactAdditionalFields'
       phone:
         type: ["string", "null"]
         example: 000-000-0000
@@ -3065,23 +3309,66 @@ definitions:
       totalItemCount:
         type: number
 
+  Wishlist:
+    type: object
+    additionalProperties: false
+    properties:
+      code:
+        type: string
+        description: Wishlist code. This needs to be unique within every user
+        example: 1-wedding
+      name:
+        description: Optional name of the wishlist. Free text field which can be filled by the customer
+        maxLength: 255
+        minLength: 1
+        type: string
+        example: Wedding gifts
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/WishlistItem'
+    example:
+      code: default
+      name: Default Wish List
+      items:
+        - productCode: 24001-1
   AddWishlist:
-    allOf:
-      - $ref: '#/definitions/BasicWishlist'
-      - type: object
-        required:
-          - code
-        properties:
-          code:
-            type: string
-            description: Wishlist code. This needs to be unique within every user
-            example: 1-wedding
-          items:
-            type: array
-            items:
-              $ref: '#/definitions/WishlistItem'
+    type: object
+    additionalProperties: false
+    required:
+      - code
+    properties:
+      code:
+        type: string
+        description: Wishlist code. This needs to be unique within every user
+        example: 1-wedding
+      name:
+        description: Optional name of the wishlist. Free text field which can be filled by the customer
+        maxLength: 255
+        minLength: 1
+        type: string
+        example: Wedding gifts
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/WishlistItem'
+  UpdateWishlist:
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        description: Optional name of the wishlist. Free text field which can be filled by the customer
+        maxLength: 255
+        minLength: 1
+        type: string
+        example: Wedding gifts
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/WishlistItem'
   BasicWishlist:
     type: object
+    additionalProperties: false
     properties:
       code:
         type: string
@@ -3095,26 +3382,37 @@ definitions:
         example: Wedding gifts
   WishlistItem:
     type: object
+    additionalProperties: false
     required:
       - productCode
     properties:
       productCode:
         description: code of the product
         example: 24001-1
-  Wishlist:
-    allOf:
-      - $ref: '#/definitions/BasicWishlist'
-      - type: object
-        properties:
-          items:
-            type: array
-            items:
-              $ref: '#/definitions/WishlistItem'
-    example:
-      code: default
-      name: Default Wish List
-      items:
-        - productCode: 24001-1
+      notes:
+        type: [string, "null"]
+        maxLength: 250
+        description: wishlist item notes
+        example: Really need this item
+      quantity:
+        type: number
+        minimum: 1
+        description: wishlist item quantity
+        example: 10
+  UpdateWishlistItem:
+    type: object
+    additionalProperties: false
+    properties:
+      notes:
+        type: [string, "null"]
+        maxLength: 250
+        description: wishlist item notes
+        example: Really need this item
+      quantity:
+        type: number
+        minimum: 1
+        description: wishlist item quantity
+        example: 10
 
   NotFoundError:
     type: object
@@ -3262,6 +3560,20 @@ definitions:
             description: Human readable name of the attribute
             example: Preferred Theme
 
+  ContactAdditionalFields:
+    type: object
+    properties:
+      dhlPostBoxNumber:
+        type: [string, 'null']
+        minLength: 1
+        maxLength: 5
+        description: number of a postbox
+      dhlPostNumber:
+        type: [string, 'null']
+        minLength: 1
+        maxLength: 10
+        description: number of a post
+
   ValidationErrors:
     type: object
     properties:
@@ -3370,3 +3682,114 @@ definitions:
         entity: customer
         entityIndex: 1
         entityId: null
+# SyncWebhook
+  SyncWebhookCreate:
+    type: object
+    additionalProperties: false
+    required:
+      - code
+      - endpoint
+      - status
+      - events
+      - name
+    properties:
+      code:
+        type: string
+        maxLength: 255
+        example: login sync webhook
+      name:
+        type: string
+        maxLength: 255
+      endpoint:
+        type: string
+        maxLength: 255
+      status:
+        $ref: '#/definitions/SyncWebhookStatus'
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/Event'
+  SyncWebhookUpdate:
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        maxLength: 255
+      endpoint:
+        type: string
+        maxLength: 255
+      status:
+        $ref: '#/definitions/SyncWebhookStatus'
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/Event'
+  SyncWebhookFull:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 255
+      endpoint:
+        type: string
+        maxLength: 255
+      status:
+        $ref: '#/definitions/Status'
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/Event'
+      code:
+        type: string
+        description: Human readable code of the entity
+        example: 'someCode'
+        maxLength: 255
+  Event:
+    type: object
+    additionalProperties: false
+    required:
+      - code
+    properties:
+      code:
+        type: string
+  ErrorList:
+    type: array
+    items:
+      $ref: '#/definitions/ErrorListObject'
+  ErrorListObject:
+    type: object
+    properties:
+      code:
+        type: number
+        example: 400
+      entity:
+        type: string
+        example: planet
+      entityId:
+        type: string
+        example: pluto
+      entityIndex:
+        type: number
+        example: 1
+      reason:
+        type: string
+        example: 'Planet pluto was not found (did you mean dwarf planet pluto?)'
+      subentityPath:
+        type: array
+        items:
+          type:
+            - number
+            - string
+  SyncWebhookCodes:
+    type: array
+    items:
+      type: string
+      example: loginSync
+  SyncWebhookStatus:
+    type: string
+    example: "active"
+    default: "active"
+    enum:
+      - active
+      - inactive

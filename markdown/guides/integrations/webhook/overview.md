@@ -53,16 +53,16 @@ must be added.
 All requests will have the content type `application/json`. The request body looks like this:
 
 ```json
-	"id": "34caaaf2-15b5-4aca-8f71-dfd0b287b116", //request identification
-	"date": "2021-03-02T10:52:20.952Z",
-	"webhookId": "f84ade20-46f3-4a30-b96f-834f7c411b5c", // identification of the webhook at the webhook service
-	"webhookCode": "productCreatedMagento",
-	"eventCode": "productCreated",
-	"tenantId": "theMerchant#1",
-	"tenantType": "merchant",
-	"payload": {
-		<payload depending on event>
-	}
+"id": "34caaaf2-15b5-4aca-8f71-dfd0b287b116", //request identification
+"date": "2021-03-02T10:52:20.952Z",
+"webhookId": "f84ade20-46f3-4a30-b96f-834f7c411b5c", // identification of the webhook at the webhook service
+"webhookCode": "productCreatedMagento",
+"eventCode": "productCreated",
+"tenantId": "theMerchant#1",
+"tenantType": "merchant",
+"payload": {
+  <payload depending on event>
+}
 ```
 
 See [Available Events](./available-webhooks.md) for the specific payloads.

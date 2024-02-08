@@ -591,6 +591,7 @@ paths:
               values:
                 type: array
                 minItems: 1
+                maxItems: 5000
                 items:
                   $ref: '#/definitions/AttributeValueCreate'
           x-examples:
@@ -640,6 +641,11 @@ paths:
           description: Merchant or attribute not found
           schema:
             $ref: '#/definitions/NotFoundError'
+        409:
+          description: Conflict error
+          schema:
+            $ref: '#/definitions/ExtendedError'
+
   /merchants/{merchantCode}/attributes/{attributeCode}/values/{attributeValueCode}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -862,7 +868,7 @@ paths:
         404:
           description: Merchant not found
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/NotFoundError'
   /merchants/{merchantCode}/categories/{categoryCode}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -919,7 +925,7 @@ paths:
         404:
           description: Merchant or category not found
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/NotFoundError'
         409:
           description: External update date is earlier than the existing one
           schema:
@@ -943,7 +949,7 @@ paths:
         404:
           description: Merchant or category not found
           schema:
-            $ref: '#/definitions/Error'
+            $ref: '#/definitions/NotFoundError'
         409:
           description: Category has associated products. Use the force parameter to force removal of category and product associations.
           schema:
@@ -1023,11 +1029,11 @@ paths:
         - in: query
           name: filters
           description: "Filter string. Supported filters:
-          <ul>
-            <li>id</li>
-            <li>feed</li>
-            <li>status</li>
-          </ul>"
+            <ul>
+              <li>id</li>
+              <li>feed</li>
+              <li>status</li>
+            </ul>"
           type: string
           format: json
         - $ref: '#/parameters/PaginationLimit'
@@ -1171,26 +1177,26 @@ paths:
         - in: query
           name: filters
           description: "Filter string. Supported filters:
-          <ul>
-            <li>name</li>
-            <li>code</li>
-            <li>parentProductCode</li>
-            <li>locationCode</li>
-            <li>mfgPartNum</li>
-            <li>distiPartNum</li>
-            <li>upc</li>
-            <li>ean</li>
-            <li>isbn</li>
-            <li>sku</li>
-            <li>modelType</li>
-            <li>categoryCode</li>
-            <li>status</li>
-            <li>startDate</li>
-            <li>endDate</li>
-            <li>updateDate</li>
-            <li>externalUpdateDate</li>
-            <li>isInventoryManaged</li>
-          </ul>"
+            <ul>
+              <li>name</li>
+              <li>code</li>
+              <li>parentProductCode</li>
+              <li>locationCode</li>
+              <li>mfgPartNum</li>
+              <li>distiPartNum</li>
+              <li>upc</li>
+              <li>ean</li>
+              <li>isbn</li>
+              <li>sku</li>
+              <li>modelType</li>
+              <li>categoryCode</li>
+              <li>status</li>
+              <li>startDate</li>
+              <li>endDate</li>
+              <li>updateDate</li>
+              <li>externalUpdateDate</li>
+              <li>isInventoryManaged</li>
+            </ul>"
           type: string
           format: json
         - $ref: '#/parameters/CurrencyCode'
@@ -1497,6 +1503,7 @@ paths:
         - media
         - properties[].name (not if property of type attribute)
         - properties[].subDisplayGroup
+        - properties[].customDisplayGroupName
 
         see [Entity Localization](/docs/retail-red/ZG9jOjM1NjU0NzY4-concepts-and-entities#entity-localization) for further information.
 
@@ -2146,6 +2153,7 @@ paths:
         - media
         - properties[].name
         - properties[].subDisplayGroup
+        - properties[].customDisplayGroupName
 
         see [Entity Localization](/docs/retail-red/ZG9jOjM1NjU0NzY4-concepts-and-entities#entity-localization) for further information.
 
@@ -3278,6 +3286,11 @@ paths:
             Filters on date and product code are mutually exclusive.
           type: string
           format: json
+        - in: query
+          name: ignoreTotalItemCount
+          type: boolean
+          description: private query param which prevents the route function to get totalItemCount
+          default: false
       responses:
         200:
           description: Returns cumulated inventory for a catalog
@@ -3852,6 +3865,129 @@ paths:
         '404':
           description: 'Merchant or inventory treatment setting not found'
 
+  /merchants/{merchantCode}/syncWebhooks:
+    get:
+      x-internal: true
+      tags:
+        - SyncWebhooks
+      operationId: getSyncWebhooks
+      summary: Get sync webhooks
+      description: Get sync webhooks
+      parameters:
+        - $ref: '#/parameters/MerchantCode'
+        - in: query
+          name: filters
+          type: string
+          description: Allowed filter is `code`
+      responses:
+        200:
+          description: Returns sync webhooks
+          schema:
+            type: object
+            properties:
+              syncWebhooks:
+                type: array
+                items:
+                  $ref: '#/definitions/SyncWebhookFull'
+          examples:
+            getSyncWebhooks:
+              syncWebhooks:
+                - id: 123e4567-e89b-12d3-a456-426614174000
+                  code: loginSync
+                  name: customer login sync
+                  endpoint: https://your-service.url
+                  status: active
+                  events:
+                    - code: loginSync
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationError'
+        404:
+          description: Merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    post:
+      x-internal: true
+      tags:
+        - SyncWebhooks
+      operationId: createSyncWebhooks
+      summary: Create sync webhooks
+      description: Register new sync webhooks
+      parameters:
+        - $ref: '#/parameters/MerchantCode'
+        - $ref: '#/parameters/SyncWebhookCreate'
+      responses:
+        200:
+          description: Invalid request
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: '#/definitions/ErrorList'
+          examples:
+            createSyncWebhooks:
+              errors:
+                - code: 409
+                  entity: syncWebhook
+                  entityId: loginSync
+                  entityIndex: 0
+                  reason: SyncWebhook with code 'loginSync' already exists
+                  subentityPath: []
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationError'
+        404:
+          description: Merchant not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+
+  /merchants/{merchantCode}/syncWebhooks/{syncWebhookCode}:
+    post:
+      x-internal: true
+      tags:
+        - SyncWebhooks
+      operationId: updateSyncWebhook
+      summary: Update sync webhook
+      description: Update sync webhook
+      parameters:
+        - $ref: '#/parameters/MerchantCode'
+        - $ref: '#/parameters/SyncWebhookCode'
+        - $ref: '#/parameters/SyncWebhookUpdate'
+      responses:
+        204:
+          description: Update successful
+        400:
+          description: Validation error
+          schema:
+            $ref: '#/definitions/ValidationError'
+        404:
+          description: Merchant or Sync Webhook not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+    delete:
+      x-internal: true
+      tags:
+        - SyncWebhooks
+      operationId: deleteSyncWebhook
+      summary: Delete sync webhook
+      description: Delete sync webhook
+      parameters:
+        - $ref: '#/parameters/MerchantCode'
+        - $ref: '#/parameters/SyncWebhookCode'
+      responses:
+        204:
+          description: Delete successful
+        400:
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/ValidationError'
+        404:
+          description: Merchant or Sync Webhook not found
+          schema:
+            $ref: '#/definitions/NotFoundError'
+
 parameters:
   CatalogCodeInPath:
     in: path
@@ -4157,6 +4293,62 @@ parameters:
     required: true
     maxLength: 255
 
+  # SyncWebhook
+  SyncWebhookCreate:
+    in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - syncWebhooks
+      properties:
+        syncWebhooks:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/definitions/SyncWebhookCreate'
+    x-examples:
+      createSyncWebhooks:
+        syncWebhooks:
+          - code: getProductsSync
+            name: getProductsSync
+            endpoint: https://your-service.url
+            status: active
+            events:
+              - code: getProductsSync
+  SyncWebhookUpdate:
+    in: body
+    name: body
+    required: true
+    schema:
+      $ref: '#/definitions/SyncWebhookUpdate'
+    x-examples:
+      updateSyncWebhook:
+        name: getProductsSync
+        endpoint: https://your-service.url
+        status: active
+        events:
+          - code: getProductsSync
+  SyncWebhook:
+    in: body
+    name: body
+    required: true
+    schema:
+      $ref: '#/definitions/SyncWebhookFull'
+  EventCode:
+    name: eventCode
+    in: path
+    type: string
+    required: true
+    maxLength: 255
+  SyncWebhookCode:
+    name: syncWebhookCode
+    in: path
+    type: string
+    required: true
+    maxLength: 255
+
 definitions:
   Attribute:
     type: object
@@ -4200,6 +4392,7 @@ definitions:
         $ref: '#/definitions/ExternalUpdateDate'
       values:
         type: array
+        maxItems: 5000
         items:
           $ref: '#/definitions/AttributeValueCreate'
   AttributeName:
@@ -4230,6 +4423,7 @@ definitions:
         $ref: '#/definitions/ExternalUpdateDate'
       values:
         type: array
+        maxItems: 5000
         items:
           $ref: '#/definitions/AttributeValueUpdateInList'
   AttributeUse:
@@ -4442,6 +4636,12 @@ definitions:
         type: integer
         example: 1
         description: By default this creates an ascending order of categories meaning 0 is the first.
+      productCount:
+        type: integer
+        example: 1        
+      categoryCount:
+        type: integer
+        example: 1
     example:
       code: jeans
       parentCategoryCode: men
@@ -5428,32 +5628,32 @@ definitions:
         type:
           - "null"
           - string
-        maxLength: 255
+        maxLength: 500
       upc:
         type:
           - "null"
           - string
-        maxLength: 255
+        maxLength: 500
       ean:
         type:
           - "null"
           - string
-        maxLength: 255
+        maxLength: 500
       isbn:
         type:
           - "null"
           - string
-        maxLength: 255
+        maxLength: 500
       sku:
         type:
           - "null"
           - string
-        maxLength: 255
+        maxLength: 500
       distiPartNum:
         type:
           - "null"
           - string
-        maxLength: 255
+        maxLength: 500
   ProductOptionAdditionalPrice:
     type:
       - number
@@ -5520,6 +5720,7 @@ definitions:
           - attribute
           - product
           - productList
+          - html
         example: simple
       displayGroup:
         type: string
@@ -5528,11 +5729,16 @@ definitions:
           - features
           - general
           - pricing
+          - custom
         example:
           properties
       subDisplayGroup:
         type: string
         example: Overall Dimensions
+        maxLength: 255 # artificial limit
+      customDisplayGroupName:
+        type: ["null", string]
+        example: Product Support
         maxLength: 255 # artificial limit
   ProductPropertiesCreate:
     type: array
@@ -5579,6 +5785,7 @@ definitions:
           - attribute
           - product
           - productList
+          - html
         example: simple
       displayGroup:
         type: string
@@ -5587,9 +5794,12 @@ definitions:
           - features
           - general
           - pricing
+          - custom
         example: properties
       subDisplayGroup:
         $ref: '#/definitions/Localization'
+      customDisplayGroupName:
+        $ref: '#/definitions/OptionalLocalization'
   ProductUpdate:
     type: object
     additionalProperties: false
@@ -6386,6 +6596,12 @@ definitions:
             type: string
             description: 'the parameter-field, that failed to validate, like "userId"'
           paramValue:
+            type:
+              - "null"
+              - string
+              - number
+              - array
+              - object
             description: 'the value, that was sent, like "xxx"'
           code:
             type: string
@@ -6416,6 +6632,7 @@ definitions:
               - ONE_OF_MULTIPLE
               - NOT_PASSED
               - INVALID_FORMAT
+              - INVALID_TYPE
               - UNKNOWN_FORMAT
               - PATTERN
           message:
@@ -6461,6 +6678,7 @@ definitions:
           - NOT_PASSED
           - INVALID_FORMAT
           - INVALID_CREDENTIALS
+          - INVALID_TYPE
           - UNKNOWN_FORMAT
           - PATTERN
       message:
@@ -6661,3 +6879,88 @@ definitions:
       - ZMW
       - ZWL
     example: USD
+
+  # SyncWebhook
+  SyncWebhookCreate:
+    type: object
+    additionalProperties: false
+    required:
+      - code
+      - endpoint
+      - status
+      - events
+      - name
+    properties:
+      code:
+        type: string
+        maxLength: 255
+        example: getProductsSync
+      name:
+        type: string
+        maxLength: 255
+      endpoint:
+        type: string
+        maxLength: 255
+      status:
+        $ref: '#/definitions/SyncWebhookStatus'
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/Event'
+  SyncWebhookUpdate:
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        maxLength: 255
+      endpoint:
+        type: string
+        maxLength: 255
+      status:
+        $ref: '#/definitions/SyncWebhookStatus'
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/Event'
+  SyncWebhookFull:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 255
+      endpoint:
+        type: string
+        maxLength: 255
+      status:
+        $ref: '#/definitions/Status'
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/Event'
+      code:
+        type: string
+        description: Human readable code of the entity
+        example: 'someCode'
+        maxLength: 255
+  Event:
+    type: object
+    additionalProperties: false
+    required:
+      - code
+    properties:
+      code:
+        type: string
+  SyncWebhookCodes:
+    type: array
+    items:
+      type: string
+      example: getProductsSync
+  SyncWebhookStatus:
+    type: string
+    example: "active"
+    default: "active"
+    enum:
+      - active
+      - inactive
+

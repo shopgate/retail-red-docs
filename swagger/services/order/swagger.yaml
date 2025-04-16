@@ -11,10 +11,8 @@ info:
     * Order Submission (Create)
     * Order Modification (Update / Cancellation)
     * Order Fulfillment (Processing Fulfillment Orders)
-
     This API leverages the standard Shopgate REST API authentication method.
-
-host: order.shopgate.services
+host: order.shopgate.io
 basePath: "/v1"
 schemes:
   - https
@@ -73,7 +71,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/ReportingMetric'
-
   /merchants/{merchantCode}/analytics/fulfillmentOrder/{reportType}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -136,7 +133,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/ReportingMetric'
-
   /merchants/{merchantCode}/analytics/fulfillmentOrder/{reportType}/exportCsv:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -177,7 +173,6 @@ paths:
           description: Returns a csv with data for the selected report type
           schema:
             type: string
-
   /merchants/{merchantCode}/analytics/ropis/{reportType}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -205,20 +200,14 @@ paths:
         format: json
         description: |
           Filter string. Available filters: date, locationCode.
-
           The date filter is mandatory and has to be located under a first-level $and query.
-
           Use filter types $lte and $gte to filter for a start or end date respectively.
-
           The date can be the date without the timezone like "2020-01-01", in which case the start/end date based on
           the resolution and timezone passed as query parameters will be used.
-
           In the case of a full date-time string like "2020-01-01T00:00:00+01:00" that will override the timezone
           parameter passed in the query.
-
           If only the start date ($gte) was passed, the end date will be set to the end of the start date's day.
           If only the end date ($lte) was passed, the start date will be set to the beginning of the end date's day.
-
           Examples:
           `{"$and":[{"date":{"$gte":"2021-04-16T00:00:00Z"}}]}` - results in a search starting at 2021-04-16T00:00:01Z
           and ending 2021-04-16T23:59:59Z.
@@ -240,7 +229,53 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/ReportingMetric'
-
+  # Add exportCsv endpoint for ROPIS reporting
+  /merchants/{merchantCode}/analytics/ropis/{reportType}/exportCsv:
+    parameters:
+      - $ref: '#/parameters/MerchantCode'
+      - in: path
+        name: reportType
+        type: string
+        required: true
+        enum:
+          - reservations
+          - checkIns
+      - in: query
+        name: timezone
+        type: string
+        description: Timezone of the reporting in the format of the IANA timezone. See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more information
+      - in: query
+        name: filters
+        type: string
+        format: json
+        description: |
+          Filter string. Available filters: date, locationCode.
+          The date filter is mandatory and has to be located under a first-level $and query.
+          Use filter types $lte and $gte to filter for a start or end date respectively.
+          The date can be the date without the timezone like "2020-01-01", in which case the start/end date based on
+          the resolution and timezone passed as query parameters will be used.
+          In the case of a full date-time string like "2020-01-01T00:00:00+01:00" that will override the timezone
+          parameter passed in the query.
+          If only the start date ($gte) was passed, the end date will be set to the end of the start date's day.
+          If only the end date ($lte) was passed, the start date will be set to the beginning of the end date's day.
+          Examples:
+          `{"$and":[{"date":{"$gte":"2021-04-16T00:00:00Z"}}]}` - results in a search starting at 2021-04-16T00:00:01Z
+          and ending 2021-04-16T23:59:59Z.
+          `{"$and":[{"date":{"$lte":"2021-04-16T23:59:59Z"}}]}` - is equivalent to the above search
+    get:
+      operationId: getRopisReportingCsvExport
+      summary: Get ROPIS reporting csv export
+      description: Get ROPIS order csv export
+      x-internal: true
+      tags:
+        - Analytics
+      produces:
+        - text/csv
+      responses:
+        200:
+          description: Returns a csv with data for the selected report type
+          schema:
+            type: string
   /merchants/{merchantCode}/analytics/shipFromStore/{reportType}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -274,20 +309,14 @@ paths:
         format: json
         description: |
           Filter string. Available filters: date.
-
           The date filter is mandatory and has to be located under a first-level $and query.
-
           Use filter types $lte and $gte to filter for a start or end date respectively.
-
           The date can be the date without the timezone like "2020-01-01", in which case the start/end date based on
           the resolution and timezone passed as query parameters will be used.
-
           In the case of a full date-time string like "2020-01-01T00:00:00+01:00" that will override the timezone
           parameter passed in the query.
-
           If only the start date ($gte) was passed, the end date will be set to the end of the start date's day.
           If only the end date ($lte) was passed, the start date will be set to the beginning of the end date's day.
-
           Examples:
           `{"$and":[{"date":{"$gte":"2021-04-16T00:00:00Z"}}]}` - results in a search starting at 2021-04-16T00:00:01Z
           and ending 2021-04-16T23:59:59Z.
@@ -309,7 +338,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/ReportingMetric'
-
   /merchants/{merchantCode}/orders:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -463,6 +491,7 @@ paths:
             properties:
               orders:
                 type: array
+                minItems: 1
                 maxItems: 100
                 items:
                   $ref: '#/definitions/PostSalesOrder'
@@ -565,35 +594,34 @@ paths:
                 items:
                   type: string
 
-
         '404':
           description: Order not found
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/orders/{orderNumber}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
       - $ref: '#/parameters/OrderNumber'
-      - name: includeInternalIds
-        description: The entity gets extended with the internal ID of Shopgate, this query cannot be used by external clients.
-        in: query
-        type: boolean
-        default: false
-      - name: fields
-        description: |
-          List of specific fields or groups to return. Possible values are: customer, orderUrl, isOrderable
-        in: query
-        type: string
-      - $ref: '#/parameters/OriginalImages'
     get:
       operationId: getSalesOrder
       summary: Get sales order
       description: Get sales order
       tags:
         - SalesOrder
+      parameters:
+        - name: includeInternalIds
+          description: The entity gets extended with the internal ID of Shopgate, this query cannot be used by external clients.
+          in: query
+          type: boolean
+          default: false
+        - name: fields
+          description: |
+            List of specific fields or groups to return. Possible values are: customer, orderUrl, isOrderable
+          in: query
+          type: string
+        - $ref: '#/parameters/OriginalImages'
       responses:
         '200':
           description: 'Return sales order'
@@ -1003,7 +1031,6 @@ paths:
                   overrideAmount: 0
                   substitutionAllowed: false
                   replacedLineItemId: null
-
               subTotal: 16.80
               discountAmount: 0
               promoAmount: 0
@@ -1017,7 +1044,6 @@ paths:
                 - code: vat_19
                   name: Default VAT 19%
                   amount: 3.19
-
       responses:
         '204':
           description: 'Sales order updated'
@@ -1027,7 +1053,6 @@ paths:
             type: object
             allOf:
               - $ref: '#/definitions/BatchErrors'
-
     delete:
       x-internal: true
       summary: Delete sales order
@@ -1037,7 +1062,6 @@ paths:
       responses:
         '204':
           description: 'Sales order removed'
-
   /merchants/{merchantCode}/orders/{orderNumber}/id:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -1066,7 +1090,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/orders/{orderNumber}/history:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -1118,7 +1141,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/orders/{orderNumber}/checkout:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -1186,7 +1208,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/orders/{orderNumber}/fulfillmentGroups:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -1257,7 +1278,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/BatchError'
-
   /merchants/{merchantCode}/fulfillmentOrders:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -1576,7 +1596,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/fulfillmentOrders/exportCsv:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -1601,7 +1620,6 @@ paths:
           description: Export limit exceeded or malformed filters
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/fulfillmentOrders/status:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -1631,7 +1649,6 @@ paths:
             $ref: '#/definitions/BatchErrors'
         '404':
           description: Merchant not found
-
   /merchants/{merchantCode}/orders/{orderNumber}/simpleFulfillmentOrders:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -1682,7 +1699,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/fulfillmentOrders/{orderNumber}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -1932,7 +1948,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/fulfillmentOrders/{orderNumber}/id:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -1961,7 +1976,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/fulfillmentOrders/{orderNumber}/fulfillments:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -1972,14 +1986,11 @@ paths:
       description: |
         ### Creating fulfillments for directShip fulfillmentOrders
         Creating fulfillments for fulfillmentOrders of type **directShip** requires the following fields, although they are not marked as required by the API documentation:
-
           - serviceLevel
           - carrier
           - package code or package dimensions
           - weight
-
         Additionally, the fulfillmentOrder address has to contain the following fields:
-
           - firstName
           - lastName
           - address1
@@ -2052,7 +2063,6 @@ paths:
                   $ref: '#/definitions/BatchError'
         '404':
           description: 'Merchant or fulfillment order not found'
-
   /merchants/{merchantCode}/fulfillmentOrders/{orderNumber}/fulfillments/{fulfillmentId}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2106,7 +2116,6 @@ paths:
           description: 'Fulfillment updated'
         '404':
           description: 'Merchant, fulfillment order or fulfillment not found'
-
   /merchants/{merchantCode}/fulfillmentOrders/{orderNumber}/history:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2158,7 +2167,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/fulfillmentOrders/{orderNumber}/lineItems/{lineItemId}/status:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2195,7 +2203,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/shops/{shopCode}/carts/{cartId}/orders:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2236,7 +2243,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/pickingBatches:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2330,7 +2336,6 @@ paths:
                 $ref: '#/definitions/Pagination'
         '404':
           description: Merchant not found
-
   /merchants/{merchantCode}/pickingBatches/generate:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2373,7 +2378,6 @@ paths:
                 example: 42
         '404':
           description: Merchant, Location or Fulfillment orders not found
-
   /merchants/{merchantCode}/pickingBatches/{pickingBatchId}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2475,7 +2479,6 @@ paths:
           description: Merchant or Picking Batch not found
         '409':
           description: Conflict Error
-
   /merchants/{merchantCode}/pickingBatches/{pickingBatchId}/lineItems:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2529,7 +2532,6 @@ paths:
           description: Merchant, Picking Batch or Line items not found
         '409':
           description: Picking Batch Line items not updatable anymore
-
   /merchants/{merchantCode}/pickingBatches/{pickingBatchId}/fulfillmentOrders:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2575,7 +2577,6 @@ paths:
                   $ref: '#/definitions/BatchError'
         '404':
           description: Merchant or Picking Batch not found
-
   /merchants/{merchantCode}/batch:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2646,14 +2647,12 @@ paths:
                     - code: OBJECT_MISSING_REQUIRED_PROPERTY
                       message: "Missing required property: code"
                       path: ["fulfillmentOrder", "0"]
-
         400:
           description: Validation error
           schema:
             $ref: '#/definitions/ValidationError'
         404:
           description: Merchant, Shop or Cart not found
-
   /merchants/{merchantCode}/returnReasons:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2730,7 +2729,6 @@ paths:
           description: Unexpected error
           schema:
               $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/returnReasons/{returnReasonCode}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2785,7 +2783,6 @@ paths:
           description: Return reason removed
         '404':
           description: Merchant or return reason not found
-
   /merchants/{merchantCode}/productConditions:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2859,7 +2856,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/productConditions/{productConditionCode}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -2914,7 +2910,6 @@ paths:
           description: Product condition removed
         '404':
           description: Merchant or product condition not found
-
   /merchants/{merchantCode}/returnOrders:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -3221,7 +3216,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/returnOrders/exportCsv:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -3245,7 +3239,6 @@ paths:
           description: Returns a CSV file with the requested data for ROs.
           schema:
             type: string
-
   /merchants/{merchantCode}/returnOrders/{orderNumber}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -3432,7 +3425,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /merchants/{merchantCode}/analytics/returnInStore/{reportType}:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -3457,20 +3449,14 @@ paths:
         format: json
         description: |
           Filter string. Available filters: date.
-
           The date filter is mandatory and has to be located under a first-level $and query.
-
           Use filter types $lte and $gte to filter for a start or end date respectively.
-
           The date can be the date without the timezone like "2020-01-01", in which case the start/end date based on
           the resolution and timezone passed as query parameters will be used.
-
           In the case of a full date-time string like "2020-01-01T00:00:00+01:00" that will override the timezone
           parameter passed in the query.
-
           If only the start date ($gte) was passed, the end date will be set to the end of the start date's day.
           If only the end date ($lte) was passed, the start date will be set to the beginning of the end date's day.
-
           Examples:
           `{"$and":[{"date":{"$gte":"2021-04-16T00:00:00Z"}}]}` - results in a search starting at 2021-04-16T00:00:01Z
           and ending 2021-04-16T23:59:59Z.
@@ -3492,7 +3478,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/ReportingMetric'
-
   /merchants/{merchantCode}/analytics/returnInStore/{reportType}/exportCsv:
     parameters:
       - $ref: '#/parameters/MerchantCode'
@@ -3526,7 +3511,6 @@ paths:
           description: Returns a CSV file with the requested analytics data for ROs and the selected report type.
           schema:
             type: string
-
 parameters:
   LocationCode:
     name: locationCode
@@ -3618,7 +3602,6 @@ parameters:
     in: path
     type: string
     required: true
-
 definitions:
   QuantityChangeReason:
     type: string
@@ -3630,7 +3613,6 @@ definitions:
         * changedMind
         * brokenOrDamaged
         * outOfStock
-
     enum:
       - wrongItem
       - wrongProduct
@@ -3649,7 +3631,6 @@ definitions:
     type: array
     items:
       $ref: '#/definitions/GetOrders'
-
   SOStatus:
     type: string
     enum:
@@ -3703,7 +3684,6 @@ definitions:
         minLength: 1
         maxLength: 10
         description: number of a post
-
   SimpleSalesOrder:
     type: object
     properties:
@@ -3899,7 +3879,6 @@ definitions:
           isOrderable:
             type: boolean
             description: Indicates if this order is orderable. Its used for the checkout. This property only exists if 'isOrderable' is passed in the field query parameter.
-
   PostSalesOrder:
     type: object
     additionalProperties: false
@@ -4054,7 +4033,7 @@ definitions:
           enum:
             - open
             - inProgress
-            - fulfilled
+            - completed
             - actionRequired
         addressSequences:
           type: array
@@ -4173,7 +4152,6 @@ definitions:
                   value:
                     description: 'Value for this attribute. Its a free text field for attributes where no values are set. Attributes which have value set should contains the code in an object. For instance `value: { "code": "fish" }`'
                     example: L
-
   PostFulfillmentOrder:
     required:
       - salesOrderNumber
@@ -4275,7 +4253,6 @@ definitions:
         $ref: '#/definitions/ReadyDate'
       completeDate:
         $ref: '#/definitions/CompleteDate'
-
   PostSimplifiedFulfillmentOrder:
     required:
     - fulfillmentMethod
@@ -4488,7 +4465,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Fulfillment'
-
   PostReturnOrder:
     required:
       - salesOrderNumber
@@ -4608,7 +4584,6 @@ definitions:
               example: "R386"
             status:
               $ref: '#/definitions/ROLineItemStatus'
-
   ReturnOrder:
     type: object
     properties:
@@ -4708,7 +4683,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/ROLineItem'
-
   HistoryItem:
     type: object
     properties:
@@ -4740,7 +4714,6 @@ definitions:
           id:
             type: string
             example: 237e228f-c1d0-4bb7-898d-14a5aa1ea955
-
   FulfillmentSlot:
     type: ["null","object"]
     properties:
@@ -4787,7 +4760,6 @@ definitions:
       to: 08:59
       status: active
       orderCount: 10
-
   SalesOrderHistoryItem:
     allOf:
       - type: object
@@ -4803,7 +4775,6 @@ definitions:
               - orderCommentDeleted
             example: orderStatusUpdated
       - $ref: '#/definitions/HistoryItem'
-
   FulfillmentOrderHistoryItem:
     allOf:
       - type: object
@@ -4822,7 +4793,6 @@ definitions:
               - fulfillmentOrderFulfillmentAdded
             example: fulfillmentOrderStatusUpdated
       - $ref: '#/definitions/HistoryItem'
-
   SetAddressSequence:
     type: object
     required:
@@ -4906,7 +4876,6 @@ definitions:
         properties:
           selectedShippingMethod:
             $ref: '#/definitions/SetSelectedShippingMethod'
-
   UpdateAddressSequence:
     type: object
     required:
@@ -4988,7 +4957,6 @@ definitions:
         properties:
           selectedShippingMethod:
             $ref: '#/definitions/SetSelectedShippingMethod'
-
   AddressSequence:
     type: object
     properties:
@@ -5066,7 +5034,6 @@ definitions:
             description: Contains all shipping method which are available fro this order segment. This property is only set if the order was not placed yet and is in the new status
             items:
               $ref: '#/definitions/ShippingMethod'
-
   FulfillmentGroup:
     allOf:
       - type: object
@@ -5088,7 +5055,6 @@ definitions:
             items:
               allOf:
                 - $ref: '#/definitions/SOFulfillment'
-
   PostFulfillmentGroup:
     additionalProperties: false
     type: object
@@ -5106,7 +5072,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/CreateFulfillment'
-
   SOFulfillment:
     type: object
     properties:
@@ -5176,7 +5141,6 @@ definitions:
                     example: "386"
                   quantity:
                     type: number
-
   Fulfillment:
     type: object
     properties:
@@ -5200,7 +5164,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/FulfillmentPackage'
-
   CreateFulfillment:
     type: object
     additionalProperties: false
@@ -5223,7 +5186,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/CreateFulfillmentPackage'
-
   UpdateFulfillment:
     type: object
     additionalProperties: false
@@ -5243,7 +5205,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/UpdateFulfillmentPackage'
-
   FulfillmentPackage:
     type: object
     properties:
@@ -5296,7 +5257,6 @@ definitions:
               example: "386"
             quantity:
               type: number
-
   CreateFulfillmentPackage:
     type: object
     additionalProperties: true
@@ -5354,7 +5314,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/PostPackageItem'
-
   UpdateFulfillmentPackage:
     type: object
     additionalProperties: true
@@ -5412,7 +5371,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/PostPackageItem'
-
   PackageDimension:
     type: object
     additionalProperties: false
@@ -5435,7 +5393,6 @@ definitions:
         example: 10
       heightUnit:
         $ref: '#/definitions/DimensionUnit'
-
   DimensionUnit:
     type: string
     example: cm
@@ -5443,7 +5400,6 @@ definitions:
       - mm
       - cm
       - in
-
   PackageItem:
     type: object
     properties:
@@ -5467,7 +5423,6 @@ definitions:
         example: "386"
       quantity:
         type: number
-
   PostFOLineItem:
     type: object
     required:
@@ -5604,7 +5559,6 @@ definitions:
         type: boolean
         default: true
         description: Determines if a substitution is allowed for this line item.
-
   LineItem:
     allOf:
       - type: object
@@ -5623,7 +5577,6 @@ definitions:
             example: 1
             description: Sum of this line item in fulfillment orders.
       - $ref: '#/definitions/PostSOLineItem'
-
   PostCoupon:
     type: object
     additionalProperties: false
@@ -5688,7 +5641,6 @@ definitions:
       promotion:
         code: promo
         name: Promo with Coupon
-
   PostSOLineItem:
     type: object
     additionalProperties: false
@@ -5707,6 +5659,10 @@ definitions:
         type: string
         description: Identifier for the line item. Needs to be unique within the sales order.
         example: "386"
+      parentLineItemCode:
+        type: ["string", "null"]
+        description: Identifier for the parent line item. Needs to be unique within the sales order.
+        example: "286"
       quantity:
         type: number
         format: float
@@ -5770,7 +5726,6 @@ definitions:
         $ref: '#/definitions/AppliedPromotions'
       # replacedLineItemId:
       #   type: ["number", "null"]
-
   UpdateSOLineItem:
     type: object
     additionalProperties: false
@@ -5781,6 +5736,10 @@ definitions:
         type: string
         description: Identifier for the line item. Needs to be unique within the sales order.
         example: "386"
+      parentLineItemCode:
+        type: ["string", "null"]
+        description: Identifier for the parent line item. Needs to be unique within the sales order.
+        example: "286"
       status:
         $ref: '#/definitions/SOLineItemStatus'
       subStatus:
@@ -5852,7 +5811,6 @@ definitions:
         type: ["number", "null"]
       quantityChangeReason:
         $ref: '#/definitions/QuantityChangeReason'
-
   LineItemProduct:
     type: object
     required:
@@ -6059,7 +6017,6 @@ definitions:
     type: string
     description: External identifier for this transaction
     example: pi_GTS8a787uuRMaC86GBxpDABYn
-
   CreatePickingBatch:
     type: object
     additionalProperties: false
@@ -6075,7 +6032,6 @@ definitions:
             orderNumber:
               type: string
               example: 10001-0001
-
   PickingBatch:
     type: object
     properties:
@@ -6104,7 +6060,6 @@ definitions:
             orderNumber:
               type: string
               example: 10001-0001
-
   GetPickingBatch:
     type: object
     allOf:
@@ -6114,7 +6069,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/PickingBatchLineItem'
-
   PickingBatchLineItem:
     type: object
     properties:
@@ -6166,7 +6120,6 @@ definitions:
               example: 2
       product:
         $ref: '#/definitions/LineItemProduct'
-
   PickingBatchStatus:
     type: string
     enum:
@@ -6176,7 +6129,6 @@ definitions:
       - packing
       - packed
       - canceled
-
   ReturnReason:
     type: object
     properties:
@@ -6196,7 +6148,6 @@ definitions:
       name:
         type: [string, object]
         $ref: '#/definitions/LocalizationShort'
-
   CreateReturnReason:
     type: object
     properties:
@@ -6216,7 +6167,6 @@ definitions:
       name:
         type: object
         $ref: '#/definitions/LocalizationShort'
-
   ProductCondition:
     type: object
     properties:
@@ -6236,7 +6186,6 @@ definitions:
       name:
         type: [ string, object ]
         $ref: '#/definitions/LocalizationShort'
-
   CreateProductCondition:
     type: object
     additionalProperties: false
@@ -6257,7 +6206,6 @@ definitions:
       name:
         type: object
         $ref: '#/definitions/LocalizationShort'
-
   ValidationErrors:
     type: object
     properties:
@@ -6265,7 +6213,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/ValidationError'
-
   ValidationError:
     type: object
     required:
@@ -6316,7 +6263,6 @@ definitions:
       message: 'Request validation failed: Parameter (shopNumber) is not a valid int64 integer: 100n06'
       code: validation.INVALID_TYPE
       value: 100n06
-
   Error:
     type: object
     required:
@@ -6671,7 +6617,6 @@ definitions:
       emailAddress:
         type: string
         example: max.muster@shopgate.com
-
   ReturnOrderType:
     type: string
     enum:
@@ -6975,7 +6920,6 @@ definitions:
         type: string
         format: email
         example: max.muster@shopgate.com
-
   AppliedPromotions:
     type: array
     description:
@@ -7090,7 +7034,6 @@ definitions:
                   <li>lineItem.product.options.&lt;optionsCode&gt;</li>
                   <li>lineItem.product.properties.&lt;propertyCode&gt;</li>
                 </ul>
-
                 The condition lineItem.quantity is always required. It needs to be set in the first level or in the $and condition on the first level
             automaticallyAddedToCart:
               type: boolean
@@ -7224,7 +7167,6 @@ definitions:
             value: 5
           - type: engage
             value: 3.2
-
   SetSelectedShippingMethod:
     type: object
     required:
@@ -7255,7 +7197,6 @@ definitions:
               code:
                 type: string
                 example: DHL
-
   SelectedShippingMethod:
     type: object
     properties:
@@ -7267,7 +7208,6 @@ definitions:
         example: Standard Shipping
       serviceLevel:
         $ref: '#/definitions/ShippingServiceLevel'
-
   ShippingMethod:
     type: object
     properties:
@@ -7281,7 +7221,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/ShippingServiceLevel'
-
   ShippingServiceLevel:
     type: object
     properties:
@@ -7306,7 +7245,6 @@ definitions:
           name:
             type: string
             example: DHL International
-
   LocalizationShort:
     type: object
     description: |
@@ -7319,7 +7257,6 @@ definitions:
     example:
       en-us: "string in english"
       de-de: "Zeichenkette auf Deutsch"
-
   Pagination:
     type: object
     properties:
